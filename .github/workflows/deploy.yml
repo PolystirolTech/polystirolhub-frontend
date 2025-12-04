@@ -1,0 +1,72 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set environment variables
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+            echo "API_URL=${{ secrets.PROD_API_URL }}" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+            echo "API_URL=${{ secrets.DEV_API_URL }}" >> $GITHUB_ENV
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ env.API_URL }}
+          NEXT_PUBLIC_API_BASE_PATH: /api/v1
+          NEXT_PUBLIC_APP_NAME: PolystirolHub
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL=${{ env.API_URL }} \
+            --build-arg NEXT_PUBLIC_API_BASE_PATH=/api/v1 \
+            --build-arg NEXT_PUBLIC_APP_NAME=PolystirolHub \
+            -t polystirolhub-frontend:${{ github.ref_name }}-${{ github.sha }} \
+            .
+
+      # Placeholder for actual deployment
+      # Uncomment and configure when ready to deploy
+      # - name: Deploy to server
+      #   id: deploy
+      #   run: |
+      #     # Your deployment commands here
+      #     # Example: scp, rsync, or custom deployment script
+      #     echo "url=https://polystirolhub.com" >> $GITHUB_OUTPUT
+
+      - name: Deployment summary
+        run: |
+          echo "### Deployment Summary 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ env.DEPLOY_ENV }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **API URL**: ${{ env.API_URL }}" >> $GITHUB_STEP_SUMMARY
