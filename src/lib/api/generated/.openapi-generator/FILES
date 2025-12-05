@@ -1,0 +1,14 @@
+.openapi-generator-ignore
+apis/AuthApi.ts
+apis/DefaultApi.ts
+apis/index.ts
+index.ts
+models/Avatar.ts
+models/Email.ts
+models/HTTPValidationError.ts
+models/IsActive.ts
+models/UserUpdate.ts
+models/Username.ts
+models/ValidationError.ts
+models/index.ts
+runtime.ts
