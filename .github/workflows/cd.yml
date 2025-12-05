@@ -29,9 +29,10 @@ jobs:
             # Navigate to project directory
             cd ${{ secrets.DEV_PROJECT_PATH }}
 
-            # Pull latest changes
-            echo "📥 Pulling latest changes from dev branch..."
-            git pull origin dev
+            # Pull latest changes (Hard Reset to match remote exactly)
+            echo "📥 syncing with origin/dev..."
+            git fetch origin dev
+            git reset --hard origin/dev
 
             # Create .env with secrets for docker-compose
             echo "⚙️  Creating .env..."
