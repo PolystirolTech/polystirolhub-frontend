@@ -1,7 +1,9 @@
 # API Health Check Implementation
 
 ## Frontend Changes
+
 ✅ **Completed:**
+
 - Created `src/hooks/use-api-status.ts` - custom hook for monitoring API health
 - Updated `src/components/layout/header.tsx` to use real API status check
 - Added dynamic color-coded status indicator:
@@ -10,9 +12,11 @@
   - 🔴 Red (no pulse) - API offline
 
 ## Backend Requirements
+
 ⚠️ **Required on Backend:**
 
 The frontend expects a health check endpoint at:
+
 ```
 GET /health
 ```
@@ -20,6 +24,7 @@ GET /health
 ### Expected Response Format
 
 **Success Response (200 OK):**
+
 ```json
 {
   "status": "healthy"
@@ -45,6 +50,7 @@ async def health_check():
 ```
 
 Then add this router to your main app:
+
 ```python
 from app.api.routes import health
 
@@ -54,6 +60,7 @@ app.include_router(health.router, tags=["health"])
 ## Configuration
 
 The frontend uses the following environment variable:
+
 - `NEXT_PUBLIC_API_URL` - Base URL of the backend API (default: `http://localhost:8000`)
 
 ## Monitoring Behavior

@@ -10,15 +10,15 @@ GitHub Secrets - это зашифрованные переменные окру
 
 Для работы автодеплоя на dev сервер необходимо настроить следующие секреты:
 
-| Секрет | Описание | Пример значения |
-|--------|----------|-----------------|
-| `DEV_SSH_HOST` | IP адрес или hostname dev сервера | `10.0.0.5` или `dev.polystirolhub.com` |
-| `DEV_SSH_USER` | Username для SSH подключения | `ubuntu` или `deploy` |
-| `DEV_SSH_KEY` | Приватный SSH ключ | Содержимое файла `~/.ssh/id_rsa` |
-| `DEV_SSH_PORT` | Порт SSH (опционально, по умолчанию 22) | `22` или `2222` |
-| `DEV_PROJECT_PATH` | Полный путь к проекту на сервере | `/home/ubuntu/polystirolhub-frontend` |
-| `DEV_API_URL` | URL backend API на dev сервере | `http://10.0.0.5:8000` или `https://api-dev.polystirolhub.com` |
-| `DEV_APP_URL` | URL где доступен фронтенд | `http://10.0.0.5:3000` или `https://dev.polystirolhub.com` |
+| Секрет             | Описание                                | Пример значения                                                |
+| ------------------ | --------------------------------------- | -------------------------------------------------------------- |
+| `DEV_SSH_HOST`     | IP адрес или hostname dev сервера       | `10.0.0.5` или `dev.polystirolhub.com`                         |
+| `DEV_SSH_USER`     | Username для SSH подключения            | `ubuntu` или `deploy`                                          |
+| `DEV_SSH_KEY`      | Приватный SSH ключ                      | Содержимое файла `~/.ssh/id_rsa`                               |
+| `DEV_SSH_PORT`     | Порт SSH (опционально, по умолчанию 22) | `22` или `2222`                                                |
+| `DEV_PROJECT_PATH` | Полный путь к проекту на сервере        | `/home/ubuntu/polystirolhub-frontend`                          |
+| `DEV_API_URL`      | URL backend API на dev сервере          | `http://10.0.0.5:8000` или `https://api-dev.polystirolhub.com` |
+| `DEV_APP_URL`      | URL где доступен фронтенд               | `http://10.0.0.5:3000` или `https://dev.polystirolhub.com`     |
 
 ## Пошаговая инструкция
 
@@ -53,6 +53,7 @@ ssh-copy-id -i ~/.ssh/github_deploy_key.pub user@your-server
 ```
 
 **Важно**: Секрет должен содержать ПРИВАТНЫЙ ключ целиком, включая строки:
+
 ```
 -----BEGIN OPENSSH PRIVATE KEY-----
 ...
@@ -70,7 +71,7 @@ ssh-copy-id -i ~/.ssh/github_deploy_key.pub user@your-server
    - Нажмите **Actions**
 
 3. **Добавьте секреты для dev окружения**
-   
+
    Нажмите **New repository secret** для каждого секрета:
 
    #### DEV_SSH_HOST
@@ -118,16 +119,18 @@ ssh-copy-id -i ~/.ssh/github_deploy_key.pub user@your-server
 Убедитесь что на dev сервере:
 
 1. **Установлены необходимые инструменты**:
+
    ```bash
    # Docker и Docker Compose
    docker --version
    docker-compose --version
-   
+
    # Git
    git --version
    ```
 
 2. **Проект склонирован из Git**:
+
    ```bash
    cd /path/where/you/want/project
    git clone <your-repo-url> polystirolhub-frontend
@@ -136,6 +139,7 @@ ssh-copy-id -i ~/.ssh/github_deploy_key.pub user@your-server
    ```
 
 3. **Создана Docker сеть**:
+
    ```bash
    docker network create polystirolhub-network
    ```
@@ -175,6 +179,7 @@ docker-compose ps
 
 1. Сделайте любое небольшое изменение в коде
 2. Закоммитьте и запушьте в dev ветку:
+
    ```bash
    git add .
    git commit -m "test: testing auto-deploy"
@@ -207,6 +212,7 @@ docker-compose ps
 **Проблема**: SSH ключ не настроен правильно
 
 **Решение**:
+
 1. Убедитесь что публичный ключ добавлен в `~/.ssh/authorized_keys` на сервере
 2. Проверьте права: `chmod 600 ~/.ssh/authorized_keys`
 3. Убедитесь что в секрет `DEV_SSH_KEY` скопирован ПРИВАТНЫЙ ключ целиком
@@ -216,6 +222,7 @@ docker-compose ps
 **Проблема**: Неправильный путь в `DEV_PROJECT_PATH`
 
 **Решение**:
+
 1. Проверьте что проект действительно находится по указанному пути
 2. Используйте ПОЛНЫЙ путь, например `/home/ubuntu/polystirolhub-frontend`
 
@@ -224,6 +231,7 @@ docker-compose ps
 **Проблема**: Docker не установлен или не доступен для пользователя
 
 **Решение**:
+
 1. Установите Docker на сервере
 2. Добавьте пользователя в группу docker: `sudo usermod -aG docker $USER`
 3. Перелогиньтесь или выполните: `newgrp docker`
@@ -233,6 +241,7 @@ docker-compose ps
 **Проблема**: Возможно, workflow отключен
 
 **Решение**:
+
 1. Перейдите в **Actions** на GitHub
 2. Найдите "Deploy" workflow
 3. Убедитесь что он включен (Enable workflow)

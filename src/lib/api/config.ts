@@ -17,7 +17,9 @@ import { Configuration } from './generated';
 const getBasePath = () => {
   if (typeof window === 'undefined') {
     // Server-side
-    return process.env.API_URL_INTERNAL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    return (
+      process.env.API_URL_INTERNAL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+    );
   }
   // Client-side
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';

@@ -179,10 +179,12 @@ polystirolhub-frontend/
 ### CI Pipeline (`.github/workflows/ci.yml`)
 
 Запускается при:
+
 - Push в `main`, `dev`, `feat/*`, `fix/*`, `style/*`
 - Pull Request в `main` или `dev`
 
 **Jobs:**
+
 1. **Lint & Type Check** (Node.js 18 и 20)
    - ✅ ESLint
    - ✅ TypeScript type checking
@@ -199,6 +201,7 @@ polystirolhub-frontend/
 ### Deploy Pipeline (`.github/workflows/deploy.yml`)
 
 Запускается при push в `main` или `dev`:
+
 - **main** → Production deployment
 - **dev** → Staging deployment
 
@@ -224,10 +227,12 @@ git push origin feat/my-feature
 Для деплоя настройте secrets в repository settings:
 
 **Production (`main`):**
+
 - `PROD_API_URL` - URL production API
 - `PROD_DEPLOY_KEY` - SSH ключ (опционально)
 
 **Staging (`dev`):**
+
 - `DEV_API_URL` - URL staging API
 - `DEV_DEPLOY_KEY` - SSH ключ (опционально)
 
@@ -310,6 +315,7 @@ npm run format
 5. Откройте Pull Request в `dev` ветку
 
 **CI проверит:**
+
 - ESLint
 - TypeScript
 - Prettier

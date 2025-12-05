@@ -106,4 +106,3 @@ jobs:
             NEXT_PUBLIC_APP_URL=http://localhost:3000
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
