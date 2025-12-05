@@ -6,9 +6,10 @@
  * Displays errors that occur during OAuth authentication
  */
 
+import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const error = searchParams.get('error') || 'Unknown error';
@@ -42,5 +43,20 @@ export default function AuthErrorPage() {
                 </button>
             </div>
         </div>
+    );
+}
+
+export default function AuthErrorPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center p-4">
+                <div className="glass-card bg-white/5 max-w-md p-8 text-center">
+                    <div className="mb-4 text-6xl">⚠️</div>
+                    <h1 className="mb-4 text-2xl font-bold text-white">Загрузка...</h1>
+                </div>
+            </div>
+        }>
+            <AuthErrorContent />
+        </Suspense>
     );
 }
