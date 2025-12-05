@@ -32,11 +32,11 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center p-4">
             <main className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Info Block - Bento Card 1 */}
-                <div className="glass-card flex flex-col justify-center p-8 md:p-12 shadow-2xl">
+                <div className="glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/10 flex flex-col justify-center p-8 md:p-12 shadow-2xl">
                     <div className="mb-6">
-                        <h1 className="mb-4 text-4xl font-bold text-white tracking-tight">Welcome Back</h1>
+                        <h1 className="mb-4 text-4xl font-bold text-white tracking-tight">Привет!</h1>
                         <p className="text-lg text-muted leading-relaxed">
-                            Sign in to <a href="/" className="text-primary font-semibold">polystirolhub</a> to access your dashboard, manage your settings, and connect with the community.
+                            Войдите в <a href="/" className="text-primary font-semibold">polystirolhub</a> чтобы получить доступ к вашему профилю, настроить настройки и подключиться к сообществу.
                         </p>
                     </div>
                     <div className="text-sm text-muted/60">
@@ -45,8 +45,8 @@ export default function LoginPage() {
                 </div>
 
                 {/* Login Buttons - Bento Card 2 */}
-                <div className="glass-card flex flex-col justify-center p-8 md:p-12 shadow-2xl">
-                    <h2 className="mb-6 text-xl font-semibold text-white/90">Choose a provider</h2>
+                <div className="glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/10 flex flex-col justify-center p-8 md:p-12 shadow-2xl">
+                    <h2 className="mb-6 text-xl font-semibold text-white/90">Выберите провайдера</h2>
                     <div className="flex flex-col gap-4">
                         <SocialButton
                             provider="twitch"

@@ -9,17 +9,17 @@ const providerStyles = {
     twitch: {
         color: 'bg-[#9146FF]',
         hover: 'hover:bg-[#9146FF]/90',
-        label: 'Continue with Twitch',
+        label: 'Войти с Twitch',
     },
     discord: {
         color: 'bg-[#5865F2]',
         hover: 'hover:bg-[#5865F2]/90',
-        label: 'Continue with Discord',
+        label: 'Войти с Discord',
     },
     steam: {
         color: 'bg-[#171a21]',
         hover: 'hover:bg-[#171a21]/90',
-        label: 'Continue with Steam',
+        label: 'Войти с Steam',
     },
 };
 
