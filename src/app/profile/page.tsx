@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
 
 export default function ProfilePage() {
@@ -54,10 +55,13 @@ export default function ProfilePage() {
                             {/* Avatar */}
                             <div className="h-24 w-24 overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-secondary">
                                 {user.avatar ? (
-                                    <img
+                                    <Image
                                         src={user.avatar}
                                         alt={user.username}
                                         className="h-full w-full object-cover"
+                                        width={96}
+                                        height={96}
+                                        unoptimized
                                     />
                                 ) : (
                                     <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-white">

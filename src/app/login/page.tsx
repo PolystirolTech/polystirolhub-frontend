@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { SocialButton } from '@/components/ui/social-button';
 import { useAuth } from '@/lib/auth';
 
@@ -60,7 +61,7 @@ export default function LoginPage() {
                     <div className="mb-6">
                         <h1 className="mb-4 text-4xl font-bold text-white tracking-tight">Привет!</h1>
                         <p className="text-lg text-muted leading-relaxed">
-                            Войдите в <a href="/" className="text-primary font-semibold">polystirolhub</a> чтобы получить доступ к вашему профилю, настроить настройки и подключиться к сообществу.
+                            Войдите в <Link href="/" className="text-primary font-semibold">polystirolhub</Link> чтобы получить доступ к вашему профилю, настроить настройки и подключиться к сообществу.
                         </p>
                     </div>
                     <div className="text-sm text-muted/60">

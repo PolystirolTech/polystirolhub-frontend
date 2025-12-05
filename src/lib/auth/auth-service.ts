@@ -36,9 +36,12 @@ class AuthService {
         try {
             const response = await this.authApi.getCurrentUserInfoApiV1AuthMeGet();
             return response as User;
-        } catch (error: any) {
+        } catch (error: unknown) {
             // If 401, user is not authenticated - this is expected
-            if (error?.response?.status === 401) {
+            // We need to safely check if error object has response status
+            const status = (error as { response?: { status?: number } })?.response?.status;
+
+            if (status === 401) {
                 return null;
             }
 

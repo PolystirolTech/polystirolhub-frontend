@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { useApiStatus } from '@/hooks/use-api-status';
@@ -37,7 +38,7 @@ export function Header() {
                             {/* Avatar */}
                             <div className="h-8 w-8 overflow-hidden rounded-md bg-gradient-to-br from-primary to-secondary">
                                 {user.avatar ? (
-                                    <img src={user.avatar} alt={user.username} className="h-full w-full object-cover" />
+                                    <Image src={user.avatar} alt={user.username} className="h-full w-full object-cover" width={32} height={32} unoptimized />
                                 ) : (
                                     <div className="flex h-full w-full items-center justify-center text-xs font-bold text-white">
                                         {user.username.substring(0, 2).toUpperCase()}

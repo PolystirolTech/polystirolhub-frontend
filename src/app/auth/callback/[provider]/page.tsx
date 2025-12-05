@@ -8,14 +8,13 @@
  * We just need to refresh user state and redirect.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 
 export default function CallbackPage() {
     const router = useRouter();
     const { refreshUser } = useAuth();
-    const [isProcessing, setIsProcessing] = useState(true);
 
     useEffect(() => {
         const handleCallback = async () => {
@@ -32,8 +31,6 @@ export default function CallbackPage() {
                 console.error('Callback processing error:', err);
                 // If refresh fails, redirect to login
                 router.push('/login');
-            } finally {
-                setIsProcessing(false);
             }
         };
 
