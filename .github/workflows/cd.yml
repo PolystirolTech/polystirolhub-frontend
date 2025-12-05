@@ -45,11 +45,11 @@ jobs:
 
             # Stop and remove old container
             echo "🛑 Stopping old container..."
-            docker-compose down
+            docker compose down
 
             # Rebuild and start container
             echo "🔨 Building and starting new container..."
-            docker-compose up -d --build
+            docker compose up -d --build
 
             # Clean up old images
             echo "🧹 Cleaning up old Docker images..."
@@ -57,7 +57,7 @@ jobs:
 
             # Show container status
             echo "✅ Deployment complete! Container status:"
-            docker-compose ps
+            docker compose ps
 
       - name: Deployment summary
         run: |
