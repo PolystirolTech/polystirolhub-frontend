@@ -78,20 +78,12 @@ export default function ProfilePage() {
                     {user.is_active ? 'Активен' : 'Неактивен'}
                   </span>
                 </div>
-              </div>
-            </div>
-
-            {/* Account Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
-                <p className="text-sm text-muted mb-1">ID пользователя</p>
-                <p className="text-lg font-semibold text-white">{user.id}</p>
-              </div>
-              <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
-                <p className="text-sm text-muted mb-1">Статус</p>
-                <p className="text-lg font-semibold text-white">
-                  {user.is_active ? '✅ Активен' : '❌ Неактивен'}
-                </p>
+                <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-white/20 px-3 py-1 ml-2">
+                  <span className="h-2 w-2 rounded-full bg-white"></span>
+                  <span className="text-sm text-white">
+                    {user.id}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
