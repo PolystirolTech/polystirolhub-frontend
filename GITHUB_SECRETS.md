@@ -103,6 +103,11 @@ ssh-copy-id -i ~/.ssh/github_deploy_key.pub user@your-server
    - Secret: URL backend API, например `http://10.0.0.5:8000`
    - Нажмите **Add secret**
 
+   #### DEV_API_URL_INTERNAL
+   - Name: `DEV_API_URL_INTERNAL`
+   - Secret: URL backend API в Docker сети, например `http://backend-1:8000`
+   - Нажмите **Add secret**
+
    #### DEV_APP_URL
    - Name: `DEV_APP_URL`
    - Secret: URL фронтенда, например `http://10.0.0.5:3000`

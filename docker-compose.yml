@@ -13,6 +13,7 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=production
+      - API_URL_INTERNAL=${API_URL_INTERNAL:-http://backend:8000}
     networks:
       - polystirolhub-network
     restart: unless-stopped

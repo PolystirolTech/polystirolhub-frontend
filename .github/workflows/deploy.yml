@@ -40,6 +40,7 @@ jobs:
             NEXT_PUBLIC_API_BASE_PATH=/api/v1
             NEXT_PUBLIC_APP_NAME=PolystirolHub
             NEXT_PUBLIC_APP_URL=${{ secrets.DEV_APP_URL }}
+            API_URL_INTERNAL=${{ secrets.DEV_API_URL_INTERNAL || 'http://backend-1:8000' }}
             EOF
             
             # Stop and remove old container
