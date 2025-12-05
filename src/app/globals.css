@@ -22,7 +22,7 @@
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
   --color-muted: var(--muted);
-  
+
   /* Palette direct access if needed */
   --color-palette-black: var(--color-black);
   --color-palette-dark-blue: var(--color-dark-blue);
@@ -41,7 +41,8 @@ body {
 
 /* Glassmorphism Utilities */
 .glass {
-  background: rgba(20, 33, 61, 0.7); /* Dark blue with opacity */
+  background: rgba(20, 33, 61, 0.7);
+  /* Dark blue with opacity */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -52,5 +53,6 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem; /* Bento style rounded corners */
+  border-radius: 1rem;
+  /* Bento style rounded corners */
 }
