@@ -33,9 +33,9 @@ jobs:
             echo "📥 Pulling latest changes from dev branch..."
             git pull origin dev
             
-            # Create .env.production with secrets
-            echo "⚙️  Creating .env.production..."
-            cat > .env.production << EOF
+            # Create .env with secrets for docker-compose
+            echo "⚙️  Creating .env..."
+            cat > .env << EOF
             NEXT_PUBLIC_API_URL=${{ secrets.DEV_API_URL }}
             NEXT_PUBLIC_API_BASE_PATH=/api/v1
             NEXT_PUBLIC_APP_NAME=PolystirolHub
