@@ -4,9 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
+import { useApiStatus } from '@/hooks/use-api-status';
 
 export function Header() {
     const { user, isAuthenticated, logout, isLoading } = useAuth();
+    const { status: apiStatus, message: apiMessage } = useApiStatus();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     const handleLogout = async () => {
@@ -72,10 +74,25 @@ export function Header() {
                 {/* Block 4: API Status Indicator */}
                 <div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-3 rounded-2xl px-6 shadow-lg transition-transform">
                     <span className="relative flex h-2.5 w-2.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                        {apiStatus === 'online' && (
+                            <>
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                            </>
+                        )}
+                        {apiStatus === 'checking' && (
+                            <>
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
+                                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
+                            </>
+                        )}
+                        {apiStatus === 'offline' && (
+                            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                        )}
                     </span>
-                    <span className="text-sm font-medium text-white/90">API GUCCI</span>
+                    <span className="text-sm font-medium text-white/90">
+                        API {apiStatus === 'online' ? apiMessage : apiStatus === 'checking' ? 'Проверка...' : apiMessage}
+                    </span>
                 </div>
 
 
