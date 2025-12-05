@@ -19,7 +19,7 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 p-6">
-      <div className="mx-auto flex max-w-5xl items-center justify-start gap-2">
+      <div className="mx-auto flex max-w-5xl items-center justify-center gap-2">
         {/* Block 1: Logo / Project Name */}
         <div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-6 shadow-lg transition-transform hover:scale-[1.02]">
           <Link
