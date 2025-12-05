@@ -80,9 +80,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-white/20 px-3 py-1 ml-2">
                   <span className="h-2 w-2 rounded-full bg-white"></span>
-                  <span className="text-sm text-white">
-                    {user.id}
-                  </span>
+                  <span className="text-sm text-white">{user.id}</span>
                 </div>
               </div>
             </div>
