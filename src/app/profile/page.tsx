@@ -87,6 +87,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Additional sections can be added here */}
+
           <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8">
             <h3 className="text-xl font-bold text-white mb-4">Подключенные аккаунты</h3>
             <p className="text-muted">
