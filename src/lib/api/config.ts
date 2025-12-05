@@ -14,6 +14,7 @@ export const apiConfig = new Configuration({
   headers: {
     'Content-Type': 'application/json',
   },
+  credentials: 'include', // Include cookies in requests
 });
 
 /**
@@ -26,5 +27,6 @@ export const getApiConfig = (token?: string): Configuration => {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
     },
+    credentials: 'include',
   });
 };

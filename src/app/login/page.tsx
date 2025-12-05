@@ -1,4 +1,9 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { SocialButton } from '@/components/ui/social-button';
+import { useAuth } from '@/lib/auth';
 
 // Simple Icons as components
 const TwitchIcon = () => (
@@ -28,11 +33,30 @@ const SteamIcon = () => (
 );
 
 export default function LoginPage() {
+    const { isAuthenticated, isLoading } = useAuth();
+    const router = useRouter();
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (!isLoading && isAuthenticated) {
+            router.push('/profile');
+        }
+    }, [isAuthenticated, isLoading, router]);
+
+    // Show loading while checking auth status
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-4">
+                <div className="h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             <main className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Info Block - Bento Card 1 */}
-                <div className="glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/10 flex flex-col justify-center p-8 md:p-12 shadow-2xl">
+                <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex flex-col justify-center p-8 md:p-12 shadow-2xl">
                     <div className="mb-6">
                         <h1 className="mb-4 text-4xl font-bold text-white tracking-tight">Привет!</h1>
                         <p className="text-lg text-muted leading-relaxed">
@@ -45,7 +69,7 @@ export default function LoginPage() {
                 </div>
 
                 {/* Login Buttons - Bento Card 2 */}
-                <div className="glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/10 flex flex-col justify-center p-8 md:p-12 shadow-2xl">
+                <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex flex-col justify-center p-8 md:p-12 shadow-2xl">
                     <h2 className="mb-6 text-xl font-semibold text-white/90">Выберите провайдера</h2>
                     <div className="flex flex-col gap-4">
                         <SocialButton
