@@ -7,7 +7,7 @@
 
 import { AuthApi } from '@/lib/api/generated';
 import { apiConfig } from '@/lib/api/config';
-import type { User, OAuthProvider, ProviderConnection } from './types';
+import type { User, OAuthProvider, ProviderConnection, UpdateProfileData } from './types';
 
 class AuthService {
 	private authApi: AuthApi;
@@ -130,6 +130,60 @@ class AuthService {
 		} catch (error) {
 			console.error('Failed to get user providers:', error);
 			return [];
+		}
+	}
+
+	/**
+	 * Update user profile
+	 */
+	async updateProfile(data: UpdateProfileData): Promise<User> {
+		try {
+			const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+			const response = await fetch(`${baseUrl}/api/v1/auth/me`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(data),
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				throw new Error(errorData.detail || 'Failed to update profile');
+			}
+
+			return await response.json();
+		} catch (error) {
+			console.error('Failed to update profile:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Upload user avatar
+	 */
+	async uploadAvatar(file: File): Promise<User> {
+		try {
+			const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+			const formData = new FormData();
+			formData.append('file', file);
+
+			const response = await fetch(`${baseUrl}/api/v1/auth/me/avatar`, {
+				method: 'POST',
+				credentials: 'include',
+				body: formData,
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				throw new Error(errorData.detail || 'Failed to upload avatar');
+			}
+
+			return await response.json();
+		} catch (error) {
+			console.error('Failed to upload avatar:', error);
+			throw error;
 		}
 	}
 }

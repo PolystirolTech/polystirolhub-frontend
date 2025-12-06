@@ -45,6 +45,10 @@ export interface UpdateCurrentUserApiV1AuthMePatchRequest {
 	userUpdate: UserUpdate;
 }
 
+export interface UploadAvatarApiV1AuthMeAvatarPostRequest {
+	file: any | null;
+}
+
 /**
  *
  */
@@ -519,6 +523,85 @@ export class AuthApi extends runtime.BaseAPI {
 		initOverrides?: RequestInit | runtime.InitOverrideFunction
 	): Promise<any> {
 		const response = await this.updateCurrentUserApiV1AuthMePatchRaw(
+			requestParameters,
+			initOverrides
+		);
+		return await response.value();
+	}
+
+	/**
+	 * Upload avatar image for current user
+	 * Upload Avatar
+	 */
+	async uploadAvatarApiV1AuthMeAvatarPostRaw(
+		requestParameters: UploadAvatarApiV1AuthMeAvatarPostRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		if (requestParameters.file === null || requestParameters.file === undefined) {
+			throw new runtime.RequiredError(
+				'file',
+				'Required parameter requestParameters.file was null or undefined when calling uploadAvatarApiV1AuthMeAvatarPost.'
+			);
+		}
+
+		const queryParameters: any = {};
+
+		const headerParameters: runtime.HTTPHeaders = {};
+
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
+
+		const consumes: runtime.Consume[] = [{ contentType: 'multipart/form-data' }];
+		// @ts-ignore: canConsumeForm may be unused
+		const canConsumeForm = runtime.canConsumeForm(consumes);
+
+		let formParams: { append(param: string, value: any): any };
+		let useForm = false;
+		if (useForm) {
+			formParams = new FormData();
+		} else {
+			formParams = new URLSearchParams();
+		}
+
+		if (requestParameters.file !== undefined) {
+			formParams.append(
+				'file',
+				new Blob([JSON.stringify(anyToJSON(requestParameters.file))], { type: 'application/json' })
+			);
+		}
+
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/me/avatar`,
+				method: 'POST',
+				headers: headerParameters,
+				query: queryParameters,
+				body: formParams,
+			},
+			initOverrides
+		);
+
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
+
+	/**
+	 * Upload avatar image for current user
+	 * Upload Avatar
+	 */
+	async uploadAvatarApiV1AuthMeAvatarPost(
+		requestParameters: UploadAvatarApiV1AuthMeAvatarPostRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.uploadAvatarApiV1AuthMeAvatarPostRaw(
 			requestParameters,
 			initOverrides
 		);

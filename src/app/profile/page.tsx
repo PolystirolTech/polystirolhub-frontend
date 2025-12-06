@@ -12,6 +12,8 @@ import { SocialButton } from '@/components/ui/social-button';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 
 import { useLevel } from '@/lib/level/level-context';
+import { maskEmail } from '@/lib/utils';
+import { ProfileUpdateForm } from '@/components/profile/profile-update-form';
 
 export default function ProfilePage() {
 	const { user, isAuthenticated, isLoading } = useAuth();
@@ -114,7 +116,7 @@ export default function ProfilePage() {
 					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
 						<div className="flex items-center gap-6 mb-6">
 							{/* Avatar */}
-							<div className="h-24 w-24 overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-secondary shrink-0">
+							<div className="h-24 w-24 overflow-hidden rounded-2xl shrink-0">
 								{user.avatar ? (
 									<Image
 										src={user.avatar}
@@ -136,7 +138,7 @@ export default function ProfilePage() {
 								<div className="flex items-start justify-between">
 									<div>
 										<h2 className="text-3xl font-bold text-white mb-2">{user.username}</h2>
-										<p className="text-muted">{user.email || 'Email не указан'}</p>
+										<p className="text-muted">{maskEmail(user.email) || 'Email не указан'}</p>
 										<div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-green-500/20 px-3 py-1">
 											<span className="h-2 w-2 rounded-full bg-green-500"></span>
 											<span className="text-sm text-green-400">
@@ -320,6 +322,9 @@ export default function ProfilePage() {
 							</div>
 						)}
 					</div>
+
+					{/* Profile Update Form */}
+					<ProfileUpdateForm />
 
 					{/* Danger Zone / Delete Account */}
 					<div className="glass-card bg-red-500/30 backdrop-blur-md border border-red-500/10 p-8">

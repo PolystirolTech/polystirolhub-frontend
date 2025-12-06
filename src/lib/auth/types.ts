@@ -16,6 +16,13 @@ export interface User {
 	updated_at?: string;
 }
 
+export interface UpdateProfileData {
+	email?: string;
+	username?: string;
+	avatar?: string;
+	is_active?: boolean;
+}
+
 export interface OAuthAccount {
 	id: number;
 	user_id: number;

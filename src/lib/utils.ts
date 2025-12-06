@@ -2,6 +2,29 @@
  * Utility Functions
  */
 
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs));
+}
+
+export function maskEmail(email: string | null | undefined): string {
+	if (!email) return '';
+
+	const [local, domain] = email.split('@');
+	if (!domain) return email; // Invalid email, return as is
+
+	let maskedLocal = local;
+	if (local.length > 2) {
+		maskedLocal = `${local.substring(0, 2)}****`;
+	} else {
+		maskedLocal = `${local}****`;
+	}
+
+	return `${maskedLocal}@${domain}`;
+}
+
 /**
  * Format a date to a localized string
  */
