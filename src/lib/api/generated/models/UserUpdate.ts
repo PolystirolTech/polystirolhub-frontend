@@ -19,8 +19,12 @@ import type { Email } from './Email';
 import { EmailFromJSON, EmailFromJSONTyped, EmailToJSON } from './Email';
 import type { IsActive } from './IsActive';
 import { IsActiveFromJSON, IsActiveFromJSONTyped, IsActiveToJSON } from './IsActive';
+import type { Level } from './Level';
+import { LevelFromJSON, LevelFromJSONTyped, LevelToJSON } from './Level';
 import type { Username } from './Username';
 import { UsernameFromJSON, UsernameFromJSONTyped, UsernameToJSON } from './Username';
+import type { Xp } from './Xp';
+import { XpFromJSON, XpFromJSONTyped, XpToJSON } from './Xp';
 
 /**
  *
@@ -52,6 +56,18 @@ export interface UserUpdate {
    * @memberof UserUpdate
    */
   isActive?: IsActive;
+  /**
+   *
+   * @type {Xp}
+   * @memberof UserUpdate
+   */
+  xp?: Xp;
+  /**
+   *
+   * @type {Level}
+   * @memberof UserUpdate
+   */
+  level?: Level;
 }
 
 /**
@@ -76,6 +92,8 @@ export function UserUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     username: !exists(json, 'username') ? undefined : UsernameFromJSON(json['username']),
     avatar: !exists(json, 'avatar') ? undefined : AvatarFromJSON(json['avatar']),
     isActive: !exists(json, 'is_active') ? undefined : IsActiveFromJSON(json['is_active']),
+    xp: !exists(json, 'xp') ? undefined : XpFromJSON(json['xp']),
+    level: !exists(json, 'level') ? undefined : LevelFromJSON(json['level']),
   };
 }
 
@@ -91,5 +109,7 @@ export function UserUpdateToJSON(value?: UserUpdate | null): any {
     username: UsernameToJSON(value.username),
     avatar: AvatarToJSON(value.avatar),
     is_active: IsActiveToJSON(value.isActive),
+    xp: XpToJSON(value.xp),
+    level: LevelToJSON(value.level),
   };
 }

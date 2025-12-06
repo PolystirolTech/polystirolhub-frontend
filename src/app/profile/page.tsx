@@ -11,9 +11,12 @@ import { useState } from 'react';
 import { SocialButton } from '@/components/ui/social-button';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 
+import { useLevel } from '@/lib/level/level-context';
+
 export default function ProfilePage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const { level, currentXp, nextLevelXp, addXp, resetLevel, error: levelError } = useLevel();
   const [providers, setProviders] = useState<ProviderConnection[]>([]);
   const [loadingProviders, setLoadingProviders] = useState(true);
 
@@ -22,6 +25,9 @@ export default function ProfilePage() {
     provider: null,
   });
   const [deleteAccountModal, setDeleteAccountModal] = useState(false);
+
+  // Check if debug mode is enabled (default to true if not set)
+  const isDebugMode = process.env.NEXT_PUBLIC_DEBUG !== 'false';
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -108,7 +114,7 @@ export default function ProfilePage() {
           <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
             <div className="flex items-center gap-6 mb-6">
               {/* Avatar */}
-              <div className="h-24 w-24 overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-secondary">
+              <div className="h-24 w-24 overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-secondary shrink-0">
                 {user.avatar ? (
                   <Image
                     src={user.avatar}
@@ -126,22 +132,93 @@ export default function ProfilePage() {
               </div>
 
               {/* User Details */}
-              <div>
-                <h2 className="text-3xl font-bold text-white mb-2">{user.username}</h2>
-                <p className="text-muted">{user.email || 'Email не указан'}</p>
-                <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-green-500/20 px-3 py-1">
-                  <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                  <span className="text-sm text-green-400">
-                    {user.is_active ? 'Активен' : 'Неактивен'}
-                  </span>
-                </div>
-                <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-white/20 px-3 py-1 ml-2">
-                  <span className="h-2 w-2 rounded-full bg-white"></span>
-                  <span className="text-sm text-white">{user.id}</span>
+              <div className="flex-1">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-3xl font-bold text-white mb-2">{user.username}</h2>
+                    <p className="text-muted">{user.email || 'Email не указан'}</p>
+                    <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-green-500/20 px-3 py-1">
+                      <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                      <span className="text-sm text-green-400">
+                        {user.is_active ? 'Активен' : 'Неактивен'}
+                      </span>
+                    </div>
+                    <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-white/20 px-3 py-1 ml-2">
+                      <span className="h-2 w-2 rounded-full bg-white"></span>
+                      <span className="text-sm text-white">{user.id}</span>
+                    </div>
+                  </div>
+
+                  {/* Level Badge */}
+                  <div className="flex flex-col items-center justify-center rounded-xl border-2 border-primary/30 px-6 py-3 backdrop-blur-sm">
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted">
+                      Уровень
+                    </span>
+                    <span className="text-3xl font-bold text-primary">{level}</span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Level Progress Bar */}
+            <div className="relative pt-2">
+              <div className="mb-2 flex items-center justify-between text-sm">
+                <span className="font-medium text-white">{currentXp} XP</span>
+                <span className="text-muted">{nextLevelXp} XP</span>
+              </div>
+              <div className="h-4 w-full overflow-hidden rounded-full bg-black/40">
+                <div
+                  className="h-full bg-gradient-to-r from-[var(--color-primary)]/50 to-primary transition-all duration-500 ease-out"
+                  style={{ width: `${(currentXp / nextLevelXp) * 100}%` }}
+                />
+              </div>
+            </div>
           </div>
+
+          {/* Debug / XP Controls - Only in Debug Mode */}
+          {isDebugMode && (
+            <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
+              <h3 className="text-xl font-bold text-white mb-6">Дебаг: Добавить опыт</h3>
+              {levelError && (
+                <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+                  {levelError}
+                </div>
+              )}
+              <div className="flex flex-wrap gap-4">
+                <button
+                  onClick={() => addXp(50)}
+                  className="rounded-lg bg-white/10 px-4 py-2 font-medium text-white transition-colors hover:bg-white/20"
+                >
+                  +50 XP
+                </button>
+                <button
+                  onClick={() => addXp(100)}
+                  className="rounded-lg bg-white/10 px-4 py-2 font-medium text-white transition-colors hover:bg-white/20"
+                >
+                  +100 XP
+                </button>
+                <button
+                  onClick={() => addXp(500)}
+                  className="rounded-lg bg-white/10 px-4 py-2 font-medium text-white transition-colors hover:bg-white/20"
+                >
+                  +500 XP
+                </button>
+                <button
+                  onClick={() => addXp(1000)}
+                  className="rounded-lg bg-white/10 px-4 py-2 font-medium text-white transition-colors hover:bg-white/20"
+                >
+                  +1000 XP
+                </button>
+                <div className="h-auto w-px bg-white/20 mx-2"></div>
+                <button
+                  onClick={resetLevel}
+                  className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-2 font-medium text-red-400 transition-colors hover:bg-red-500/20"
+                >
+                  Сбросить
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Connected Accounts */}
           <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">

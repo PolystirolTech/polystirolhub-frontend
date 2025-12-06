@@ -4,14 +4,17 @@ apis/UsersApi.ts
 apis/index.ts
 index.ts
 models/Avatar.ts
+models/AwardXPRequest.ts
 models/Email.ts
 models/HTTPValidationError.ts
 models/IsActive.ts
+models/Level.ts
 models/OAuthAccountPublic.ts
 models/ProviderAvatar.ts
 models/ProviderUsername.ts
 models/UserUpdate.ts
 models/Username.ts
 models/ValidationError.ts
+models/Xp.ts
 models/index.ts
 runtime.ts

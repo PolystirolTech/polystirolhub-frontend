@@ -4,12 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
+import { useLevel } from '@/lib/level/level-context';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { useApiStatus } from '@/hooks/use-api-status';
 
 export function Header() {
   const { user, isAuthenticated, logout, isLoading } = useAuth();
   const { status: apiStatus, message: apiMessage } = useApiStatus();
+  const { level, currentXp, nextLevelXp } = useLevel();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleLogout = async () => {
@@ -36,7 +38,12 @@ export function Header() {
             {/* Block 2: Profile */}
             <Link
               href="/profile"
-              className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-3 rounded-2xl px-4 shadow-lg transition-all hover:scale-[1.02]"
+              className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-3 rounded-2xl px-4 shadow-lg transition-all hover:scale-[1.02] relative group/profile"
+              style={
+                {
+                  '--progress-percent': `${(currentXp / nextLevelXp) * 100}%`,
+                } as React.CSSProperties
+              }
             >
               {/* Avatar */}
               <div className="h-8 w-8 overflow-hidden rounded-md bg-gradient-to-br from-primary to-secondary">
@@ -58,6 +65,23 @@ export function Header() {
 
               {/* Username */}
               <span className="text-sm font-medium text-white/90">{user.username}</span>
+              {/* Level Badge in Header */}
+              <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary">
+                {level}
+              </span>
+
+              {/* Progress Border using pseudo-element */}
+              <span
+                className="absolute inset-0 rounded-2xl pointer-events-none opacity-60"
+                style={{
+                  background: `conic-gradient(from 0deg at 50% 50%, var(--color-primary) 0%, var(--color-primary) var(--progress-percent), transparent var(--progress-percent))`,
+                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  WebkitMaskComposite: 'xor',
+                  mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  maskComposite: 'exclude',
+                  padding: '2px',
+                }}
+              />
             </Link>
 
             {/* Block 3: Logout */}

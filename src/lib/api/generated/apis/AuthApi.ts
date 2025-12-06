@@ -37,7 +37,7 @@ export interface LoginApiV1AuthLoginProviderGetRequest {
   provider: string;
 }
 
-export interface UnlinkProviderApiV1AuthLinkProviderDeleteRequest {
+export interface UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest {
   provider: string;
 }
 
@@ -405,14 +405,14 @@ export class AuthApi extends runtime.BaseAPI {
    * Unlink OAuth provider from current user account
    * Unlink Provider
    */
-  async unlinkProviderApiV1AuthLinkProviderDeleteRaw(
-    requestParameters: UnlinkProviderApiV1AuthLinkProviderDeleteRequest,
+  async unlinkProviderApiV1AuthUnlinkProviderDeleteRaw(
+    requestParameters: UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<any>> {
     if (requestParameters.provider === null || requestParameters.provider === undefined) {
       throw new runtime.RequiredError(
         'provider',
-        'Required parameter requestParameters.provider was null or undefined when calling unlinkProviderApiV1AuthLinkProviderDelete.'
+        'Required parameter requestParameters.provider was null or undefined when calling unlinkProviderApiV1AuthUnlinkProviderDelete.'
       );
     }
 
@@ -430,7 +430,7 @@ export class AuthApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/api/v1/auth/link/{provider}`.replace(
+        path: `/api/v1/auth/unlink/{provider}`.replace(
           `{${'provider'}}`,
           encodeURIComponent(String(requestParameters.provider))
         ),
@@ -452,11 +452,11 @@ export class AuthApi extends runtime.BaseAPI {
    * Unlink OAuth provider from current user account
    * Unlink Provider
    */
-  async unlinkProviderApiV1AuthLinkProviderDelete(
-    requestParameters: UnlinkProviderApiV1AuthLinkProviderDeleteRequest,
+  async unlinkProviderApiV1AuthUnlinkProviderDelete(
+    requestParameters: UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<any> {
-    const response = await this.unlinkProviderApiV1AuthLinkProviderDeleteRaw(
+    const response = await this.unlinkProviderApiV1AuthUnlinkProviderDeleteRaw(
       requestParameters,
       initOverrides
     );
