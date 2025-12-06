@@ -29,6 +29,17 @@ class AuthService {
   }
 
   /**
+   * Initiate OAuth linking flow by redirecting to backend link endpoint
+   */
+  async initiateLink(provider: OAuthProvider): Promise<void> {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const linkUrl = `${baseUrl}/api/v1/auth/link/${provider}`;
+
+    // Redirect to backend link endpoint
+    window.location.href = linkUrl;
+  }
+
+  /**
    * Get current authenticated user from backend
    * Uses JWT from HTTP-only cookie automatically sent by browser
    */

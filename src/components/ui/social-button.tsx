@@ -7,6 +7,7 @@ import type { OAuthProvider } from '@/lib/auth';
 interface SocialButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   provider: OAuthProvider;
   icon?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const providerStyles = {
@@ -27,7 +28,7 @@ const providerStyles = {
   },
 };
 
-export function SocialButton({ provider, className, icon, ...props }: SocialButtonProps) {
+export function SocialButton({ provider, className, icon, children, ...props }: SocialButtonProps) {
   const style = providerStyles[provider];
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -35,8 +36,20 @@ export function SocialButton({ provider, className, icon, ...props }: SocialButt
   // Disable Steam as it's not implemented yet
   const isDisabled = props.disabled;
 
-  const handleClick = async () => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isDisabled) return;
+
+    if (props.onClick) {
+      setIsLoading(true);
+      try {
+        await props.onClick(e);
+      } catch (error) {
+        console.error('Action failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -72,7 +85,7 @@ export function SocialButton({ provider, className, icon, ...props }: SocialButt
         icon && <span className="relative z-10 h-6 w-6">{icon}</span>
       )}
       <span className="relative z-10">
-        {isLoading ? 'Загрузка...' : style.label}
+        {isLoading ? 'Загрузка...' : (children || style.label)}
       </span>
     </button>
   );
