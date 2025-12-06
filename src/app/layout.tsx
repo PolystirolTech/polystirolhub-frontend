@@ -5,29 +5,29 @@ import { AuthProvider } from '@/lib/auth';
 import { LevelProvider } from '@/lib/level/level-context';
 
 const pixelFont = Press_Start_2P({
-  variable: '--font-pixel',
-  subsets: ['latin', 'cyrillic'],
-  weight: '400',
-  display: 'swap',
+	variable: '--font-pixel',
+	subsets: ['latin', 'cyrillic'],
+	weight: '400',
+	display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'PolystirolHub',
-  description: 'The central hub for Polystirol technologies',
+	title: 'PolystirolHub',
+	description: 'The central hub for Polystirol technologies',
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${pixelFont.variable} antialiased font-pixel`}>
-        <AuthProvider>
-          <LevelProvider>{children}</LevelProvider>
-        </AuthProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body className={`${pixelFont.variable} antialiased font-pixel`}>
+				<AuthProvider>
+					<LevelProvider>{children}</LevelProvider>
+				</AuthProvider>
+			</body>
+		</html>
+	);
 }
