@@ -5,6 +5,7 @@
 ## Основные ветки
 
 ### `main`
+
 - **Production** ветка
 - Всегда стабильна и готова к деплою
 - Защищена от прямых коммитов
@@ -12,6 +13,7 @@
 - CI/CD автоматически деплоит на production
 
 ### `dev`
+
 - **Development** ветка
 - Интеграционная ветка для разработки
 - Изменения из feature-веток мержатся сюда
@@ -21,21 +23,27 @@
 ## Feature ветки
 
 ### `feat/*`
+
 **Новые функции**
+
 - Пример: `feat/user-authentication`, `feat/social-feed`
 - Создаются из `dev`
 - Мержатся обратно в `dev` через PR
 - CI проверяет код при push
 
 ### `fix/*`
+
 **Исправления багов**
+
 - Пример: `fix/login-error`, `fix/api-timeout`
 - Создаются из `dev`
 - Мержатся обратно в `dev` через PR
 - CI проверяет код при push
 
 ### `style/*`
+
 **Стилизация и UI**
+
 - Пример: `style/update-theme`, `style/responsive-layout`
 - Создаются из `dev`
 - Мержатся обратно в `dev` через PR
@@ -83,6 +91,7 @@ git commit -m "fix: critical bug"
 ## CI/CD Process
 
 ### На push в feature ветки (feat/, fix/, style/)
+
 1. ✅ ESLint проверка
 2. ✅ TypeScript type checking
 3. ✅ Prettier форматирование
@@ -90,11 +99,13 @@ git commit -m "fix: critical bug"
 5. ✅ Docker build (кэширование)
 
 ### На PR в dev
+
 1. ✅ Все проверки из feature веток
 2. ✅ Build artifacts сохраняются
 3. После merge: автоматический деплой на staging
 
 ### На PR в main
+
 1. ✅ Все проверки
 2. ✅ Обязательный code review
 3. После merge: автоматический деплой на production
@@ -102,6 +113,7 @@ git commit -m "fix: critical bug"
 ## Branch Protection Rules
 
 ### Рекомендуемые настройки для `main`:
+
 - ✅ Require pull request reviews (минимум 1)
 - ✅ Require status checks to pass
 - ✅ Require branches to be up to date
@@ -110,6 +122,7 @@ git commit -m "fix: critical bug"
 - ❌ Disable deletions
 
 ### Рекомендуемые настройки для `dev`:
+
 - ✅ Require status checks to pass
 - ✅ Require branches to be up to date
 - ❌ Disable force push (опционально)
@@ -127,6 +140,7 @@ git commit -m "fix: critical bug"
 ```
 
 ### Types:
+
 - `feat`: Новая функция
 - `fix`: Исправление бага
 - `style`: Изменения стилей (CSS, UI)
@@ -137,6 +151,7 @@ git commit -m "fix: critical bug"
 - `perf`: Улучшение производительности
 
 ### Примеры:
+
 ```bash
 feat(auth): add social login
 fix(api): handle timeout errors
@@ -146,20 +161,22 @@ docs(readme): add deployment instructions
 
 ## Environments
 
-| Environment | Branch | URL | Auto Deploy |
-|-------------|--------|-----|-------------|
-| Production | `main` | https://polystirolhub.com | ✅ |
-| Staging | `dev` | https://dev.polystirolhub.com | ✅ |
-| Feature | `feat/*`, `fix/*`, `style/*` | - | ❌ |
+| Environment | Branch                       | URL                           | Auto Deploy |
+| ----------- | ---------------------------- | ----------------------------- | ----------- |
+| Production  | `main`                       | https://polystirolhub.com     | ✅          |
+| Staging     | `dev`                        | https://dev.polystirolhub.com | ✅          |
+| Feature     | `feat/*`, `fix/*`, `style/*` | -                             | ❌          |
 
 ## Secrets Configuration
 
 Необходимо настроить в GitHub Secrets:
 
 ### Production (main)
+
 - `PROD_API_URL` - Production API URL
 - `PROD_DEPLOY_KEY` - SSH ключ для деплоя (если используется)
 
 ### Staging (dev)
+
 - `DEV_API_URL` - Staging API URL
 - `DEV_DEPLOY_KEY` - SSH ключ для деплоя (если используется)

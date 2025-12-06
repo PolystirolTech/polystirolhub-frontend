@@ -5,6 +5,7 @@
 ### ✅ Обновлен CI/CD Pipeline
 
 #### 1. **Новая структура веток**
+
 - `main` - Production (автодеплой)
 - `dev` - Staging (автодеплой)
 - `feat/*` - Feature ветки
@@ -14,6 +15,7 @@
 #### 2. **Обновлен `.github/workflows/ci.yml`**
 
 **Триггеры:**
+
 ```yaml
 on:
   push:
@@ -23,6 +25,7 @@ on:
 ```
 
 **Jobs:**
+
 1. **Lint & Type Check** - Проверка кода (Node.js 18 и 20)
 2. **Build Application** - Сборка приложения + artifacts
 3. **Docker Build** - Docker сборка (только для main/dev)
@@ -30,6 +33,7 @@ on:
 #### 3. **Создан `.github/workflows/deploy.yml`**
 
 Отдельный workflow для деплоя:
+
 - Запускается только при push в `main` или `dev`
 - `main` → Production
 - `dev` → Staging
@@ -38,6 +42,7 @@ on:
 #### 4. **Создан `BRANCH_STRATEGY.md`**
 
 Полная документация по Git Flow включает:
+
 - Описание всех типов веток
 - Workflow для разработки
 - Commit message conventions
@@ -49,6 +54,7 @@ on:
 ### GitHub Repository Settings
 
 1. **Создать ветку `dev`:**
+
    ```bash
    git checkout -b dev
    git push origin dev
@@ -179,6 +185,7 @@ main (push)
 ## Файлы
 
 Созданные/обновленные файлы:
+
 - ✅ `.github/workflows/ci.yml` - Обновлен CI pipeline
 - ✅ `.github/workflows/deploy.yml` - Новый Deploy pipeline
 - ✅ `BRANCH_STRATEGY.md` - Полная документация
