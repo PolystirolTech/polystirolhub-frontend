@@ -1,5 +1,5 @@
 /* tslint:disable */
-
+/* eslint-disable */
 export * from './Avatar';
 export * from './Email';
 export * from './HTTPValidationError';
