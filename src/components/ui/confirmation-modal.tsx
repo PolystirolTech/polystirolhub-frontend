@@ -36,8 +36,6 @@ export function ConfirmationModal({
   const [inputValue, setInputValue] = useState('');
   const isConfirmDisabled = validationString ? inputValue !== validationString : false;
 
-
-
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -84,7 +82,8 @@ export function ConfirmationModal({
         {validationString && (
           <div className="mb-6">
             <label className="block text-sm font-medium text-muted mb-2">
-              Введите <span className="text-white font-bold select-all">{validationString}</span> для подтверждения
+              Введите <span className="text-white font-bold select-all">{validationString}</span>{' '}
+              для подтверждения
             </label>
             <input
               type="text"
@@ -113,15 +112,17 @@ export function ConfirmationModal({
               }
             }}
             disabled={isConfirmDisabled}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${isConfirmDisabled
-              ? 'bg-gray-500/50 text-gray-400 cursor-not-allowed'
-              : 'hover:scale-105 hover:cursor-pointer'
-              } ${!isConfirmDisabled && isDangerous
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              isConfirmDisabled
+                ? 'bg-gray-500/50 text-gray-400 cursor-not-allowed'
+                : 'hover:scale-105 hover:cursor-pointer'
+            } ${
+              !isConfirmDisabled && isDangerous
                 ? 'bg-red-500 text-white hover:bg-red-600'
                 : !isConfirmDisabled
                   ? 'bg-primary text-white hover:bg-primary/90'
                   : ''
-              }`}
+            }`}
           >
             {confirmText}
           </button>

@@ -84,9 +84,7 @@ export function SocialButton({ provider, className, icon, children, ...props }: 
       ) : (
         icon && <span className="relative z-10 h-6 w-6">{icon}</span>
       )}
-      <span className="relative z-10">
-        {isLoading ? 'Загрузка...' : (children || style.label)}
-      </span>
+      <span className="relative z-10">{isLoading ? 'Загрузка...' : children || style.label}</span>
     </button>
   );
 }

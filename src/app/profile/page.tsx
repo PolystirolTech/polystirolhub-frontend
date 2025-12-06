@@ -66,7 +66,7 @@ export default function ProfilePage() {
   const handleDeleteAccount = async () => {
     try {
       await authService.deleteAccount();
-      // Redirect to home or login after deletion (auth context should handle logout state update if needed, 
+      // Redirect to home or login after deletion (auth context should handle logout state update if needed,
       // but usually we want to force a full cleanup)
       window.location.href = '/';
     } catch (error) {
@@ -175,27 +175,48 @@ export default function ProfilePage() {
                             />
                           ) : (
                             <>
-                              {connection.provider === 'twitch' && <span className="i-bi-twitch text-[#9146FF]" />}
-                              {connection.provider === 'discord' && <span className="i-bi-discord text-[#5865F2]" />}
-                              {connection.provider === 'steam' && <span className="i-bi-steam text-[#fff]" />}
+                              {connection.provider === 'twitch' && (
+                                <span className="i-bi-twitch text-[#9146FF]" />
+                              )}
+                              {connection.provider === 'discord' && (
+                                <span className="i-bi-discord text-[#5865F2]" />
+                              )}
+                              {connection.provider === 'steam' && (
+                                <span className="i-bi-steam text-[#fff]" />
+                              )}
                             </>
                           )}
                         </div>
                         <div>
-                          <div className="font-medium text-white">{connection.provider_username}</div>
+                          <div className="font-medium text-white">
+                            {connection.provider_username}
+                          </div>
                           <div className="text-xs text-muted capitalize">
-                            {connection.provider} • {new Date(connection.created_at).toLocaleDateString()}
+                            {connection.provider} •{' '}
+                            {new Date(connection.created_at).toLocaleDateString()}
                           </div>
                         </div>
                         <div className="ml-auto flex items-center gap-2">
                           {/* Unlink Button - Only show if more than 1 provider */}
                           {providers.length > 1 && (
                             <button
-                              onClick={() => setUnlinkModal({ isOpen: true, provider: connection.provider })}
+                              onClick={() =>
+                                setUnlinkModal({ isOpen: true, provider: connection.provider })
+                              }
                               className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors cursor-pointer"
                               title="Отвязать аккаунт"
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
                                 <path d="M18 6 6 18"></path>
                                 <path d="m6 6 12 12"></path>
                               </svg>
