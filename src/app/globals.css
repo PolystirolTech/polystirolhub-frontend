@@ -2,18 +2,18 @@
 
 :root {
 	/* Palette */
-	--color-black: #000000;
-	--color-dark-blue: #0a101d;
-	--color-orange: #fca311;
-	--color-light-gray: #e5e5e5;
-	--color-white: #ffffff;
+	--color-dark-green: #1a7253;
+	--color-muted-green: #5b8b62;
+	--color-red: #ee3541;
+	--color-cream: #f4f0bb;
+	--color-pale-green: #e4f0e6;
 
 	/* Semantic Colors */
-	--background: var(--color-black);
-	--foreground: var(--color-white);
-	--primary: var(--color-orange);
-	--secondary: var(--color-dark-blue);
-	--muted: var(--color-light-gray);
+	--background: var(--color-dark-green);
+	--foreground: var(--color-pale-green);
+	--primary: var(--color-red);
+	--secondary: var(--color-muted-green);
+	--muted: var(--color-cream);
 }
 
 @theme inline {
@@ -24,17 +24,26 @@
 	--color-muted: var(--muted);
 
 	/* Palette direct access if needed */
-	--color-palette-black: var(--color-black);
-	--color-palette-dark-blue: var(--color-dark-blue);
-	--color-palette-orange: var(--color-orange);
-	--color-palette-light-gray: var(--color-light-gray);
-	--color-palette-white: var(--color-white);
+	--color-palette-dark-green: var(--color-dark-green);
+	--color-palette-muted-green: var(--color-muted-green);
+	--color-palette-red: var(--color-red);
+	--color-palette-cream: var(--color-cream);
+	--color-palette-pale-green: var(--color-pale-green);
 }
 
 body {
-	background: var(--background);
+	background-color: var(--background);
+	background-image:
+		linear-gradient(rgba(91, 139, 98, 0.1) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(91, 139, 98, 0.1) 1px, transparent 1px),
+		radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+	background-size:
+		40px 40px,
+		40px 40px,
+		cover;
+	background-position: center;
 	color: var(--foreground);
-	font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+	font-family: var(--font-pixel), 'Courier New', Courier, monospace;
 	min-height: 100vh;
 	overflow-x: hidden;
 }

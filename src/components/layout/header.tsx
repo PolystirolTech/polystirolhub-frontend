@@ -90,15 +90,16 @@ export function Header() {
 							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 rounded-2xl px-4 shadow-lg transition-all hover:scale-[1.02] hover:bg-red-500/80 hover:cursor-pointer"
 						>
 							<svg
-								className="h-5 w-5 text-white/80"
+								className="h-7 w-7 text-white/80"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
+								shapeRendering="crispEdges"
 							>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
-									strokeWidth={2}
+									strokeWidth={3}
 									d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
 								/>
 							</svg>
