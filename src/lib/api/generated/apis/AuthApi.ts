@@ -140,6 +140,43 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
+     * Get list of linked OAuth providers for current user
+     * Get User Providers
+     */
+    async getUserProvidersApiV1AuthMeProvidersGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/api/v1/auth/me/providers`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<any>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Get list of linked OAuth providers for current user
+     * Get User Providers
+     */
+    async getUserProvidersApiV1AuthMeProvidersGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.getUserProvidersApiV1AuthMeProvidersGetRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Get OAuth URL for linking a new provider to existing account
      * Link
      */

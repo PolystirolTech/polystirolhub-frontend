@@ -33,7 +33,7 @@ export function SocialButton({ provider, className, icon, ...props }: SocialButt
   const [isLoading, setIsLoading] = useState(false);
 
   // Disable Steam as it's not implemented yet
-  const isDisabled = provider === 'steam' || props.disabled;
+  const isDisabled = props.disabled;
 
   const handleClick = async () => {
     if (isDisabled) return;
@@ -72,7 +72,7 @@ export function SocialButton({ provider, className, icon, ...props }: SocialButt
         icon && <span className="relative z-10 h-6 w-6">{icon}</span>
       )}
       <span className="relative z-10">
-        {isLoading ? 'Загрузка...' : isDisabled && provider === 'steam' ? 'Soon' : style.label}
+        {isLoading ? 'Загрузка...' : style.label}
       </span>
     </button>
   );

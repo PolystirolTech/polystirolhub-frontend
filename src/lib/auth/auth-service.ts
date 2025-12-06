@@ -7,7 +7,7 @@
 
 import { AuthApi } from '@/lib/api/generated';
 import { apiConfig } from '@/lib/api/config';
-import type { User, OAuthProvider } from './types';
+import type { User, OAuthProvider, ProviderConnection } from './types';
 
 class AuthService {
   private authApi: AuthApi;
@@ -61,6 +61,19 @@ class AuthService {
     } catch (error) {
       console.error('Logout failed:', error);
       // Still clear local state even if API call fails
+    }
+  }
+
+  /**
+   * Get list of connected OAuth providers
+   */
+  async getUserProviders(): Promise<ProviderConnection[]> {
+    try {
+      const response = await this.authApi.getUserProvidersApiV1AuthMeProvidersGet();
+      return response as ProviderConnection[];
+    } catch (error) {
+      console.error('Failed to get user providers:', error);
+      return [];
     }
   }
 }

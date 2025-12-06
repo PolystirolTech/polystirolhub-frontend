@@ -28,6 +28,13 @@ export interface OAuthAccount {
   updated_at: string;
 }
 
+export interface ProviderConnection {
+  provider: string;
+  provider_username: string;
+  provider_avatar: string;
+  created_at: string;
+}
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;

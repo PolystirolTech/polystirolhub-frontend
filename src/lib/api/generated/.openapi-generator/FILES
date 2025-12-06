@@ -6,6 +6,9 @@ models/Avatar.ts
 models/Email.ts
 models/HTTPValidationError.ts
 models/IsActive.ts
+models/OAuthAccountPublic.ts
+models/ProviderAvatar.ts
+models/ProviderUsername.ts
 models/UserUpdate.ts
 models/Username.ts
 models/ValidationError.ts
