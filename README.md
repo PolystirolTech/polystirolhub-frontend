@@ -108,7 +108,7 @@
 import { Configuration, DefaultApi } from '@/lib/api/generated';
 
 const config = new Configuration({
-  basePath: process.env.NEXT_PUBLIC_API_URL,
+	basePath: process.env.NEXT_PUBLIC_API_URL,
 });
 
 const api = new DefaultApi(config);

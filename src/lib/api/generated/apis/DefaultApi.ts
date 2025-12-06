@@ -18,40 +18,40 @@ import * as runtime from '../runtime';
  *
  */
 export class DefaultApi extends runtime.BaseAPI {
-  /**
-   * Health Check
-   */
-  async healthCheckHealthGetRaw(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    const queryParameters: any = {};
+	/**
+	 * Health Check
+	 */
+	async healthCheckHealthGetRaw(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request(
-      {
-        path: `/health`,
-        method: 'GET',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/health`,
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Health Check
-   */
-  async healthCheckHealthGet(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.healthCheckHealthGetRaw(initOverrides);
-    return await response.value();
-  }
+	/**
+	 * Health Check
+	 */
+	async healthCheckHealthGet(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.healthCheckHealthGetRaw(initOverrides);
+		return await response.value();
+	}
 }

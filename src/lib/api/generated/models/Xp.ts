@@ -24,19 +24,19 @@ export interface Xp {}
  * Check if a given object implements the Xp interface.
  */
 export function instanceOfXp(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function XpFromJSON(json: any): Xp {
-  return XpFromJSONTyped(json, false);
+	return XpFromJSONTyped(json, false);
 }
 
 export function XpFromJSONTyped(json: any, ignoreDiscriminator: boolean): Xp {
-  return json;
+	return json;
 }
 
 export function XpToJSON(value?: Xp | null): any {
-  return value;
+	return value;
 }

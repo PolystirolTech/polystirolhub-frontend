@@ -24,22 +24,22 @@ export interface ProviderAvatar {}
  * Check if a given object implements the ProviderAvatar interface.
  */
 export function instanceOfProviderAvatar(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function ProviderAvatarFromJSON(json: any): ProviderAvatar {
-  return ProviderAvatarFromJSONTyped(json, false);
+	return ProviderAvatarFromJSONTyped(json, false);
 }
 
 export function ProviderAvatarFromJSONTyped(
-  json: any,
-  ignoreDiscriminator: boolean
+	json: any,
+	ignoreDiscriminator: boolean
 ): ProviderAvatar {
-  return json;
+	return json;
 }
 
 export function ProviderAvatarToJSON(value?: ProviderAvatar | null): any {
-  return value;
+	return value;
 }

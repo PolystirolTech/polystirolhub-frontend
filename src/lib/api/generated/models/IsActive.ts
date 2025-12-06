@@ -24,19 +24,19 @@ export interface IsActive {}
  * Check if a given object implements the IsActive interface.
  */
 export function instanceOfIsActive(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function IsActiveFromJSON(json: any): IsActive {
-  return IsActiveFromJSONTyped(json, false);
+	return IsActiveFromJSONTyped(json, false);
 }
 
 export function IsActiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): IsActive {
-  return json;
+	return json;
 }
 
 export function IsActiveToJSON(value?: IsActive | null): any {
-  return value;
+	return value;
 }

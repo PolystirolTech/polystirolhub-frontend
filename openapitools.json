@@ -1,20 +1,20 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/modules/openapi-generator-cli/src/main/resources/schema.json",
-  "spaces": 2,
-  "generator-cli": {
-    "version": "7.2.0",
-    "generators": {
-      "v1": {
-        "generatorName": "typescript-fetch",
-        "output": "./src/lib/api/generated",
-        "inputSpec": "http://localhost:8000/openapi.json",
-        "additionalProperties": {
-          "supportsES6": "true",
-          "typescriptThreePlus": "true",
-          "withInterfaces": "true",
-          "useSingleRequestParameter": "true"
-        }
-      }
-    }
-  }
+	"$schema": "https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/modules/openapi-generator-cli/src/main/resources/schema.json",
+	"spaces": 2,
+	"generator-cli": {
+		"version": "7.2.0",
+		"generators": {
+			"v1": {
+				"generatorName": "typescript-fetch",
+				"output": "./src/lib/api/generated",
+				"inputSpec": "http://localhost:8000/openapi.json",
+				"additionalProperties": {
+					"supportsES6": "true",
+					"typescriptThreePlus": "true",
+					"withInterfaces": "true",
+					"useSingleRequestParameter": "true"
+				}
+			}
+		}
+	}
 }

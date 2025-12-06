@@ -24,19 +24,19 @@ export interface Email {}
  * Check if a given object implements the Email interface.
  */
 export function instanceOfEmail(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function EmailFromJSON(json: any): Email {
-  return EmailFromJSONTyped(json, false);
+	return EmailFromJSONTyped(json, false);
 }
 
 export function EmailFromJSONTyped(json: any, ignoreDiscriminator: boolean): Email {
-  return json;
+	return json;
 }
 
 export function EmailToJSON(value?: Email | null): any {
-  return value;
+	return value;
 }

@@ -32,84 +32,84 @@ import { XpFromJSON, XpFromJSONTyped, XpToJSON } from './Xp';
  * @interface UserUpdate
  */
 export interface UserUpdate {
-  /**
-   *
-   * @type {Email}
-   * @memberof UserUpdate
-   */
-  email?: Email;
-  /**
-   *
-   * @type {Username}
-   * @memberof UserUpdate
-   */
-  username?: Username;
-  /**
-   *
-   * @type {Avatar}
-   * @memberof UserUpdate
-   */
-  avatar?: Avatar;
-  /**
-   *
-   * @type {IsActive}
-   * @memberof UserUpdate
-   */
-  isActive?: IsActive;
-  /**
-   *
-   * @type {Xp}
-   * @memberof UserUpdate
-   */
-  xp?: Xp;
-  /**
-   *
-   * @type {Level}
-   * @memberof UserUpdate
-   */
-  level?: Level;
+	/**
+	 *
+	 * @type {Email}
+	 * @memberof UserUpdate
+	 */
+	email?: Email;
+	/**
+	 *
+	 * @type {Username}
+	 * @memberof UserUpdate
+	 */
+	username?: Username;
+	/**
+	 *
+	 * @type {Avatar}
+	 * @memberof UserUpdate
+	 */
+	avatar?: Avatar;
+	/**
+	 *
+	 * @type {IsActive}
+	 * @memberof UserUpdate
+	 */
+	isActive?: IsActive;
+	/**
+	 *
+	 * @type {Xp}
+	 * @memberof UserUpdate
+	 */
+	xp?: Xp;
+	/**
+	 *
+	 * @type {Level}
+	 * @memberof UserUpdate
+	 */
+	level?: Level;
 }
 
 /**
  * Check if a given object implements the UserUpdate interface.
  */
 export function instanceOfUserUpdate(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function UserUpdateFromJSON(json: any): UserUpdate {
-  return UserUpdateFromJSONTyped(json, false);
+	return UserUpdateFromJSONTyped(json, false);
 }
 
 export function UserUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserUpdate {
-  if (json === undefined || json === null) {
-    return json;
-  }
-  return {
-    email: !exists(json, 'email') ? undefined : EmailFromJSON(json['email']),
-    username: !exists(json, 'username') ? undefined : UsernameFromJSON(json['username']),
-    avatar: !exists(json, 'avatar') ? undefined : AvatarFromJSON(json['avatar']),
-    isActive: !exists(json, 'is_active') ? undefined : IsActiveFromJSON(json['is_active']),
-    xp: !exists(json, 'xp') ? undefined : XpFromJSON(json['xp']),
-    level: !exists(json, 'level') ? undefined : LevelFromJSON(json['level']),
-  };
+	if (json === undefined || json === null) {
+		return json;
+	}
+	return {
+		email: !exists(json, 'email') ? undefined : EmailFromJSON(json['email']),
+		username: !exists(json, 'username') ? undefined : UsernameFromJSON(json['username']),
+		avatar: !exists(json, 'avatar') ? undefined : AvatarFromJSON(json['avatar']),
+		isActive: !exists(json, 'is_active') ? undefined : IsActiveFromJSON(json['is_active']),
+		xp: !exists(json, 'xp') ? undefined : XpFromJSON(json['xp']),
+		level: !exists(json, 'level') ? undefined : LevelFromJSON(json['level']),
+	};
 }
 
 export function UserUpdateToJSON(value?: UserUpdate | null): any {
-  if (value === undefined) {
-    return undefined;
-  }
-  if (value === null) {
-    return null;
-  }
-  return {
-    email: EmailToJSON(value.email),
-    username: UsernameToJSON(value.username),
-    avatar: AvatarToJSON(value.avatar),
-    is_active: IsActiveToJSON(value.isActive),
-    xp: XpToJSON(value.xp),
-    level: LevelToJSON(value.level),
-  };
+	if (value === undefined) {
+		return undefined;
+	}
+	if (value === null) {
+		return null;
+	}
+	return {
+		email: EmailToJSON(value.email),
+		username: UsernameToJSON(value.username),
+		avatar: AvatarToJSON(value.avatar),
+		is_active: IsActiveToJSON(value.isActive),
+		xp: XpToJSON(value.xp),
+		level: LevelToJSON(value.level),
+	};
 }

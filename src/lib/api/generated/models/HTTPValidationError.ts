@@ -19,47 +19,47 @@ import { exists, mapValues } from '../runtime';
  * @interface HTTPValidationError
  */
 export interface HTTPValidationError {
-  /**
-   *
-   * @type {any}
-   * @memberof HTTPValidationError
-   */
-  detail?: any | null;
+	/**
+	 *
+	 * @type {any}
+	 * @memberof HTTPValidationError
+	 */
+	detail?: any | null;
 }
 
 /**
  * Check if a given object implements the HTTPValidationError interface.
  */
 export function instanceOfHTTPValidationError(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function HTTPValidationErrorFromJSON(json: any): HTTPValidationError {
-  return HTTPValidationErrorFromJSONTyped(json, false);
+	return HTTPValidationErrorFromJSONTyped(json, false);
 }
 
 export function HTTPValidationErrorFromJSONTyped(
-  json: any,
-  ignoreDiscriminator: boolean
+	json: any,
+	ignoreDiscriminator: boolean
 ): HTTPValidationError {
-  if (json === undefined || json === null) {
-    return json;
-  }
-  return {
-    detail: !exists(json, 'detail') ? undefined : json['detail'],
-  };
+	if (json === undefined || json === null) {
+		return json;
+	}
+	return {
+		detail: !exists(json, 'detail') ? undefined : json['detail'],
+	};
 }
 
 export function HTTPValidationErrorToJSON(value?: HTTPValidationError | null): any {
-  if (value === undefined) {
-    return undefined;
-  }
-  if (value === null) {
-    return null;
-  }
-  return {
-    detail: value.detail,
-  };
+	if (value === undefined) {
+		return undefined;
+	}
+	if (value === null) {
+		return null;
+	}
+	return {
+		detail: value.detail,
+	};
 }

@@ -24,22 +24,22 @@ export interface ProviderUsername {}
  * Check if a given object implements the ProviderUsername interface.
  */
 export function instanceOfProviderUsername(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function ProviderUsernameFromJSON(json: any): ProviderUsername {
-  return ProviderUsernameFromJSONTyped(json, false);
+	return ProviderUsernameFromJSONTyped(json, false);
 }
 
 export function ProviderUsernameFromJSONTyped(
-  json: any,
-  ignoreDiscriminator: boolean
+	json: any,
+	ignoreDiscriminator: boolean
 ): ProviderUsername {
-  return json;
+	return json;
 }
 
 export function ProviderUsernameToJSON(value?: ProviderUsername | null): any {
-  return value;
+	return value;
 }

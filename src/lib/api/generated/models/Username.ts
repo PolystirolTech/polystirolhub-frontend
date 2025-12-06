@@ -24,19 +24,19 @@ export interface Username {}
  * Check if a given object implements the Username interface.
  */
 export function instanceOfUsername(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function UsernameFromJSON(json: any): Username {
-  return UsernameFromJSONTyped(json, false);
+	return UsernameFromJSONTyped(json, false);
 }
 
 export function UsernameFromJSONTyped(json: any, ignoreDiscriminator: boolean): Username {
-  return json;
+	return json;
 }
 
 export function UsernameToJSON(value?: Username | null): any {
-  return value;
+	return value;
 }

@@ -19,48 +19,48 @@ import { exists, mapValues } from '../runtime';
  * @interface AwardXPRequest
  */
 export interface AwardXPRequest {
-  /**
-   *
-   * @type {any}
-   * @memberof AwardXPRequest
-   */
-  xpAmount: any | null;
+	/**
+	 *
+	 * @type {any}
+	 * @memberof AwardXPRequest
+	 */
+	xpAmount: any | null;
 }
 
 /**
  * Check if a given object implements the AwardXPRequest interface.
  */
 export function instanceOfAwardXPRequest(value: object): boolean {
-  let isInstance = true;
-  isInstance = isInstance && 'xpAmount' in value;
+	let isInstance = true;
+	isInstance = isInstance && 'xpAmount' in value;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function AwardXPRequestFromJSON(json: any): AwardXPRequest {
-  return AwardXPRequestFromJSONTyped(json, false);
+	return AwardXPRequestFromJSONTyped(json, false);
 }
 
 export function AwardXPRequestFromJSONTyped(
-  json: any,
-  ignoreDiscriminator: boolean
+	json: any,
+	ignoreDiscriminator: boolean
 ): AwardXPRequest {
-  if (json === undefined || json === null) {
-    return json;
-  }
-  return {
-    xpAmount: json['xp_amount'],
-  };
+	if (json === undefined || json === null) {
+		return json;
+	}
+	return {
+		xpAmount: json['xp_amount'],
+	};
 }
 
 export function AwardXPRequestToJSON(value?: AwardXPRequest | null): any {
-  if (value === undefined) {
-    return undefined;
-  }
-  if (value === null) {
-    return null;
-  }
-  return {
-    xp_amount: value.xpAmount,
-  };
+	if (value === undefined) {
+		return undefined;
+	}
+	if (value === null) {
+		return null;
+	}
+	return {
+		xp_amount: value.xpAmount,
+	};
 }

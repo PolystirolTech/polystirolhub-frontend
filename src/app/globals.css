@@ -1,52 +1,52 @@
 @import 'tailwindcss';
 
 :root {
-  /* Palette */
-  --color-black: #000000;
-  --color-dark-blue: #0a101d;
-  --color-orange: #fca311;
-  --color-light-gray: #e5e5e5;
-  --color-white: #ffffff;
+	/* Palette */
+	--color-black: #000000;
+	--color-dark-blue: #0a101d;
+	--color-orange: #fca311;
+	--color-light-gray: #e5e5e5;
+	--color-white: #ffffff;
 
-  /* Semantic Colors */
-  --background: var(--color-black);
-  --foreground: var(--color-white);
-  --primary: var(--color-orange);
-  --secondary: var(--color-dark-blue);
-  --muted: var(--color-light-gray);
+	/* Semantic Colors */
+	--background: var(--color-black);
+	--foreground: var(--color-white);
+	--primary: var(--color-orange);
+	--secondary: var(--color-dark-blue);
+	--muted: var(--color-light-gray);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-muted: var(--muted);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-primary: var(--primary);
+	--color-secondary: var(--secondary);
+	--color-muted: var(--muted);
 
-  /* Palette direct access if needed */
-  --color-palette-black: var(--color-black);
-  --color-palette-dark-blue: var(--color-dark-blue);
-  --color-palette-orange: var(--color-orange);
-  --color-palette-light-gray: var(--color-light-gray);
-  --color-palette-white: var(--color-white);
+	/* Palette direct access if needed */
+	--color-palette-black: var(--color-black);
+	--color-palette-dark-blue: var(--color-dark-blue);
+	--color-palette-orange: var(--color-orange);
+	--color-palette-light-gray: var(--color-light-gray);
+	--color-palette-white: var(--color-white);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+	min-height: 100vh;
+	overflow-x: hidden;
 }
 
 /* Glassmorphism Utilities */
 .glass {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
 }
 
 .glass-card {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 1rem;
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border-radius: 1rem;
 }

@@ -24,19 +24,19 @@ export interface Avatar {}
  * Check if a given object implements the Avatar interface.
  */
 export function instanceOfAvatar(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function AvatarFromJSON(json: any): Avatar {
-  return AvatarFromJSONTyped(json, false);
+	return AvatarFromJSONTyped(json, false);
 }
 
 export function AvatarFromJSONTyped(json: any, ignoreDiscriminator: boolean): Avatar {
-  return json;
+	return json;
 }
 
 export function AvatarToJSON(value?: Avatar | null): any {
-  return value;
+	return value;
 }

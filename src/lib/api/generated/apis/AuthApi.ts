@@ -15,513 +15,513 @@
 import * as runtime from '../runtime';
 import type { HTTPValidationError, UserUpdate } from '../models/index';
 import {
-  HTTPValidationErrorFromJSON,
-  HTTPValidationErrorToJSON,
-  UserUpdateFromJSON,
-  UserUpdateToJSON,
+	HTTPValidationErrorFromJSON,
+	HTTPValidationErrorToJSON,
+	UserUpdateFromJSON,
+	UserUpdateToJSON,
 } from '../models/index';
 
 export interface CallbackApiV1AuthCallbackProviderGetRequest {
-  provider: string;
-  code?: any;
-  error?: any;
-  errorDescription?: any;
-  state?: any;
+	provider: string;
+	code?: any;
+	error?: any;
+	errorDescription?: any;
+	state?: any;
 }
 
 export interface LinkApiV1AuthLinkProviderGetRequest {
-  provider: string;
+	provider: string;
 }
 
 export interface LoginApiV1AuthLoginProviderGetRequest {
-  provider: string;
+	provider: string;
 }
 
 export interface UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest {
-  provider: string;
+	provider: string;
 }
 
 export interface UpdateCurrentUserApiV1AuthMePatchRequest {
-  userUpdate: UserUpdate;
+	userUpdate: UserUpdate;
 }
 
 /**
  *
  */
 export class AuthApi extends runtime.BaseAPI {
-  /**
-   * Handle OAuth provider callback with secure state validation
-   * Callback
-   */
-  async callbackApiV1AuthCallbackProviderGetRaw(
-    requestParameters: CallbackApiV1AuthCallbackProviderGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    if (requestParameters.provider === null || requestParameters.provider === undefined) {
-      throw new runtime.RequiredError(
-        'provider',
-        'Required parameter requestParameters.provider was null or undefined when calling callbackApiV1AuthCallbackProviderGet.'
-      );
-    }
+	/**
+	 * Handle OAuth provider callback with secure state validation
+	 * Callback
+	 */
+	async callbackApiV1AuthCallbackProviderGetRaw(
+		requestParameters: CallbackApiV1AuthCallbackProviderGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		if (requestParameters.provider === null || requestParameters.provider === undefined) {
+			throw new runtime.RequiredError(
+				'provider',
+				'Required parameter requestParameters.provider was null or undefined when calling callbackApiV1AuthCallbackProviderGet.'
+			);
+		}
 
-    const queryParameters: any = {};
+		const queryParameters: any = {};
 
-    if (requestParameters.code !== undefined) {
-      queryParameters['code'] = requestParameters.code;
-    }
+		if (requestParameters.code !== undefined) {
+			queryParameters['code'] = requestParameters.code;
+		}
 
-    if (requestParameters.error !== undefined) {
-      queryParameters['error'] = requestParameters.error;
-    }
+		if (requestParameters.error !== undefined) {
+			queryParameters['error'] = requestParameters.error;
+		}
 
-    if (requestParameters.errorDescription !== undefined) {
-      queryParameters['error_description'] = requestParameters.errorDescription;
-    }
+		if (requestParameters.errorDescription !== undefined) {
+			queryParameters['error_description'] = requestParameters.errorDescription;
+		}
 
-    if (requestParameters.state !== undefined) {
-      queryParameters['state'] = requestParameters.state;
-    }
+		if (requestParameters.state !== undefined) {
+			queryParameters['state'] = requestParameters.state;
+		}
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/callback/{provider}`.replace(
-          `{${'provider'}}`,
-          encodeURIComponent(String(requestParameters.provider))
-        ),
-        method: 'GET',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/callback/{provider}`.replace(
+					`{${'provider'}}`,
+					encodeURIComponent(String(requestParameters.provider))
+				),
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Handle OAuth provider callback with secure state validation
-   * Callback
-   */
-  async callbackApiV1AuthCallbackProviderGet(
-    requestParameters: CallbackApiV1AuthCallbackProviderGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.callbackApiV1AuthCallbackProviderGetRaw(
-      requestParameters,
-      initOverrides
-    );
-    return await response.value();
-  }
+	/**
+	 * Handle OAuth provider callback with secure state validation
+	 * Callback
+	 */
+	async callbackApiV1AuthCallbackProviderGet(
+		requestParameters: CallbackApiV1AuthCallbackProviderGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.callbackApiV1AuthCallbackProviderGetRaw(
+			requestParameters,
+			initOverrides
+		);
+		return await response.value();
+	}
 
-  /**
-   * Get current authenticated user information
-   * Get Current User Info
-   */
-  async getCurrentUserInfoApiV1AuthMeGetRaw(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    const queryParameters: any = {};
+	/**
+	 * Get current authenticated user information
+	 * Get Current User Info
+	 */
+	async getCurrentUserInfoApiV1AuthMeGetRaw(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    if (this.configuration && this.configuration.accessToken) {
-      // oauth required
-      headerParameters['Authorization'] = await this.configuration.accessToken(
-        'OAuth2PasswordBearer',
-        []
-      );
-    }
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/me`,
-        method: 'GET',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/me`,
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Get current authenticated user information
-   * Get Current User Info
-   */
-  async getCurrentUserInfoApiV1AuthMeGet(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.getCurrentUserInfoApiV1AuthMeGetRaw(initOverrides);
-    return await response.value();
-  }
+	/**
+	 * Get current authenticated user information
+	 * Get Current User Info
+	 */
+	async getCurrentUserInfoApiV1AuthMeGet(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.getCurrentUserInfoApiV1AuthMeGetRaw(initOverrides);
+		return await response.value();
+	}
 
-  /**
-   * Get list of linked OAuth providers for current user
-   * Get User Providers
-   */
-  async getUserProvidersApiV1AuthMeProvidersGetRaw(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    const queryParameters: any = {};
+	/**
+	 * Get list of linked OAuth providers for current user
+	 * Get User Providers
+	 */
+	async getUserProvidersApiV1AuthMeProvidersGetRaw(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    if (this.configuration && this.configuration.accessToken) {
-      // oauth required
-      headerParameters['Authorization'] = await this.configuration.accessToken(
-        'OAuth2PasswordBearer',
-        []
-      );
-    }
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/me/providers`,
-        method: 'GET',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/me/providers`,
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Get list of linked OAuth providers for current user
-   * Get User Providers
-   */
-  async getUserProvidersApiV1AuthMeProvidersGet(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.getUserProvidersApiV1AuthMeProvidersGetRaw(initOverrides);
-    return await response.value();
-  }
+	/**
+	 * Get list of linked OAuth providers for current user
+	 * Get User Providers
+	 */
+	async getUserProvidersApiV1AuthMeProvidersGet(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.getUserProvidersApiV1AuthMeProvidersGetRaw(initOverrides);
+		return await response.value();
+	}
 
-  /**
-   * Get OAuth URL for linking a new provider to existing account
-   * Link
-   */
-  async linkApiV1AuthLinkProviderGetRaw(
-    requestParameters: LinkApiV1AuthLinkProviderGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    if (requestParameters.provider === null || requestParameters.provider === undefined) {
-      throw new runtime.RequiredError(
-        'provider',
-        'Required parameter requestParameters.provider was null or undefined when calling linkApiV1AuthLinkProviderGet.'
-      );
-    }
+	/**
+	 * Get OAuth URL for linking a new provider to existing account
+	 * Link
+	 */
+	async linkApiV1AuthLinkProviderGetRaw(
+		requestParameters: LinkApiV1AuthLinkProviderGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		if (requestParameters.provider === null || requestParameters.provider === undefined) {
+			throw new runtime.RequiredError(
+				'provider',
+				'Required parameter requestParameters.provider was null or undefined when calling linkApiV1AuthLinkProviderGet.'
+			);
+		}
 
-    const queryParameters: any = {};
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    if (this.configuration && this.configuration.accessToken) {
-      // oauth required
-      headerParameters['Authorization'] = await this.configuration.accessToken(
-        'OAuth2PasswordBearer',
-        []
-      );
-    }
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/link/{provider}`.replace(
-          `{${'provider'}}`,
-          encodeURIComponent(String(requestParameters.provider))
-        ),
-        method: 'GET',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/link/{provider}`.replace(
+					`{${'provider'}}`,
+					encodeURIComponent(String(requestParameters.provider))
+				),
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Get OAuth URL for linking a new provider to existing account
-   * Link
-   */
-  async linkApiV1AuthLinkProviderGet(
-    requestParameters: LinkApiV1AuthLinkProviderGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.linkApiV1AuthLinkProviderGetRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
+	/**
+	 * Get OAuth URL for linking a new provider to existing account
+	 * Link
+	 */
+	async linkApiV1AuthLinkProviderGet(
+		requestParameters: LinkApiV1AuthLinkProviderGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.linkApiV1AuthLinkProviderGetRaw(requestParameters, initOverrides);
+		return await response.value();
+	}
 
-  /**
-   * Initiate OAuth login flow with CSRF protection
-   * Login
-   */
-  async loginApiV1AuthLoginProviderGetRaw(
-    requestParameters: LoginApiV1AuthLoginProviderGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    if (requestParameters.provider === null || requestParameters.provider === undefined) {
-      throw new runtime.RequiredError(
-        'provider',
-        'Required parameter requestParameters.provider was null or undefined when calling loginApiV1AuthLoginProviderGet.'
-      );
-    }
+	/**
+	 * Initiate OAuth login flow with CSRF protection
+	 * Login
+	 */
+	async loginApiV1AuthLoginProviderGetRaw(
+		requestParameters: LoginApiV1AuthLoginProviderGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		if (requestParameters.provider === null || requestParameters.provider === undefined) {
+			throw new runtime.RequiredError(
+				'provider',
+				'Required parameter requestParameters.provider was null or undefined when calling loginApiV1AuthLoginProviderGet.'
+			);
+		}
 
-    const queryParameters: any = {};
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/login/{provider}`.replace(
-          `{${'provider'}}`,
-          encodeURIComponent(String(requestParameters.provider))
-        ),
-        method: 'GET',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/login/{provider}`.replace(
+					`{${'provider'}}`,
+					encodeURIComponent(String(requestParameters.provider))
+				),
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Initiate OAuth login flow with CSRF protection
-   * Login
-   */
-  async loginApiV1AuthLoginProviderGet(
-    requestParameters: LoginApiV1AuthLoginProviderGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.loginApiV1AuthLoginProviderGetRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
+	/**
+	 * Initiate OAuth login flow with CSRF protection
+	 * Login
+	 */
+	async loginApiV1AuthLoginProviderGet(
+		requestParameters: LoginApiV1AuthLoginProviderGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.loginApiV1AuthLoginProviderGetRaw(requestParameters, initOverrides);
+		return await response.value();
+	}
 
-  /**
-   * Logout user by clearing the authentication cookies and refresh token
-   * Logout
-   */
-  async logoutApiV1AuthLogoutPostRaw(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    const queryParameters: any = {};
+	/**
+	 * Logout user by clearing the authentication cookies and refresh token
+	 * Logout
+	 */
+	async logoutApiV1AuthLogoutPostRaw(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/logout`,
-        method: 'POST',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/logout`,
+				method: 'POST',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Logout user by clearing the authentication cookies and refresh token
-   * Logout
-   */
-  async logoutApiV1AuthLogoutPost(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.logoutApiV1AuthLogoutPostRaw(initOverrides);
-    return await response.value();
-  }
+	/**
+	 * Logout user by clearing the authentication cookies and refresh token
+	 * Logout
+	 */
+	async logoutApiV1AuthLogoutPost(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.logoutApiV1AuthLogoutPostRaw(initOverrides);
+		return await response.value();
+	}
 
-  /**
-   * Refresh access token using refresh token
-   * Refresh
-   */
-  async refreshApiV1AuthRefreshPostRaw(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    const queryParameters: any = {};
+	/**
+	 * Refresh access token using refresh token
+	 * Refresh
+	 */
+	async refreshApiV1AuthRefreshPostRaw(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/refresh`,
-        method: 'POST',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/refresh`,
+				method: 'POST',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Refresh access token using refresh token
-   * Refresh
-   */
-  async refreshApiV1AuthRefreshPost(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.refreshApiV1AuthRefreshPostRaw(initOverrides);
-    return await response.value();
-  }
+	/**
+	 * Refresh access token using refresh token
+	 * Refresh
+	 */
+	async refreshApiV1AuthRefreshPost(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.refreshApiV1AuthRefreshPostRaw(initOverrides);
+		return await response.value();
+	}
 
-  /**
-   * Unlink OAuth provider from current user account
-   * Unlink Provider
-   */
-  async unlinkProviderApiV1AuthUnlinkProviderDeleteRaw(
-    requestParameters: UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    if (requestParameters.provider === null || requestParameters.provider === undefined) {
-      throw new runtime.RequiredError(
-        'provider',
-        'Required parameter requestParameters.provider was null or undefined when calling unlinkProviderApiV1AuthUnlinkProviderDelete.'
-      );
-    }
+	/**
+	 * Unlink OAuth provider from current user account
+	 * Unlink Provider
+	 */
+	async unlinkProviderApiV1AuthUnlinkProviderDeleteRaw(
+		requestParameters: UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		if (requestParameters.provider === null || requestParameters.provider === undefined) {
+			throw new runtime.RequiredError(
+				'provider',
+				'Required parameter requestParameters.provider was null or undefined when calling unlinkProviderApiV1AuthUnlinkProviderDelete.'
+			);
+		}
 
-    const queryParameters: any = {};
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    if (this.configuration && this.configuration.accessToken) {
-      // oauth required
-      headerParameters['Authorization'] = await this.configuration.accessToken(
-        'OAuth2PasswordBearer',
-        []
-      );
-    }
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/unlink/{provider}`.replace(
-          `{${'provider'}}`,
-          encodeURIComponent(String(requestParameters.provider))
-        ),
-        method: 'DELETE',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/unlink/{provider}`.replace(
+					`{${'provider'}}`,
+					encodeURIComponent(String(requestParameters.provider))
+				),
+				method: 'DELETE',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Unlink OAuth provider from current user account
-   * Unlink Provider
-   */
-  async unlinkProviderApiV1AuthUnlinkProviderDelete(
-    requestParameters: UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.unlinkProviderApiV1AuthUnlinkProviderDeleteRaw(
-      requestParameters,
-      initOverrides
-    );
-    return await response.value();
-  }
+	/**
+	 * Unlink OAuth provider from current user account
+	 * Unlink Provider
+	 */
+	async unlinkProviderApiV1AuthUnlinkProviderDelete(
+		requestParameters: UnlinkProviderApiV1AuthUnlinkProviderDeleteRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.unlinkProviderApiV1AuthUnlinkProviderDeleteRaw(
+			requestParameters,
+			initOverrides
+		);
+		return await response.value();
+	}
 
-  /**
-   * Update current user profile
-   * Update Current User
-   */
-  async updateCurrentUserApiV1AuthMePatchRaw(
-    requestParameters: UpdateCurrentUserApiV1AuthMePatchRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<any>> {
-    if (requestParameters.userUpdate === null || requestParameters.userUpdate === undefined) {
-      throw new runtime.RequiredError(
-        'userUpdate',
-        'Required parameter requestParameters.userUpdate was null or undefined when calling updateCurrentUserApiV1AuthMePatch.'
-      );
-    }
+	/**
+	 * Update current user profile
+	 * Update Current User
+	 */
+	async updateCurrentUserApiV1AuthMePatchRaw(
+		requestParameters: UpdateCurrentUserApiV1AuthMePatchRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		if (requestParameters.userUpdate === null || requestParameters.userUpdate === undefined) {
+			throw new runtime.RequiredError(
+				'userUpdate',
+				'Required parameter requestParameters.userUpdate was null or undefined when calling updateCurrentUserApiV1AuthMePatch.'
+			);
+		}
 
-    const queryParameters: any = {};
+		const queryParameters: any = {};
 
-    const headerParameters: runtime.HTTPHeaders = {};
+		const headerParameters: runtime.HTTPHeaders = {};
 
-    headerParameters['Content-Type'] = 'application/json';
+		headerParameters['Content-Type'] = 'application/json';
 
-    if (this.configuration && this.configuration.accessToken) {
-      // oauth required
-      headerParameters['Authorization'] = await this.configuration.accessToken(
-        'OAuth2PasswordBearer',
-        []
-      );
-    }
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
 
-    const response = await this.request(
-      {
-        path: `/api/v1/auth/me`,
-        method: 'PATCH',
-        headers: headerParameters,
-        query: queryParameters,
-        body: UserUpdateToJSON(requestParameters.userUpdate),
-      },
-      initOverrides
-    );
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/me`,
+				method: 'PATCH',
+				headers: headerParameters,
+				query: queryParameters,
+				body: UserUpdateToJSON(requestParameters.userUpdate),
+			},
+			initOverrides
+		);
 
-    if (this.isJsonMime(response.headers.get('content-type'))) {
-      return new runtime.JSONApiResponse<any>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
-  }
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
 
-  /**
-   * Update current user profile
-   * Update Current User
-   */
-  async updateCurrentUserApiV1AuthMePatch(
-    requestParameters: UpdateCurrentUserApiV1AuthMePatchRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<any> {
-    const response = await this.updateCurrentUserApiV1AuthMePatchRaw(
-      requestParameters,
-      initOverrides
-    );
-    return await response.value();
-  }
+	/**
+	 * Update current user profile
+	 * Update Current User
+	 */
+	async updateCurrentUserApiV1AuthMePatch(
+		requestParameters: UpdateCurrentUserApiV1AuthMePatchRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.updateCurrentUserApiV1AuthMePatchRaw(
+			requestParameters,
+			initOverrides
+		);
+		return await response.value();
+	}
 }

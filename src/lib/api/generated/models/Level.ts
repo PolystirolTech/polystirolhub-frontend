@@ -24,19 +24,19 @@ export interface Level {}
  * Check if a given object implements the Level interface.
  */
 export function instanceOfLevel(value: object): boolean {
-  let isInstance = true;
+	let isInstance = true;
 
-  return isInstance;
+	return isInstance;
 }
 
 export function LevelFromJSON(json: any): Level {
-  return LevelFromJSONTyped(json, false);
+	return LevelFromJSONTyped(json, false);
 }
 
 export function LevelFromJSONTyped(json: any, ignoreDiscriminator: boolean): Level {
-  return json;
+	return json;
 }
 
 export function LevelToJSON(value?: Level | null): any {
-  return value;
+	return value;
 }
