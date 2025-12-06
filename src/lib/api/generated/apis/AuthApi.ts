@@ -41,6 +41,10 @@ export interface LoginApiV1AuthLoginProviderGetRequest {
     provider: string;
 }
 
+export interface UnlinkProviderApiV1AuthLinkProviderDeleteRequest {
+    provider: string;
+}
+
 export interface UpdateCurrentUserApiV1AuthMePatchRequest {
     userUpdate: UserUpdate;
 }
@@ -314,6 +318,47 @@ export class AuthApi extends runtime.BaseAPI {
      */
     async refreshApiV1AuthRefreshPost(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
         const response = await this.refreshApiV1AuthRefreshPostRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Unlink OAuth provider from current user account
+     * Unlink Provider
+     */
+    async unlinkProviderApiV1AuthLinkProviderDeleteRaw(requestParameters: UnlinkProviderApiV1AuthLinkProviderDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.provider === null || requestParameters.provider === undefined) {
+            throw new runtime.RequiredError('provider','Required parameter requestParameters.provider was null or undefined when calling unlinkProviderApiV1AuthLinkProviderDelete.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
+        }
+
+        const response = await this.request({
+            path: `/api/v1/auth/link/{provider}`.replace(`{${"provider"}}`, encodeURIComponent(String(requestParameters.provider))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<any>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Unlink OAuth provider from current user account
+     * Unlink Provider
+     */
+    async unlinkProviderApiV1AuthLinkProviderDelete(requestParameters: UnlinkProviderApiV1AuthLinkProviderDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.unlinkProviderApiV1AuthLinkProviderDeleteRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

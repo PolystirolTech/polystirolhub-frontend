@@ -9,12 +9,19 @@ import { authService } from '@/lib/auth/auth-service';
 import type { ProviderConnection } from '@/lib/auth/types';
 import { useState } from 'react';
 import { SocialButton } from '@/components/ui/social-button';
+import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const [providers, setProviders] = useState<ProviderConnection[]>([]);
   const [loadingProviders, setLoadingProviders] = useState(true);
+
+  const [unlinkModal, setUnlinkModal] = useState<{ isOpen: boolean; provider: string | null }>({
+    isOpen: false,
+    provider: null,
+  });
+  const [deleteAccountModal, setDeleteAccountModal] = useState(false);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -42,6 +49,31 @@ export default function ProfilePage() {
     }
   }, [user]);
 
+  const handleUnlinkProvider = async () => {
+    if (!unlinkModal.provider) return;
+
+    try {
+      await authService.unlinkProvider(unlinkModal.provider);
+      // Refresh providers list
+      const data = await authService.getUserProviders();
+      setProviders(data);
+    } catch (error) {
+      console.error('Failed to unlink provider:', error);
+      // Ideally show a toast notification here
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await authService.deleteAccount();
+      // Redirect to home or login after deletion (auth context should handle logout state update if needed, 
+      // but usually we want to force a full cleanup)
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen pb-20 pt-24">
@@ -64,7 +96,7 @@ export default function ProfilePage() {
       <Header />
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-10">
+        <div className="backdrop-blur-md">
           <div className="mb-8">
             <h1 className="mb-2 text-4xl font-bold tracking-tighter text-white sm:text-6xl">
               Профиль
@@ -111,9 +143,8 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Additional sections can be added here */}
-
-          <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8">
+          {/* Connected Accounts */}
+          <div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
             <h3 className="text-xl font-bold text-white mb-6">Подключенные аккаунты</h3>
 
             {loadingProviders ? (
@@ -130,14 +161,17 @@ export default function ProfilePage() {
                     return (
                       <div
                         key={`${connection.provider}-${connection.provider_username}`}
-                        className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5"
+                        className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 group relative"
                       >
                         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 text-2xl overflow-hidden">
                           {connection.provider_avatar ? (
-                            <img
+                            <Image
                               src={connection.provider_avatar}
                               alt={connection.provider_username}
                               className="h-full w-full object-cover"
+                              width={48}
+                              height={48}
+                              unoptimized
                             />
                           ) : (
                             <>
@@ -153,12 +187,20 @@ export default function ProfilePage() {
                             {connection.provider} • {new Date(connection.created_at).toLocaleDateString()}
                           </div>
                         </div>
-                        <div className="ml-auto">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                          </div>
+                        <div className="ml-auto flex items-center gap-2">
+                          {/* Unlink Button - Only show if more than 1 provider */}
+                          {providers.length > 1 && (
+                            <button
+                              onClick={() => setUnlinkModal({ isOpen: true, provider: connection.provider })}
+                              className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors cursor-pointer"
+                              title="Отвязать аккаунт"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18 6 6 18"></path>
+                                <path d="m6 6 12 12"></path>
+                              </svg>
+                            </button>
+                          )}
                         </div>
                       </div>
                     );
@@ -177,8 +219,50 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
+
+          {/* Danger Zone / Delete Account */}
+          <div className="glass-card bg-red-500/5 backdrop-blur-md border border-red-500/10 p-8">
+            <h3 className="text-xl font-bold text-red-400 mb-2">Удаление аккаунта</h3>
+            <p className="text-muted text-sm mb-6">
+              Это действие необратимо. Все ваши данные будут удалены без возможности восстановления.
+            </p>
+
+            <button
+              onClick={() => setDeleteAccountModal(true)}
+              className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 font-medium transition-all hover:bg-red-500/20 hover:scale-[1.02] cursor-pointer"
+            >
+              Удалить аккаунт
+            </button>
+          </div>
         </div>
       </main>
+
+      {/* Confirmation Modals */}
+      {unlinkModal.isOpen && (
+        <ConfirmationModal
+          isOpen={unlinkModal.isOpen}
+          onClose={() => setUnlinkModal({ isOpen: false, provider: null })}
+          onConfirm={handleUnlinkProvider}
+          title="Отвязка аккаунта"
+          message={`Вы уверены, что хотите отвязать этот аккаунт? Вы больше не сможете входить через него.`}
+          confirmText="Отвязать"
+          isDangerous
+        />
+      )}
+
+      {deleteAccountModal && (
+        <ConfirmationModal
+          isOpen={deleteAccountModal}
+          onClose={() => setDeleteAccountModal(false)}
+          onConfirm={handleDeleteAccount}
+          title="Удаление аккаунта"
+          message={`Это действие полностью удалит ваш аккаунт и все связанные данные. Это действие НЕОБРАТИМО.`}
+          confirmText="Удалить навсегда"
+          isDangerous
+          validationString={user.username}
+          validationPlaceholder="Введите ваш никнейм"
+        />
+      )}
     </div>
   );
 }

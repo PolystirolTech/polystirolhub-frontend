@@ -6,7 +6,7 @@
  * Reusable modal for confirming dangerous or important actions.
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -17,6 +17,8 @@ interface ConfirmationModalProps {
   confirmText?: string;
   cancelText?: string;
   isDangerous?: boolean;
+  validationString?: string; // If provided, user must type this string to confirm
+  validationPlaceholder?: string;
 }
 
 export function ConfirmationModal({
@@ -28,7 +30,14 @@ export function ConfirmationModal({
   confirmText = 'Подтвердить',
   cancelText = 'Отмена',
   isDangerous = false,
+  validationString,
+  validationPlaceholder,
 }: ConfirmationModalProps) {
+  const [inputValue, setInputValue] = useState('');
+  const isConfirmDisabled = validationString ? inputValue !== validationString : false;
+
+
+
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -64,12 +73,29 @@ export function ConfirmationModal({
       />
 
       {/* Modal */}
-      <div className="glass-card bg-[var(--color-secondary)]/50 backdrop-blur-md border border-white/10 relative max-w-md w-full p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+      <div className="glass-card bg-[var(--color-secondary)] relative max-w-md w-full p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
         {/* Title */}
         <h2 className="mb-3 text-xl font-bold text-white">{title}</h2>
 
         {/* Message */}
         <p className="mb-6 text-muted leading-relaxed">{message}</p>
+
+        {/* Validation Input */}
+        {validationString && (
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-muted mb-2">
+              Введите <span className="text-white font-bold select-all">{validationString}</span> для подтверждения
+            </label>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder={validationPlaceholder}
+              className="w-full rounded-lg bg-black/20 border border-white/10 px-4 py-2 text-white placeholder:text-muted/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              autoFocus
+            />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-3 justify-end">
@@ -81,14 +107,21 @@ export function ConfirmationModal({
           </button>
           <button
             onClick={() => {
-              onConfirm();
-              onClose();
+              if (!isConfirmDisabled) {
+                onConfirm();
+                onClose();
+              }
             }}
-            className={`px-4 py-2 rounded-lg font-medium transition-all hover:scale-105 hover:cursor-pointer ${
-              isDangerous
+            disabled={isConfirmDisabled}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${isConfirmDisabled
+              ? 'bg-gray-500/50 text-gray-400 cursor-not-allowed'
+              : 'hover:scale-105 hover:cursor-pointer'
+              } ${!isConfirmDisabled && isDangerous
                 ? 'bg-red-500 text-white hover:bg-red-600'
-                : 'bg-primary text-white hover:bg-primary/90'
-            }`}
+                : !isConfirmDisabled
+                  ? 'bg-primary text-white hover:bg-primary/90'
+                  : ''
+              }`}
           >
             {confirmText}
           </button>

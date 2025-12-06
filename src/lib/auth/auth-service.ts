@@ -76,6 +76,51 @@ class AuthService {
   }
 
   /**
+   * Unlink an OAuth provider from the current account
+   */
+  async unlinkProvider(provider: string): Promise<void> {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      // We need to fetch the token to add it to the header manually since we're bypassing the generated client
+      // However the generated client uses a configuration that we can't easily access the token from if it's stored in a cookie only.
+      // But typically for these ops we rely on the browser sending the cookie.
+
+      const response = await fetch(`${baseUrl}/api/v1/auth/unlink/${provider}`, {
+        method: 'DELETE',
+        // Credentials include is needed for cookies
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to unlink provider');
+      }
+    } catch (error) {
+      console.error('Failed to unlink provider:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete the current user's account
+   */
+  async deleteAccount(): Promise<void> {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${baseUrl}/api/v1/users/me`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete account');
+      }
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get list of connected OAuth providers
    */
   async getUserProviders(): Promise<ProviderConnection[]> {
