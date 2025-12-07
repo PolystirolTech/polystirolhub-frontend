@@ -8,6 +8,7 @@ models/AwardXPRequest.ts
 models/Email.ts
 models/HTTPValidationError.ts
 models/IsActive.ts
+models/LeaderboardPlayer.ts
 models/Level.ts
 models/OAuthAccountPublic.ts
 models/ProviderAvatar.ts

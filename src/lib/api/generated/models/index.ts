@@ -5,6 +5,7 @@ export * from './AwardXPRequest';
 export * from './Email';
 export * from './HTTPValidationError';
 export * from './IsActive';
+export * from './LeaderboardPlayer';
 export * from './Level';
 export * from './OAuthAccountPublic';
 export * from './ProviderAvatar';
