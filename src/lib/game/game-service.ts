@@ -20,6 +20,7 @@ interface CreateGameServerData {
 	description?: string;
 	mods: string[];
 	ip: string;
+	port?: string;
 	banner?: File | null;
 }
 
@@ -29,6 +30,7 @@ interface UpdateGameServerData {
 	description?: string;
 	mods?: string[];
 	ip?: string;
+	port?: string;
 	banner?: File | null;
 }
 
@@ -222,6 +224,9 @@ class GameService {
 			if (data.mods && data.mods.length > 0) {
 				formData.append('mods', JSON.stringify(data.mods));
 			}
+			if (data.port) {
+				formData.append('port', data.port);
+			}
 			if (data.banner) {
 				formData.append('banner', data.banner);
 			}
@@ -274,6 +279,11 @@ class GameService {
 			}
 			if (data.ip !== undefined) {
 				formData.append('ip', data.ip);
+			}
+			if (data.port !== undefined) {
+				if (data.port.trim()) {
+					formData.append('port', data.port.trim());
+				}
 			}
 			if (data.banner) {
 				formData.append('banner', data.banner);

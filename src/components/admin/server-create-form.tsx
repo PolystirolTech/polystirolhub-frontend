@@ -15,6 +15,7 @@ interface ServerFormData {
 	mods: string[];
 	banner: File | null;
 	ip: string;
+	port?: string;
 }
 
 export function ServerCreateForm() {
@@ -26,6 +27,7 @@ export function ServerCreateForm() {
 		mods: [],
 		banner: null,
 		ip: '',
+		port: '',
 	});
 	const [modUrl, setModUrl] = useState('');
 	const [bannerPreview, setBannerPreview] = useState<string | null>(null);
@@ -140,6 +142,7 @@ export function ServerCreateForm() {
 				description: formData.description.trim(),
 				mods: formData.mods,
 				ip: formData.ip.trim(),
+				port: formData.port?.trim() || undefined,
 				banner: formData.banner,
 			});
 			setMessage({ type: 'success', text: 'Сервер успешно создан!' });
@@ -153,6 +156,7 @@ export function ServerCreateForm() {
 				mods: [],
 				banner: null,
 				ip: '',
+				port: '',
 			});
 			setModUrl('');
 			setBannerPreview(null);
@@ -329,6 +333,21 @@ export function ServerCreateForm() {
 						value={formData.ip}
 						onChange={(e) => setFormData((prev) => ({ ...prev, ip: e.target.value }))}
 						placeholder="192.168.1.1:25565"
+						className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
+					/>
+				</div>
+
+				{/* Port */}
+				<div className="space-y-1.5">
+					<label htmlFor="port" className="text-xs font-medium text-white">
+						Порт
+					</label>
+					<Input
+						id="port"
+						type="text"
+						value={formData.port || ''}
+						onChange={(e) => setFormData((prev) => ({ ...prev, port: e.target.value }))}
+						placeholder="25565"
 						className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
 					/>
 				</div>

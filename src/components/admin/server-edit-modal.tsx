@@ -29,6 +29,7 @@ export function ServerEditModal({
 		mods: Array.isArray(server.mods) ? server.mods : [],
 		banner: null as File | null,
 		ip: server.ip || '',
+		port: ('port' in server && typeof server.port === 'string' ? server.port : '') || '',
 	});
 	const [modUrl, setModUrl] = useState('');
 	const [bannerPreview, setBannerPreview] = useState<string | null>(null);
@@ -82,6 +83,7 @@ export function ServerEditModal({
 				mods: getModsArray(server.mods),
 				banner: null,
 				ip: server.ip || '',
+				port: ('port' in server && typeof server.port === 'string' ? server.port : '') || '',
 			});
 			setModUrl('');
 			setBannerPreview(getBannerUrl(server.bannerUrl));
@@ -222,6 +224,7 @@ export function ServerEditModal({
 				description: formData.description.trim(),
 				mods: formData.mods,
 				ip: formData.ip.trim(),
+				port: formData.port?.trim() || undefined,
 				banner: formData.banner,
 			});
 			onServerUpdated(updatedServer);
@@ -409,6 +412,21 @@ export function ServerEditModal({
 							value={formData.ip}
 							onChange={(e) => setFormData((prev) => ({ ...prev, ip: e.target.value }))}
 							placeholder="192.168.1.1:25565"
+							className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
+						/>
+					</div>
+
+					{/* Port */}
+					<div className="space-y-1.5">
+						<label htmlFor="edit-port" className="text-xs font-medium text-white">
+							Порт
+						</label>
+						<Input
+							id="edit-port"
+							type="text"
+							value={formData.port || ''}
+							onChange={(e) => setFormData((prev) => ({ ...prev, port: e.target.value }))}
+							placeholder="25565"
 							className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
 						/>
 					</div>

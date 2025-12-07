@@ -16,29 +16,29 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface ProviderAvatar
+ * @interface Ping
  */
-export interface ProviderAvatar {
+export interface Ping {
 }
 
 /**
- * Check if a given object implements the ProviderAvatar interface.
+ * Check if a given object implements the Ping interface.
  */
-export function instanceOfProviderAvatar(value: object): boolean {
+export function instanceOfPing(value: object): boolean {
     let isInstance = true;
 
     return isInstance;
 }
 
-export function ProviderAvatarFromJSON(json: any): ProviderAvatar {
-    return ProviderAvatarFromJSONTyped(json, false);
+export function PingFromJSON(json: any): Ping {
+    return PingFromJSONTyped(json, false);
 }
 
-export function ProviderAvatarFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProviderAvatar {
+export function PingFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ping {
     return json;
 }
 
-export function ProviderAvatarToJSON(value?: ProviderAvatar | null): any {
+export function PingToJSON(value?: Ping | null): any {
     return value;
 }
 

@@ -16,29 +16,29 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface ProviderAvatar
+ * @interface PlayersList
  */
-export interface ProviderAvatar {
+export interface PlayersList {
 }
 
 /**
- * Check if a given object implements the ProviderAvatar interface.
+ * Check if a given object implements the PlayersList interface.
  */
-export function instanceOfProviderAvatar(value: object): boolean {
+export function instanceOfPlayersList(value: object): boolean {
     let isInstance = true;
 
     return isInstance;
 }
 
-export function ProviderAvatarFromJSON(json: any): ProviderAvatar {
-    return ProviderAvatarFromJSONTyped(json, false);
+export function PlayersListFromJSON(json: any): PlayersList {
+    return PlayersListFromJSONTyped(json, false);
 }
 
-export function ProviderAvatarFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProviderAvatar {
+export function PlayersListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PlayersList {
     return json;
 }
 
-export function ProviderAvatarToJSON(value?: ProviderAvatar | null): any {
+export function PlayersListToJSON(value?: PlayersList | null): any {
     return value;
 }
 
