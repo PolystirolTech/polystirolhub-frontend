@@ -1,5 +1,4 @@
 import { Header } from '@/components/layout/header';
-import { BentoGrid } from '@/components/bento/bento-grid';
 import { BannerWidget } from '@/components/bento/widgets/banner-widget';
 import { ProfileWidget } from '@/components/bento/widgets/profile-widget';
 import { NotificationsWidget } from '@/components/bento/widgets/notifications-widget';

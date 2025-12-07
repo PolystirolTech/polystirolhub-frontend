@@ -484,3 +484,7 @@ export class TextApiResponse {
 		return await this.raw.text();
 	}
 }
+
+export function anyToJSON(value: any): any {
+	return value;
+}
