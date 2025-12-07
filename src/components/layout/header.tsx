@@ -10,7 +10,7 @@ import { useApiStatus } from '@/hooks/use-api-status';
 
 export function Header() {
 	const { user, isAuthenticated, logout, isLoading } = useAuth();
-	const { status: apiStatus, message: apiMessage } = useApiStatus();
+	const { status: apiStatus } = useApiStatus();
 	const { level, currentXp, nextLevelXp } = useLevel();
 	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -33,7 +33,8 @@ export function Header() {
 				</div>
 
 				{/* Authenticated User Blocks */}
-				{isAuthenticated && user && (
+				{/* Показываем блок профиля если есть данные пользователя (даже во время загрузки) */}
+				{user && (
 					<>
 						{/* Block 2: Profile */}
 						<Link
@@ -135,14 +136,6 @@ export function Header() {
 						{apiStatus === 'offline' && (
 							<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
 						)}
-					</span>
-					<span className="text-sm font-medium text-white/90">
-						API{' '}
-						{apiStatus === 'online'
-							? apiMessage
-							: apiStatus === 'checking'
-								? 'Проверка...'
-								: apiMessage}
 					</span>
 				</div>
 			</div>

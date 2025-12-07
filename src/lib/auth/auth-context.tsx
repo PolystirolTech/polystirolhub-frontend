@@ -13,7 +13,10 @@ import type { AuthContextType, User, OAuthProvider } from './types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const USER_STORAGE_KEY = 'polystirolhub_user';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+	// Начинаем с null для одинакового рендера на сервере и клиенте
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -22,9 +25,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		try {
 			const userData = await authService.getCurrentUser();
 			setUser(userData);
+			// Сохраняем в localStorage
+			if (userData) {
+				localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+			} else {
+				localStorage.removeItem(USER_STORAGE_KEY);
+			}
 		} catch (error) {
 			console.error('Failed to refresh user:', error);
 			setUser(null);
+			localStorage.removeItem(USER_STORAGE_KEY);
 		} finally {
 			setIsLoading(false);
 		}
@@ -40,17 +50,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		try {
 			await authService.logout();
 			setUser(null);
+			localStorage.removeItem(USER_STORAGE_KEY);
 		} catch (error) {
 			console.error('Logout error:', error);
 			// Clear user state even if API call fails
 			setUser(null);
+			localStorage.removeItem(USER_STORAGE_KEY);
 		} finally {
 			setIsLoading(false);
 		}
 	}, []);
 
-	// Load user on mount
+	// Загружаем из localStorage и затем обновляем с сервера
 	useEffect(() => {
+		// Загружаем из localStorage сразу после монтирования
+		try {
+			const stored = localStorage.getItem(USER_STORAGE_KEY);
+			if (stored) {
+				const parsedUser = JSON.parse(stored);
+				setUser(parsedUser);
+			}
+		} catch {
+			// Игнорируем ошибки парсинга
+		}
+		
+		// Затем обновляем с сервера
 		refreshUser();
 	}, [refreshUser]);
 
