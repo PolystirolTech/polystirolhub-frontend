@@ -12,6 +12,7 @@ import type {
 	GameServerPublic,
 	GameTypeCreate,
 	GameTypeUpdate,
+	ServerStatusResponse,
 } from '@/lib/api/generated';
 
 interface CreateGameServerData {
@@ -80,6 +81,20 @@ class GameService {
 		} catch (error) {
 			console.error('Failed to get game server:', error);
 			throw new Error('Не удалось загрузить сервер');
+		}
+	}
+
+	/**
+	 * Get game server status (icon, motd, players, ping)
+	 */
+	async getGameServerStatus(serverId: string): Promise<ServerStatusResponse> {
+		try {
+			return await this.gameServersApi.getGameServerStatusApiV1GameServersServerIdStatusGet({
+				serverId,
+			});
+		} catch (error) {
+			console.error('Failed to get game server status:', error);
+			throw new Error('Не удалось загрузить статус сервера');
 		}
 	}
 
