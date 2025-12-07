@@ -14,66 +14,72 @@ export function GameServersWidget() {
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-			async function loadServers() {
-				try {
-					setIsLoading(true);
-					setError(null);
+		async function loadServers() {
+			try {
+				setIsLoading(true);
+				setError(null);
 
-					// Загружаем все серверы
-					const allServers = await gameService.getGameServers();
+				// Загружаем все серверы
+				const allServers = await gameService.getGameServers();
 
-					// Получаем статусы для всех серверов параллельно
-					const serversWithStatus = await Promise.allSettled(
-						allServers.map(async (server) => {
-							if (!server.id) return { ...server, status: undefined };
+				// Получаем статусы для всех серверов параллельно
+				const serversWithStatus = await Promise.allSettled(
+					allServers.map(async (server) => {
+						if (!server.id) return { ...server, status: undefined };
 
-							try {
-								const status = await gameService.getGameServerStatus(String(server.id));
-								return { ...server, status };
-							} catch {
-								// Если статус не получен, продолжаем без него
-								return { ...server, status: undefined };
-							}
-						})
-					);
+						try {
+							const status = await gameService.getGameServerStatus(String(server.id));
+							return { ...server, status };
+						} catch {
+							// Если статус не получен, продолжаем без него
+							return { ...server, status: undefined };
+						}
+					})
+				);
 
-					// Извлекаем успешные результаты
-					const successfulServers = serversWithStatus
-						.filter((result): result is PromiseFulfilledResult<ServerWithStatus> => result.status === 'fulfilled')
-						.map((result) => result.value);
+				// Извлекаем успешные результаты
+				const successfulServers = serversWithStatus
+					.filter(
+						(result): result is PromiseFulfilledResult<ServerWithStatus> =>
+							result.status === 'fulfilled'
+					)
+					.map((result) => result.value);
 
-					// Сортируем по онлайну (playersOnline) по убыванию
-					const sortedServers = successfulServers.sort((a, b) => {
-						const aOnline = a.status?.playersOnline ?? 0;
-						const bOnline = b.status?.playersOnline ?? 0;
-						return bOnline - aOnline;
-					});
+				// Сортируем по онлайну (playersOnline) по убыванию
+				const sortedServers = successfulServers.sort((a, b) => {
+					const aOnline = a.status?.playersOnline ?? 0;
+					const bOnline = b.status?.playersOnline ?? 0;
+					return bOnline - aOnline;
+				});
 
-					// Берем топ-3
-					const top3Servers = sortedServers.slice(0, 3);
+				// Берем топ-3
+				const top3Servers = sortedServers.slice(0, 3);
 
-					// Для топ-3 получаем полную информацию с баннерами через /api/v1/game-servers/{server_id}
-					const serversWithBanners = await Promise.allSettled(
-						top3Servers.map(async (server) => {
-							if (!server.id) return server;
+				// Для топ-3 получаем полную информацию с баннерами через /api/v1/game-servers/{server_id}
+				const serversWithBanners = await Promise.allSettled(
+					top3Servers.map(async (server) => {
+						if (!server.id) return server;
 
-							try {
-								const fullServerInfo = await gameService.getGameServer(String(server.id));
-								// Объединяем полную информацию с уже полученным статусом
-								return { ...fullServerInfo, status: server.status };
-							} catch {
-								// Если не удалось получить полную информацию, используем то, что есть
-								return server;
-							}
-						})
-					);
+						try {
+							const fullServerInfo = await gameService.getGameServer(String(server.id));
+							// Объединяем полную информацию с уже полученным статусом
+							return { ...fullServerInfo, status: server.status };
+						} catch {
+							// Если не удалось получить полную информацию, используем то, что есть
+							return server;
+						}
+					})
+				);
 
-					// Извлекаем успешные результаты
-					const finalServers = serversWithBanners
-						.filter((result): result is PromiseFulfilledResult<ServerWithStatus> => result.status === 'fulfilled')
-						.map((result) => result.value);
+				// Извлекаем успешные результаты
+				const finalServers = serversWithBanners
+					.filter(
+						(result): result is PromiseFulfilledResult<ServerWithStatus> =>
+							result.status === 'fulfilled'
+					)
+					.map((result) => result.value);
 
-					setServers(finalServers);
+				setServers(finalServers);
 			} catch (err) {
 				console.error('Failed to load servers:', err);
 				setError(err instanceof Error ? err.message : 'Не удалось загрузить серверы');
@@ -110,7 +116,10 @@ export function GameServersWidget() {
 			}
 			// Попробуем найти строку в объекте
 			for (const key in obj) {
-				if (typeof obj[key] === 'string' && (obj[key].startsWith('http') || obj[key].startsWith('/'))) {
+				if (
+					typeof obj[key] === 'string' &&
+					(obj[key].startsWith('http') || obj[key].startsWith('/'))
+				) {
 					const url = obj[key];
 					if (url.startsWith('/')) {
 						const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -190,20 +199,14 @@ export function GameServersWidget() {
 							}
 						>
 							{/* Overlay для читаемости */}
-							{bannerUrl && (
-								<div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
-							)}
+							{bannerUrl && <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />}
 
 							{/* Контент */}
 							<div className="relative flex items-center gap-2 flex-1 z-10">
 								{/* Иконка */}
 								{iconUrl && (
 									/* eslint-disable-next-line @next/next/no-img-element */
-									<img
-										src={iconUrl}
-										alt=""
-										className="w-8 h-8 rounded shrink-0"
-									/>
+									<img src={iconUrl} alt="" className="w-8 h-8 rounded shrink-0" />
 								)}
 
 								{/* Статус и название */}
@@ -214,9 +217,7 @@ export function GameServersWidget() {
 												isOnline ? 'bg-green-500' : 'bg-red-500'
 											}`}
 										/>
-										<span className="text-sm font-medium text-white truncate">
-											{serverName}
-										</span>
+										<span className="text-sm font-medium text-white truncate">{serverName}</span>
 									</div>
 								</div>
 							</div>

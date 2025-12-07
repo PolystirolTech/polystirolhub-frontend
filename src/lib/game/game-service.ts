@@ -236,9 +236,8 @@ class GameService {
 			if (data.description) {
 				formData.append('description', data.description);
 			}
-			if (data.mods && data.mods.length > 0) {
-				formData.append('mods', JSON.stringify(data.mods));
-			}
+			// Всегда отправляем mods, даже если массив пустой
+			formData.append('mods', JSON.stringify(data.mods || []));
 			if (data.port) {
 				formData.append('port', data.port);
 			}

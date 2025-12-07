@@ -29,6 +29,7 @@ export function ServerCreateForm() {
 		ip: '',
 		port: '',
 	});
+	const [modName, setModName] = useState('');
 	const [modUrl, setModUrl] = useState('');
 	const [bannerPreview, setBannerPreview] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,26 +75,35 @@ export function ServerCreateForm() {
 	};
 
 	const handleAddMod = () => {
-		const trimmed = modUrl.trim();
-		if (!trimmed) {
+		const trimmedName = modName.trim();
+		const trimmedUrl = modUrl.trim();
+
+		if (!trimmedName) {
+			setMessage({ type: 'error', text: 'Введите название мода' });
+			return;
+		}
+
+		if (!trimmedUrl) {
 			setMessage({ type: 'error', text: 'Введите ссылку на мод' });
 			return;
 		}
 
 		// Простая валидация URL
 		try {
-			new URL(trimmed);
+			new URL(trimmedUrl);
 		} catch {
 			setMessage({ type: 'error', text: 'Введите корректную ссылку' });
 			return;
 		}
 
-		if (formData.mods.includes(trimmed)) {
-			setMessage({ type: 'error', text: 'Эта ссылка уже добавлена' });
+		const modString = `${trimmedName}: ${trimmedUrl}`;
+		if (formData.mods.includes(modString)) {
+			setMessage({ type: 'error', text: 'Этот мод уже добавлен' });
 			return;
 		}
 
-		setFormData((prev) => ({ ...prev, mods: [...prev.mods, trimmed] }));
+		setFormData((prev) => ({ ...prev, mods: [...prev.mods, modString] }));
+		setModName('');
 		setModUrl('');
 		setMessage(null);
 	};
@@ -158,6 +168,7 @@ export function ServerCreateForm() {
 				ip: '',
 				port: '',
 			});
+			setModName('');
 			setModUrl('');
 			setBannerPreview(null);
 			if (fileInputRef.current) {
@@ -240,6 +251,17 @@ export function ServerCreateForm() {
 					<label className="text-xs font-medium text-white">Список модов</label>
 					<div className="flex gap-2 mb-2">
 						<Input
+							type="text"
+							value={modName}
+							onChange={(e) => {
+								setModName(e.target.value);
+								setMessage(null);
+							}}
+							onKeyPress={handleModKeyPress}
+							placeholder="Название мода..."
+							className="flex-1 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
+						/>
+						<Input
 							type="url"
 							value={modUrl}
 							onChange={(e) => {
@@ -247,7 +269,7 @@ export function ServerCreateForm() {
 								setMessage(null);
 							}}
 							onKeyPress={handleModKeyPress}
-							placeholder="Введите ссылку на мод..."
+							placeholder="URL мода..."
 							className="flex-1 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
 						/>
 						<Button type="button" onClick={handleAddMod} variant="secondary" size="default">
@@ -256,30 +278,33 @@ export function ServerCreateForm() {
 					</div>
 					{formData.mods.length > 0 && (
 						<div className="space-y-2">
-							{formData.mods.map((mod, index) => (
-								<div
-									key={index}
-									className="flex items-center justify-between rounded-lg bg-white/5 p-2"
-								>
-									<a
-										href={mod}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-xs text-primary hover:underline truncate flex-1 mr-2"
+							{formData.mods.map((mod, index) => {
+								const [name, url] = mod.split(': ').map((s) => s.trim());
+								return (
+									<div
+										key={index}
+										className="flex items-center justify-between rounded-lg bg-white/5 p-2"
 									>
-										{mod}
-									</a>
-									<Button
-										type="button"
-										onClick={() => handleRemoveMod(index)}
-										variant="destructive"
-										size="sm"
-										className="h-7 px-2 text-xs"
-									>
-										Удалить
-									</Button>
-								</div>
-							))}
+										<a
+											href={url}
+											target="_blank"
+											rel="noopener noreferrer"
+											className="text-xs text-primary hover:underline truncate flex-1 mr-2"
+										>
+											{name}
+										</a>
+										<Button
+											type="button"
+											onClick={() => handleRemoveMod(index)}
+											variant="destructive"
+											size="sm"
+											className="h-7 px-2 text-xs"
+										>
+											Удалить
+										</Button>
+									</div>
+								);
+							})}
 						</div>
 					)}
 				</div>
