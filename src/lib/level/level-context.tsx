@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+	ReactNode,
+} from 'react';
 import { progressionService } from '@/lib/progression/progression-service';
 import type { ProgressionData } from '@/lib/progression/types';
 
@@ -37,11 +44,11 @@ export function LevelProvider({ children }: { children: ReactNode }) {
 		const newLevel = data.level;
 		const newCurrentXp = data.xp_progress; // XP accumulated at current level (from xp_for_current_level to current)
 		const newNextLevelXp = data.xp_progress + data.xp_needed; // Total XP needed for this level
-		
+
 		setLevel(newLevel);
 		setCurrentXp(newCurrentXp);
 		setNextLevelXp(newNextLevelXp);
-		
+
 		// Сохраняем в localStorage
 		if (typeof window !== 'undefined') {
 			try {
@@ -88,7 +95,7 @@ export function LevelProvider({ children }: { children: ReactNode }) {
 		} catch {
 			// Игнорируем ошибки парсинга
 		}
-		
+
 		// Затем обновляем с сервера
 		refreshProgression();
 	}, [refreshProgression]);

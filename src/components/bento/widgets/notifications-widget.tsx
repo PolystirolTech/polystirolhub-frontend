@@ -13,10 +13,7 @@ export function NotificationsWidget() {
 			<div className="space-y-2">
 				{notifications.length > 0 ? (
 					notifications.map((notification) => (
-						<div
-							key={notification.id}
-							className="rounded-lg bg-white/5 p-2 text-xs text-white/80"
-						>
+						<div key={notification.id} className="rounded-lg bg-white/5 p-2 text-xs text-white/80">
 							<p>{notification.text}</p>
 							<p className="mt-1 text-white/40">{notification.time}</p>
 						</div>

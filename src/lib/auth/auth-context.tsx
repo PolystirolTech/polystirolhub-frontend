@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		} catch {
 			// Игнорируем ошибки парсинга
 		}
-		
+
 		// Затем обновляем с сервера
 		refreshUser();
 	}, [refreshUser]);

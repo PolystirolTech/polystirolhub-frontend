@@ -38,10 +38,7 @@ export function AchievementsWidget() {
 				{nearestAchievements.map((achievement) => {
 					const progressPercent = (achievement.progress / achievement.maxProgress) * 100;
 					return (
-						<div
-							key={achievement.id}
-							className="rounded-lg bg-white/5 p-2"
-						>
+						<div key={achievement.id} className="rounded-lg bg-white/5 p-2">
 							<div className="mb-1 flex items-center gap-2">
 								<div className="text-lg">{achievement.icon}</div>
 								<span className="flex-1 text-xs font-medium text-white">{achievement.name}</span>

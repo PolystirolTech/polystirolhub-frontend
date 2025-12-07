@@ -65,7 +65,9 @@ export default function AdminPage() {
 
 				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 mb-6">
 					<div className="mb-4">
-						<h2 className="text-xl font-bold text-white mb-2">Добро пожаловать, {user.username}!</h2>
+						<h2 className="text-xl font-bold text-white mb-2">
+							Добро пожаловать, {user.username}!
+						</h2>
 						{user.is_super_admin && (
 							<div className="inline-flex items-center gap-2 rounded-lg bg-purple-500/20 px-3 py-1 mb-2">
 								<span className="h-2 w-2 rounded-full bg-purple-500"></span>

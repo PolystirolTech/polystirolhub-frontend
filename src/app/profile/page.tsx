@@ -77,8 +77,14 @@ export default function ProfilePage() {
 					hasSuper = response.toLowerCase() === 'true';
 				} else if (typeof response === 'object' && response !== null) {
 					// Может быть объект с полем
-					const obj = response as { has_super_admin?: boolean; hasSuperAdmin?: boolean; result?: boolean; [key: string]: unknown };
-					hasSuper = Boolean(obj.has_super_admin) || Boolean(obj.hasSuperAdmin) || Boolean(obj.result);
+					const obj = response as {
+						has_super_admin?: boolean;
+						hasSuperAdmin?: boolean;
+						result?: boolean;
+						[key: string]: unknown;
+					};
+					hasSuper =
+						Boolean(obj.has_super_admin) || Boolean(obj.hasSuperAdmin) || Boolean(obj.result);
 				} else {
 					hasSuper = Boolean(response);
 				}
@@ -141,8 +147,14 @@ export default function ProfilePage() {
 			} else if (typeof response === 'string') {
 				hasSuper = response.toLowerCase() === 'true';
 			} else if (typeof response === 'object' && response !== null) {
-				const obj = response as { has_super_admin?: boolean; hasSuperAdmin?: boolean; result?: boolean; [key: string]: unknown };
-				hasSuper = Boolean(obj.has_super_admin) || Boolean(obj.hasSuperAdmin) || Boolean(obj.result);
+				const obj = response as {
+					has_super_admin?: boolean;
+					hasSuperAdmin?: boolean;
+					result?: boolean;
+					[key: string]: unknown;
+				};
+				hasSuper =
+					Boolean(obj.has_super_admin) || Boolean(obj.hasSuperAdmin) || Boolean(obj.result);
 			} else {
 				hasSuper = Boolean(response);
 			}

@@ -72,9 +72,7 @@ export function TopUsersWidget() {
 											</div>
 										)}
 									</div>
-									<span className="text-sm font-medium text-white truncate">
-										{username}
-									</span>
+									<span className="text-sm font-medium text-white truncate">{username}</span>
 								</div>
 								<div className="ml-2 flex shrink-0 items-center justify-center rounded-full bg-primary/20 px-2 py-0.5 text-[9px] text-primary">
 									{user.level ?? 0}

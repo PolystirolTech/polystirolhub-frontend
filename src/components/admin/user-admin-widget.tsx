@@ -232,7 +232,10 @@ export function UserAdminWidget() {
 					onChange={(e) => setSearchQuery(e.target.value)}
 					onFocus={() => {
 						// Показываем результаты только если нет выбранного пользователя или поиск не совпадает с именем выбранного
-						if (filteredUsers.length > 0 && (!selectedUser || searchQuery !== selectedUser.username)) {
+						if (
+							filteredUsers.length > 0 &&
+							(!selectedUser || searchQuery !== selectedUser.username)
+						) {
 							setShowResults(true);
 						}
 					}}
@@ -286,9 +289,7 @@ export function UserAdminWidget() {
 												</span>
 											)}
 										</div>
-										{user.email && (
-											<p className="text-xs text-white/60 truncate">{user.email}</p>
-										)}
+										{user.email && <p className="text-xs text-white/60 truncate">{user.email}</p>}
 									</div>
 								</div>
 							</div>
@@ -363,7 +364,9 @@ export function UserAdminWidget() {
 										</Button>
 									)}
 									{selectedUser.is_super_admin && (
-										<span className="text-sm text-white/40">Нельзя изменить статус супер админа</span>
+										<span className="text-sm text-white/40">
+											Нельзя изменить статус супер админа
+										</span>
 									)}
 								</div>
 							</div>

@@ -13,12 +13,8 @@ export function ActivityWidget() {
 			<h3 className="mb-3 text-sm font-bold text-white">Активность</h3>
 			<div className="space-y-2">
 				{activities.map((activity) => (
-					<div
-						key={activity.id}
-						className="rounded-lg bg-white/5 p-2 text-xs text-white/80"
-					>
-						<span className="font-medium text-white">{activity.user}</span>{' '}
-						{activity.action}
+					<div key={activity.id} className="rounded-lg bg-white/5 p-2 text-xs text-white/80">
+						<span className="font-medium text-white">{activity.user}</span> {activity.action}
 						<p className="mt-1 text-white/40">{activity.time}</p>
 					</div>
 				))}
