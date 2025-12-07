@@ -14,9 +14,10 @@ import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { useLevel } from '@/lib/level/level-context';
 import { maskEmail } from '@/lib/utils';
 import { ProfileUpdateForm } from '@/components/profile/profile-update-form';
+import { AdminApi, apiConfig } from '@/lib/api';
 
 export default function ProfilePage() {
-	const { user, isAuthenticated, isLoading } = useAuth();
+	const { user, isAuthenticated, isLoading, refreshUser } = useAuth();
 	const router = useRouter();
 	const { level, currentXp, nextLevelXp, addXp, resetLevel, error: levelError } = useLevel();
 	const [providers, setProviders] = useState<ProviderConnection[]>([]);
@@ -27,6 +28,10 @@ export default function ProfilePage() {
 		provider: null,
 	});
 	const [deleteAccountModal, setDeleteAccountModal] = useState(false);
+	const [createSuperAdminModal, setCreateSuperAdminModal] = useState(false);
+	const [hasSuperAdmin, setHasSuperAdmin] = useState<boolean | null>(null);
+	const [checkingSuperAdmin, setCheckingSuperAdmin] = useState(true);
+	const [creatingSuperAdmin, setCreatingSuperAdmin] = useState(false);
 
 	// Check if debug mode is enabled (default to true if not set)
 	const isDebugMode = process.env.NEXT_PUBLIC_DEBUG !== 'false';
@@ -57,6 +62,39 @@ export default function ProfilePage() {
 		}
 	}, [user]);
 
+	// Проверка наличия super admin через публичный эндпоинт
+	useEffect(() => {
+		async function checkSuperAdmin() {
+			try {
+				setCheckingSuperAdmin(true);
+				const adminApi = new AdminApi(apiConfig);
+				const response = await adminApi.checkSuperAdminApiV1AdminCheckSuperAdminGet();
+				// Эндпоинт возвращает true/false, но может быть обернут в объект или строку
+				let hasSuper = false;
+				if (typeof response === 'boolean') {
+					hasSuper = response;
+				} else if (typeof response === 'string') {
+					hasSuper = response.toLowerCase() === 'true';
+				} else if (typeof response === 'object' && response !== null) {
+					// Может быть объект с полем
+					const obj = response as { has_super_admin?: boolean; hasSuperAdmin?: boolean; result?: boolean; [key: string]: unknown };
+					hasSuper = Boolean(obj.has_super_admin) || Boolean(obj.hasSuperAdmin) || Boolean(obj.result);
+				} else {
+					hasSuper = Boolean(response);
+				}
+				setHasSuperAdmin(hasSuper);
+			} catch (error) {
+				console.error('Failed to check super admin:', error);
+				// При ошибке предполагаем, что super admin может быть (не показываем кнопку)
+				setHasSuperAdmin(true);
+			} finally {
+				setCheckingSuperAdmin(false);
+			}
+		}
+
+		checkSuperAdmin();
+	}, []);
+
 	const handleUnlinkProvider = async () => {
 		if (!unlinkModal.provider) return;
 
@@ -79,6 +117,42 @@ export default function ProfilePage() {
 			window.location.href = '/';
 		} catch (error) {
 			console.error('Failed to delete account:', error);
+		}
+	};
+
+	const handleCreateSuperAdmin = async () => {
+		if (!user) return;
+
+		try {
+			setCreatingSuperAdmin(true);
+			const adminApi = new AdminApi(apiConfig);
+			await adminApi.createSuperAdminApiV1AdminCreateSuperAdminPost({
+				createSuperAdminRequest: {
+					userId: user.id,
+				},
+			});
+			// Обновляем данные пользователя
+			await refreshUser();
+			// Обновляем проверку наличия super admin
+			const response = await adminApi.checkSuperAdminApiV1AdminCheckSuperAdminGet();
+			let hasSuper = false;
+			if (typeof response === 'boolean') {
+				hasSuper = response;
+			} else if (typeof response === 'string') {
+				hasSuper = response.toLowerCase() === 'true';
+			} else if (typeof response === 'object' && response !== null) {
+				const obj = response as { has_super_admin?: boolean; hasSuperAdmin?: boolean; result?: boolean; [key: string]: unknown };
+				hasSuper = Boolean(obj.has_super_admin) || Boolean(obj.hasSuperAdmin) || Boolean(obj.result);
+			} else {
+				hasSuper = Boolean(response);
+			}
+			setHasSuperAdmin(hasSuper);
+			setCreateSuperAdminModal(false);
+		} catch (error) {
+			console.error('Failed to create super admin:', error);
+			// Можно добавить уведомление об ошибке
+		} finally {
+			setCreatingSuperAdmin(false);
 		}
 	};
 
@@ -326,6 +400,24 @@ export default function ProfilePage() {
 					{/* Profile Update Form */}
 					<ProfileUpdateForm />
 
+					{/* Become Super Admin - Only if no super admin exists */}
+					{!checkingSuperAdmin && hasSuperAdmin === false && (
+						<div className="glass-card bg-[var(--color-primary)]/20 backdrop-blur-md border border-[var(--color-primary)]/30 p-8 mb-6">
+							<h3 className="text-xl font-bold text-white mb-2">Стать супер админом</h3>
+							<p className="text-muted text-sm mb-6">
+								На данный момент в системе нет супер админа. Вы можете стать первым супер админом.
+							</p>
+
+							<button
+								onClick={() => setCreateSuperAdminModal(true)}
+								disabled={creatingSuperAdmin}
+								className="px-4 py-2 rounded-lg bg-[var(--color-primary)]/20 text-white border border-[var(--color-primary)]/30 font-medium transition-all hover:bg-[var(--color-primary)]/30 hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								{creatingSuperAdmin ? 'Создание...' : 'Стать супер админом'}
+							</button>
+						</div>
+					)}
+
 					{/* Danger Zone / Delete Account */}
 					<div className="glass-card bg-red-500/30 backdrop-blur-md border border-red-500/10 p-8">
 						<h3 className="text-xl font-bold text-red-400 mb-2">Удаление аккаунта</h3>
@@ -367,6 +459,19 @@ export default function ProfilePage() {
 					isDangerous
 					validationString={user.username}
 					validationPlaceholder="Введите ваш никнейм"
+				/>
+			)}
+
+			{createSuperAdminModal && (
+				<ConfirmationModal
+					isOpen={createSuperAdminModal}
+					onClose={() => setCreateSuperAdminModal(false)}
+					onConfirm={handleCreateSuperAdmin}
+					title="Стать супер админом"
+					message="Вы уверены, что хотите стать супер админом? Это действие даст вам полный доступ к системе управления."
+					confirmText="Стать супер админом"
+					cancelText="Отмена"
+					isDangerous={false}
 				/>
 			)}
 		</div>

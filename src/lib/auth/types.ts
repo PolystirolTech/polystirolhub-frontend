@@ -7,11 +7,13 @@
 export type OAuthProvider = 'twitch' | 'discord' | 'steam';
 
 export interface User {
-	id: number;
+	id: string; // UUID строка
 	email: string | null;
 	username: string;
 	avatar: string | null;
 	is_active: boolean;
+	is_admin?: boolean;
+	is_super_admin?: boolean;
 	created_at?: string;
 	updated_at?: string;
 }

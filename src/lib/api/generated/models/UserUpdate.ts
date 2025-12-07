@@ -19,18 +19,30 @@ import {
     AvatarFromJSONTyped,
     AvatarToJSON,
 } from './Avatar';
-import type { Email } from './Email';
+import type { Email1 } from './Email1';
 import {
-    EmailFromJSON,
-    EmailFromJSONTyped,
-    EmailToJSON,
-} from './Email';
+    Email1FromJSON,
+    Email1FromJSONTyped,
+    Email1ToJSON,
+} from './Email1';
 import type { IsActive } from './IsActive';
 import {
     IsActiveFromJSON,
     IsActiveFromJSONTyped,
     IsActiveToJSON,
 } from './IsActive';
+import type { IsAdmin } from './IsAdmin';
+import {
+    IsAdminFromJSON,
+    IsAdminFromJSONTyped,
+    IsAdminToJSON,
+} from './IsAdmin';
+import type { IsSuperAdmin } from './IsSuperAdmin';
+import {
+    IsSuperAdminFromJSON,
+    IsSuperAdminFromJSONTyped,
+    IsSuperAdminToJSON,
+} from './IsSuperAdmin';
 import type { Level } from './Level';
 import {
     LevelFromJSON,
@@ -58,10 +70,10 @@ import {
 export interface UserUpdate {
     /**
      * 
-     * @type {Email}
+     * @type {Email1}
      * @memberof UserUpdate
      */
-    email?: Email;
+    email?: Email1;
     /**
      * 
      * @type {Username}
@@ -80,6 +92,18 @@ export interface UserUpdate {
      * @memberof UserUpdate
      */
     isActive?: IsActive;
+    /**
+     * 
+     * @type {IsAdmin}
+     * @memberof UserUpdate
+     */
+    isAdmin?: IsAdmin;
+    /**
+     * 
+     * @type {IsSuperAdmin}
+     * @memberof UserUpdate
+     */
+    isSuperAdmin?: IsSuperAdmin;
     /**
      * 
      * @type {Xp}
@@ -113,10 +137,12 @@ export function UserUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'email': !exists(json, 'email') ? undefined : EmailFromJSON(json['email']),
+        'email': !exists(json, 'email') ? undefined : Email1FromJSON(json['email']),
         'username': !exists(json, 'username') ? undefined : UsernameFromJSON(json['username']),
         'avatar': !exists(json, 'avatar') ? undefined : AvatarFromJSON(json['avatar']),
         'isActive': !exists(json, 'is_active') ? undefined : IsActiveFromJSON(json['is_active']),
+        'isAdmin': !exists(json, 'is_admin') ? undefined : IsAdminFromJSON(json['is_admin']),
+        'isSuperAdmin': !exists(json, 'is_super_admin') ? undefined : IsSuperAdminFromJSON(json['is_super_admin']),
         'xp': !exists(json, 'xp') ? undefined : XpFromJSON(json['xp']),
         'level': !exists(json, 'level') ? undefined : LevelFromJSON(json['level']),
     };
@@ -131,10 +157,12 @@ export function UserUpdateToJSON(value?: UserUpdate | null): any {
     }
     return {
         
-        'email': EmailToJSON(value.email),
+        'email': Email1ToJSON(value.email),
         'username': UsernameToJSON(value.username),
         'avatar': AvatarToJSON(value.avatar),
         'is_active': IsActiveToJSON(value.isActive),
+        'is_admin': IsAdminToJSON(value.isAdmin),
+        'is_super_admin': IsSuperAdminToJSON(value.isSuperAdmin),
         'xp': XpToJSON(value.xp),
         'level': LevelToJSON(value.level),
     };

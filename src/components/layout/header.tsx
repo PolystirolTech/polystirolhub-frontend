@@ -52,6 +52,16 @@ export function Header() {
 					<span className="text-sm font-medium text-white/90">Магазин</span>
 				</Link>
 
+				{/* Admin Link - Only for admins */}
+				{user && (user.is_admin || user.is_super_admin) && (
+					<Link
+						href="/admin"
+						className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-4 shadow-lg transition-all hover:scale-[1.02]"
+					>
+						<span className="text-sm font-medium text-white/90">Админ</span>
+					</Link>
+				)}
+
 				{/* Authenticated User Blocks */}
 				{/* Показываем блок профиля если есть данные пользователя (даже во время загрузки) */}
 				{user && (
