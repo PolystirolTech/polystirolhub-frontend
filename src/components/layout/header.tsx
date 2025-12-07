@@ -32,6 +32,26 @@ export function Header() {
 					</Link>
 				</div>
 
+				{/* Navigation Links */}
+				<Link
+					href="/servers"
+					className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-4 shadow-lg transition-all hover:scale-[1.02]"
+				>
+					<span className="text-sm font-medium text-white/90">Сервера</span>
+				</Link>
+				<Link
+					href="/stats"
+					className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-4 shadow-lg transition-all hover:scale-[1.02]"
+				>
+					<span className="text-sm font-medium text-white/90">Статистика</span>
+				</Link>
+				<Link
+					href="/shop"
+					className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-4 shadow-lg transition-all hover:scale-[1.02]"
+				>
+					<span className="text-sm font-medium text-white/90">Магазин</span>
+				</Link>
+
 				{/* Authenticated User Blocks */}
 				{/* Показываем блок профиля если есть данные пользователя (даже во время загрузки) */}
 				{user && (
