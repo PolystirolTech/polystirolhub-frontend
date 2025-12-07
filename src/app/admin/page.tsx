@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { useAuth } from '@/lib/auth';
 import { UserAdminWidget } from '@/components/admin/user-admin-widget';
+import { GameTypesWidget } from '@/components/admin/game-types-widget';
+import { ServerCreateForm } from '@/components/admin/server-create-form';
+import { ServersListWidget } from '@/components/admin/servers-list-widget';
 
 export default function AdminPage() {
 	const { user, isAuthenticated, isLoading } = useAuth();
@@ -55,37 +58,54 @@ export default function AdminPage() {
 		<div className="min-h-screen pb-20 pt-24">
 			<Header />
 
-			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-				<div className="mb-8">
+			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
+				<div className="mb-6">
 					<h1 className="mb-2 text-4xl font-bold tracking-tighter text-white sm:text-6xl">
 						Панель администратора
 					</h1>
 					<p className="text-lg text-white/60">Управление системой</p>
 				</div>
 
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 mb-6">
-					<div className="mb-4">
-						<h2 className="text-xl font-bold text-white mb-2">
+				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+					<div className="mb-3">
+						<h2 className="text-sm font-bold text-white mb-2">
 							Добро пожаловать, {user.username}!
 						</h2>
 						{user.is_super_admin && (
 							<div className="inline-flex items-center gap-2 rounded-lg bg-purple-500/20 px-3 py-1 mb-2">
 								<span className="h-2 w-2 rounded-full bg-purple-500"></span>
-								<span className="text-sm text-purple-400">Супер администратор</span>
+								<span className="text-xs text-purple-400">Супер администратор</span>
 							</div>
 						)}
 						{user.is_admin && !user.is_super_admin && (
 							<div className="inline-flex items-center gap-2 rounded-lg bg-blue-500/20 px-3 py-1 mb-2">
 								<span className="h-2 w-2 rounded-full bg-blue-500"></span>
-								<span className="text-sm text-blue-400">Администратор</span>
+								<span className="text-xs text-blue-400">Администратор</span>
 							</div>
 						)}
 					</div>
-					<p className="text-white/60">Страница администрирования.</p>
+					<p className="text-xs text-white/60">Страница администрирования.</p>
 				</div>
 
-				{/* Виджет управления админами (только для super admin) */}
-				{user.is_super_admin && <UserAdminWidget />}
+				{/* Grid layout для виджетов */}
+				<div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+					{/* Левая колонка */}
+					<div className="flex flex-col gap-6 lg:col-span-4">
+						{/* Виджет управления админами (только для super admin) */}
+						{user.is_super_admin && <UserAdminWidget />}
+
+						{/* Управление типами игр */}
+						<GameTypesWidget />
+					</div>
+
+					{/* Правая колонка - форма создания сервера */}
+					<div className="lg:col-span-8">
+						<ServerCreateForm />
+					</div>
+				</div>
+
+				{/* Список серверов */}
+				<ServersListWidget />
 			</main>
 		</div>
 	);

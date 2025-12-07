@@ -213,17 +213,17 @@ export function UserAdminWidget() {
 	}
 
 	return (
-		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8">
-			<h2 className="text-2xl font-bold text-white mb-6">Управление админами</h2>
+		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<h3 className="mb-3 text-sm font-bold text-white">Управление админами</h3>
 
 			{error && (
-				<div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+				<div className="mb-3 rounded-lg bg-red-500/10 border border-red-500/20 p-2 text-xs text-red-400">
 					{error}
 				</div>
 			)}
 
 			{/* Поле поиска */}
-			<div className="relative mb-6">
+			<div className="relative mb-4">
 				<Input
 					ref={searchInputRef}
 					type="text"
@@ -300,78 +300,76 @@ export function UserAdminWidget() {
 
 			{/* Выбранный пользователь - показываем только после выбора из списка */}
 			{selectedUser && (
-				<div className="mb-6 p-4 rounded-lg bg-black/20 border border-white/10">
-					{(() => {
-						return (
-							<div className="flex items-center gap-4">
-								<div className="h-16 w-16 overflow-hidden rounded-full bg-gradient-to-br from-primary to-secondary shrink-0">
-									{selectedUser.avatar ? (
-										<Image
-											src={selectedUser.avatar}
-											alt={selectedUser.username}
-											className="h-full w-full object-cover"
-											width={64}
-											height={64}
-											unoptimized
-										/>
-									) : (
-										<div className="flex h-full w-full items-center justify-center text-lg font-bold text-white">
-											{selectedUser.username.substring(0, 2).toUpperCase()}
-										</div>
-									)}
+				<div className="mb-4 rounded-lg bg-white/5 border border-white/10 p-2">
+					<div className="flex items-start gap-2">
+						<div className="h-10 w-10 overflow-hidden rounded-full bg-gradient-to-br from-primary to-secondary shrink-0">
+							{selectedUser.avatar ? (
+								<Image
+									src={selectedUser.avatar}
+									alt={selectedUser.username}
+									className="h-full w-full object-cover"
+									width={40}
+									height={40}
+									unoptimized
+								/>
+							) : (
+								<div className="flex h-full w-full items-center justify-center text-xs font-bold text-white">
+									{selectedUser.username.substring(0, 2).toUpperCase()}
 								</div>
-								<div className="flex-1">
-									<div className="flex items-center gap-2 mb-1">
-										<h3 className="text-lg font-bold text-white">{selectedUser.username}</h3>
-										{selectedUser.is_super_admin && (
-											<span className="flex items-center gap-1 rounded-full bg-purple-500/20 px-2 py-0.5 text-xs text-purple-400">
-												Супер админ
-											</span>
-										)}
-										{selectedUser.is_admin && !selectedUser.is_super_admin && (
-											<span className="flex items-center gap-1 rounded-full bg-blue-500/20 px-2 py-0.5 text-xs text-blue-400">
-												Админ
-											</span>
-										)}
-									</div>
-									{selectedUser.email && (
-										<p className="text-sm text-white/60 mb-2">{selectedUser.email}</p>
-									)}
-									<div className="flex items-center gap-4 text-xs text-white/40">
-										<span>ID: {selectedUser.id}</span>
-										<span>Уровень: {selectedUser.level}</span>
-									</div>
-								</div>
-								<div className="flex gap-2">
-									{!selectedUser.is_admin && !selectedUser.is_super_admin && (
-										<Button
-											onClick={() => setPromoteModal({ isOpen: true, user: selectedUser })}
-											disabled={isProcessing}
-											variant="default"
-											size="sm"
-										>
-											Назначить админом
-										</Button>
-									)}
-									{selectedUser.is_admin && !selectedUser.is_super_admin && (
-										<Button
-											onClick={() => setDemoteModal({ isOpen: true, user: selectedUser })}
-											disabled={isProcessing}
-											variant="destructive"
-											size="sm"
-										>
-											Снять админку
-										</Button>
-									)}
-									{selectedUser.is_super_admin && (
-										<span className="text-sm text-white/40">
-											Нельзя изменить статус супер админа
-										</span>
-									)}
-								</div>
+							)}
+						</div>
+						<div className="flex-1 min-w-0">
+							<div className="flex items-center gap-1.5 mb-1 flex-wrap">
+								<h3 className="text-xs font-bold text-white truncate">{selectedUser.username}</h3>
+								{selectedUser.is_super_admin && (
+									<span className="flex items-center gap-0.5 rounded-full bg-purple-500/20 px-1.5 py-0.5 text-[10px] text-purple-400 shrink-0">
+										Супер админ
+									</span>
+								)}
+								{selectedUser.is_admin && !selectedUser.is_super_admin && (
+									<span className="flex items-center gap-0.5 rounded-full bg-blue-500/20 px-1.5 py-0.5 text-[10px] text-blue-400 shrink-0">
+										Админ
+									</span>
+								)}
 							</div>
-						);
-					})()}
+							{selectedUser.email && (
+								<p className="text-[10px] text-white/60 mb-1 truncate">{selectedUser.email}</p>
+							)}
+							<div className="flex items-center gap-2 text-[9px] text-white/40 flex-wrap">
+								<span className="truncate">ID: {selectedUser.id.substring(0, 8)}...</span>
+								<span>Уровень: {selectedUser.level}</span>
+							</div>
+						</div>
+					</div>
+					<div className="flex gap-2 mt-2">
+						{!selectedUser.is_admin && !selectedUser.is_super_admin && (
+							<Button
+								onClick={() => setPromoteModal({ isOpen: true, user: selectedUser })}
+								disabled={isProcessing}
+								variant="default"
+								size="sm"
+								className="h-7 px-2 text-xs flex-1"
+							>
+								Назначить админом
+							</Button>
+						)}
+						{selectedUser.is_admin && !selectedUser.is_super_admin && (
+							<Button
+								onClick={() => setDemoteModal({ isOpen: true, user: selectedUser })}
+								disabled={isProcessing}
+								variant="destructive"
+								size="sm"
+								className="h-7 px-2 text-xs flex-1"
+							>
+								Снять админку
+							</Button>
+						)}
+						{selectedUser.is_super_admin && (
+							<span className="text-[10px] text-white/40 text-center py-1">
+								Нельзя изменить статус супер админа
+							</span>
+						)}
+					</div>
 				</div>
 			)}
 
