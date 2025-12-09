@@ -152,7 +152,9 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.name !== undefined) {
 			formParams.append(
 				'name',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], { type: 'application/json' })
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], {
+					type: 'application/json',
+				})
 			);
 		}
 
@@ -177,14 +179,18 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.mods !== undefined) {
 			formParams.append(
 				'mods',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], { type: 'application/json' })
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], {
+					type: 'application/json',
+				})
 			);
 		}
 
 		if (requestParameters.ip !== undefined) {
 			formParams.append(
 				'ip',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], { type: 'application/json' })
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], {
+					type: 'application/json',
+				})
 			);
 		}
 
@@ -800,7 +806,9 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.name !== undefined) {
 			formParams.append(
 				'name',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], { type: 'application/json' })
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], {
+					type: 'application/json',
+				})
 			);
 		}
 
@@ -825,14 +833,18 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.mods !== undefined) {
 			formParams.append(
 				'mods',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], { type: 'application/json' })
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], {
+					type: 'application/json',
+				})
 			);
 		}
 
 		if (requestParameters.ip !== undefined) {
 			formParams.append(
 				'ip',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], { type: 'application/json' })
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], {
+					type: 'application/json',
+				})
 			);
 		}
 

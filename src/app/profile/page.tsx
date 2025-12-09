@@ -77,7 +77,10 @@ export default function ProfilePage() {
 
 					if (response.links && Array.isArray(response.links)) {
 						const mcLink = response.links.find((link: ExternalLinkResponse | unknown) => {
-							const platform = typeof link === 'object' && link !== null ? (link as ExternalLinkResponse).platform : null;
+							const platform =
+								typeof link === 'object' && link !== null
+									? (link as ExternalLinkResponse).platform
+									: null;
 							return platform === 'MC' || platform === 'mc' || platform === 'minecraft';
 						});
 
@@ -214,7 +217,10 @@ export default function ProfilePage() {
 				const response = await authService.checkLinkStatus(user.id);
 				if (response.links && Array.isArray(response.links)) {
 					const mcLink = response.links.find((link: ExternalLinkResponse | unknown) => {
-						const platform = typeof link === 'object' && link !== null ? (link as ExternalLinkResponse).platform : null;
+						const platform =
+							typeof link === 'object' && link !== null
+								? (link as ExternalLinkResponse).platform
+								: null;
 						return platform === 'MC' || platform === 'mc' || platform === 'minecraft';
 					});
 

@@ -742,7 +742,9 @@ export class AuthApi extends runtime.BaseAPI {
 		if (requestParameters.file !== undefined) {
 			formParams.append(
 				'file',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.file))], { type: 'application/json' })
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.file))], {
+					type: 'application/json',
+				})
 			);
 		}
 
