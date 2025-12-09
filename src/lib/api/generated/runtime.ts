@@ -401,7 +401,16 @@ export function mapValues(data: any, fn: (item: any) => any) {
 	return Object.keys(data).reduce((acc, key) => ({ ...acc, [key]: fn(data[key]) }), {});
 }
 
+/**
+ * Convert any value to JSON-serializable format
+ */
 export function anyToJSON(value: any): any {
+	if (value === null || value === undefined) {
+		return value;
+	}
+	if (typeof value === 'object' && value.toJSON && typeof value.toJSON === 'function') {
+		return value.toJSON();
+	}
 	return value;
 }
 

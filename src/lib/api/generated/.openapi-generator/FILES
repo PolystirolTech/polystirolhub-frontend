@@ -13,6 +13,7 @@ models/CreateSuperAdminRequest.ts
 models/Description.ts
 models/Email.ts
 models/Email1.ts
+models/ExternalLinkResponse.ts
 models/GameServerPublic.ts
 models/GameServerResponse.ts
 models/GameTypeCreate.ts
@@ -24,11 +25,16 @@ models/IsAdmin.ts
 models/IsSuperAdmin.ts
 models/LeaderboardPlayer.ts
 models/Level.ts
+models/LinkCodeGenerateResponse.ts
+models/LinkRequest.ts
+models/LinkResponse.ts
+models/LinkStatusResponse.ts
 models/ModelError.ts
 models/Motd.ts
 models/Name.ts
 models/OAuthAccountPublic.ts
 models/Ping.ts
+models/PlatformUsername.ts
 models/PlayersList.ts
 models/Port.ts
 models/ProviderAvatar.ts

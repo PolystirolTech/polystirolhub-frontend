@@ -8,6 +8,7 @@
 import { AuthApi } from '@/lib/api/generated';
 import { apiConfig } from '@/lib/api/config';
 import type { User, OAuthProvider, ProviderConnection, UpdateProfileData } from './types';
+import type { LinkCodeGenerateResponse, LinkStatusResponse } from '@/lib/api/generated';
 
 class AuthService {
 	private authApi: AuthApi;
@@ -183,6 +184,34 @@ class AuthService {
 			return await response.json();
 		} catch (error) {
 			console.error('Failed to upload avatar:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Generate a one-time link code for linking Minecraft UUID to user account
+	 */
+	async generateLinkCode(): Promise<LinkCodeGenerateResponse> {
+		try {
+			const response = await this.authApi.generateLinkCodeEndpointApiV1AuthGenerateLinkCodePost();
+			return response;
+		} catch (error) {
+			console.error('Failed to generate link code:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Check link status for a user by user_id
+	 */
+	async checkLinkStatus(userId: string): Promise<LinkStatusResponse> {
+		try {
+			const response = await this.authApi.checkLinkStatusApiV1AuthCheckLinkStatusUserIdGet({
+				userId: userId,
+			});
+			return response;
+		} catch (error) {
+			console.error('Failed to check link status:', error);
 			throw error;
 		}
 	}

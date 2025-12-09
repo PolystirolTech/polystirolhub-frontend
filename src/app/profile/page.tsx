@@ -10,11 +10,13 @@ import type { ProviderConnection } from '@/lib/auth/types';
 import { useState } from 'react';
 import { SocialButton } from '@/components/ui/social-button';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
+import { MinecraftLinkModal } from '@/components/profile/minecraft-link-modal';
 
 import { useLevel } from '@/lib/level/level-context';
 import { maskEmail } from '@/lib/utils';
 import { ProfileUpdateForm } from '@/components/profile/profile-update-form';
 import { AdminApi, apiConfig } from '@/lib/api';
+import type { ExternalLinkResponse } from '@/lib/api/generated';
 
 export default function ProfilePage() {
 	const { user, isAuthenticated, isLoading, refreshUser } = useAuth();
@@ -32,6 +34,9 @@ export default function ProfilePage() {
 	const [hasSuperAdmin, setHasSuperAdmin] = useState<boolean | null>(null);
 	const [checkingSuperAdmin, setCheckingSuperAdmin] = useState(true);
 	const [creatingSuperAdmin, setCreatingSuperAdmin] = useState(false);
+	const [minecraftLinkModal, setMinecraftLinkModal] = useState(false);
+	const [minecraftLink, setMinecraftLink] = useState<ExternalLinkResponse | null>(null);
+	const [loadingMinecraftLink, setLoadingMinecraftLink] = useState(true);
 
 	// Check if debug mode is enabled (default to true if not set)
 	const isDebugMode = process.env.NEXT_PUBLIC_DEBUG !== 'false';
@@ -61,6 +66,40 @@ export default function ProfilePage() {
 			loadProviders();
 		}
 	}, [user]);
+
+	// Check Minecraft link status
+	useEffect(() => {
+		async function checkMinecraftLink() {
+			if (user?.id) {
+				try {
+					setLoadingMinecraftLink(true);
+					const response = await authService.checkLinkStatus(user.id);
+
+					if (response.links && Array.isArray(response.links)) {
+						const mcLink = response.links.find((link: ExternalLinkResponse | unknown) => {
+							const platform = typeof link === 'object' && link !== null ? (link as ExternalLinkResponse).platform : null;
+							return platform === 'MC' || platform === 'mc' || platform === 'minecraft';
+						});
+
+						if (mcLink) {
+							setMinecraftLink(mcLink as ExternalLinkResponse);
+						} else {
+							setMinecraftLink(null);
+						}
+					}
+				} catch (error) {
+					console.error('Failed to check Minecraft link:', error);
+					setMinecraftLink(null);
+				} finally {
+					setLoadingMinecraftLink(false);
+				}
+			}
+		}
+
+		if (user?.id) {
+			checkMinecraftLink();
+		}
+	}, [user?.id]);
 
 	// Проверка наличия super admin через публичный эндпоинт
 	useEffect(() => {
@@ -165,6 +204,27 @@ export default function ProfilePage() {
 			// Можно добавить уведомление об ошибке
 		} finally {
 			setCreatingSuperAdmin(false);
+		}
+	};
+
+	const handleMinecraftLinkSuccess = async () => {
+		// Refresh Minecraft link status
+		if (user?.id) {
+			try {
+				const response = await authService.checkLinkStatus(user.id);
+				if (response.links && Array.isArray(response.links)) {
+					const mcLink = response.links.find((link: ExternalLinkResponse | unknown) => {
+						const platform = typeof link === 'object' && link !== null ? (link as ExternalLinkResponse).platform : null;
+						return platform === 'MC' || platform === 'mc' || platform === 'minecraft';
+					});
+
+					if (mcLink) {
+						setMinecraftLink(mcLink as ExternalLinkResponse);
+					}
+				}
+			} catch (error) {
+				console.error('Failed to refresh Minecraft link:', error);
+			}
 		}
 	};
 
@@ -405,6 +465,48 @@ export default function ProfilePage() {
 										</SocialButton>
 									);
 								})}
+
+								{/* Minecraft Link */}
+								{loadingMinecraftLink ? (
+									<div className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5">
+										<div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
+										<div className="text-sm text-muted">Загрузка...</div>
+									</div>
+								) : minecraftLink ? (
+									<div className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 group relative">
+										<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 text-2xl">
+											<span className="text-green-400">⛏️</span>
+										</div>
+										<div className="flex-1">
+											<div className="font-medium text-white">
+												{typeof minecraftLink.platformUsername === 'string'
+													? minecraftLink.platformUsername
+													: minecraftLink.platformUsername
+														? String(minecraftLink.platformUsername)
+														: 'Minecraft'}
+											</div>
+											<div className="text-xs text-muted">
+												Minecraft •{' '}
+												{minecraftLink.createdAt
+													? new Date(minecraftLink.createdAt).toLocaleDateString()
+													: 'Привязан'}
+											</div>
+										</div>
+									</div>
+								) : (
+									<button
+										onClick={() => setMinecraftLinkModal(true)}
+										className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 hover:bg-black/30 transition-colors text-left w-full cursor-pointer"
+									>
+										<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 text-2xl">
+											<span className="text-white/60">⛏️</span>
+										</div>
+										<div>
+											<div className="font-medium text-white">Привязать Minecraft</div>
+											<div className="text-xs text-muted">Используйте код для привязки</div>
+										</div>
+									</button>
+								)}
 							</div>
 						)}
 					</div>
@@ -484,6 +586,16 @@ export default function ProfilePage() {
 					confirmText="Стать супер админом"
 					cancelText="Отмена"
 					isDangerous={false}
+				/>
+			)}
+
+			{/* Minecraft Link Modal */}
+			{user && (
+				<MinecraftLinkModal
+					isOpen={minecraftLinkModal}
+					onClose={() => setMinecraftLinkModal(false)}
+					userId={user.id}
+					onSuccess={handleMinecraftLinkSuccess}
 				/>
 			)}
 		</div>

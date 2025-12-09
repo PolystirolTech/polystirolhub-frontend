@@ -13,11 +13,25 @@
  */
 
 import * as runtime from '../runtime';
-import { anyToJSON } from '../runtime';
-import type { HTTPValidationError, UserUpdate } from '../models/index';
+import type {
+	HTTPValidationError,
+	LinkCodeGenerateResponse,
+	LinkRequest,
+	LinkResponse,
+	LinkStatusResponse,
+	UserUpdate,
+} from '../models/index';
 import {
 	HTTPValidationErrorFromJSON,
 	HTTPValidationErrorToJSON,
+	LinkCodeGenerateResponseFromJSON,
+	LinkCodeGenerateResponseToJSON,
+	LinkRequestFromJSON,
+	LinkRequestToJSON,
+	LinkResponseFromJSON,
+	LinkResponseToJSON,
+	LinkStatusResponseFromJSON,
+	LinkStatusResponseToJSON,
 	UserUpdateFromJSON,
 	UserUpdateToJSON,
 } from '../models/index';
@@ -30,8 +44,16 @@ export interface CallbackApiV1AuthCallbackProviderGetRequest {
 	state?: any;
 }
 
+export interface CheckLinkStatusApiV1AuthCheckLinkStatusUserIdGetRequest {
+	userId: any;
+}
+
 export interface LinkApiV1AuthLinkProviderGetRequest {
 	provider: string;
+}
+
+export interface LinkGameAccountApiV1AuthLinkPostRequest {
+	linkRequest: LinkRequest;
 }
 
 export interface LoginApiV1AuthLoginProviderGetRequest {
@@ -121,6 +143,104 @@ export class AuthApi extends runtime.BaseAPI {
 			requestParameters,
 			initOverrides
 		);
+		return await response.value();
+	}
+
+	/**
+	 * Check link status for a user by user_id
+	 * Check Link Status
+	 */
+	async checkLinkStatusApiV1AuthCheckLinkStatusUserIdGetRaw(
+		requestParameters: CheckLinkStatusApiV1AuthCheckLinkStatusUserIdGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<LinkStatusResponse>> {
+		if (requestParameters.userId === null || requestParameters.userId === undefined) {
+			throw new runtime.RequiredError(
+				'userId',
+				'Required parameter requestParameters.userId was null or undefined when calling checkLinkStatusApiV1AuthCheckLinkStatusUserIdGet.'
+			);
+		}
+
+		const queryParameters: any = {};
+
+		const headerParameters: runtime.HTTPHeaders = {};
+
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/check-link-status/{user_id}`.replace(
+					`{${'user_id'}}`,
+					encodeURIComponent(String(requestParameters.userId))
+				),
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
+
+		return new runtime.JSONApiResponse(response, (jsonValue) =>
+			LinkStatusResponseFromJSON(jsonValue)
+		);
+	}
+
+	/**
+	 * Check link status for a user by user_id
+	 * Check Link Status
+	 */
+	async checkLinkStatusApiV1AuthCheckLinkStatusUserIdGet(
+		requestParameters: CheckLinkStatusApiV1AuthCheckLinkStatusUserIdGetRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<LinkStatusResponse> {
+		const response = await this.checkLinkStatusApiV1AuthCheckLinkStatusUserIdGetRaw(
+			requestParameters,
+			initOverrides
+		);
+		return await response.value();
+	}
+
+	/**
+	 * Generate a one-time link code for linking game UUID to user account
+	 * Generate Link Code Endpoint
+	 */
+	async generateLinkCodeEndpointApiV1AuthGenerateLinkCodePostRaw(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<LinkCodeGenerateResponse>> {
+		const queryParameters: any = {};
+
+		const headerParameters: runtime.HTTPHeaders = {};
+
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
+
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/generate-link-code`,
+				method: 'POST',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
+
+		return new runtime.JSONApiResponse(response, (jsonValue) =>
+			LinkCodeGenerateResponseFromJSON(jsonValue)
+		);
+	}
+
+	/**
+	 * Generate a one-time link code for linking game UUID to user account
+	 * Generate Link Code Endpoint
+	 */
+	async generateLinkCodeEndpointApiV1AuthGenerateLinkCodePost(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<LinkCodeGenerateResponse> {
+		const response =
+			await this.generateLinkCodeEndpointApiV1AuthGenerateLinkCodePostRaw(initOverrides);
 		return await response.value();
 	}
 
@@ -274,6 +394,56 @@ export class AuthApi extends runtime.BaseAPI {
 		initOverrides?: RequestInit | runtime.InitOverrideFunction
 	): Promise<any> {
 		const response = await this.linkApiV1AuthLinkProviderGetRaw(requestParameters, initOverrides);
+		return await response.value();
+	}
+
+	/**
+	 * Link game UUID to user account using one-time link code
+	 * Link Game Account
+	 */
+	async linkGameAccountApiV1AuthLinkPostRaw(
+		requestParameters: LinkGameAccountApiV1AuthLinkPostRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<LinkResponse>> {
+		if (requestParameters.linkRequest === null || requestParameters.linkRequest === undefined) {
+			throw new runtime.RequiredError(
+				'linkRequest',
+				'Required parameter requestParameters.linkRequest was null or undefined when calling linkGameAccountApiV1AuthLinkPost.'
+			);
+		}
+
+		const queryParameters: any = {};
+
+		const headerParameters: runtime.HTTPHeaders = {};
+
+		headerParameters['Content-Type'] = 'application/json';
+
+		const response = await this.request(
+			{
+				path: `/api/v1/auth/link`,
+				method: 'POST',
+				headers: headerParameters,
+				query: queryParameters,
+				body: LinkRequestToJSON(requestParameters.linkRequest),
+			},
+			initOverrides
+		);
+
+		return new runtime.JSONApiResponse(response, (jsonValue) => LinkResponseFromJSON(jsonValue));
+	}
+
+	/**
+	 * Link game UUID to user account using one-time link code
+	 * Link Game Account
+	 */
+	async linkGameAccountApiV1AuthLinkPost(
+		requestParameters: LinkGameAccountApiV1AuthLinkPostRequest,
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<LinkResponse> {
+		const response = await this.linkGameAccountApiV1AuthLinkPostRaw(
+			requestParameters,
+			initOverrides
+		);
 		return await response.value();
 	}
 
@@ -570,18 +740,10 @@ export class AuthApi extends runtime.BaseAPI {
 		}
 
 		if (requestParameters.file !== undefined) {
-			if (
-				requestParameters.file instanceof File ||
-				(typeof Blob !== 'undefined' && requestParameters.file instanceof Blob)
-			) {
-				formParams.append('file', requestParameters.file);
-			} else {
-				const fileValue =
-					typeof requestParameters.file === 'string'
-						? requestParameters.file
-						: JSON.stringify(anyToJSON(requestParameters.file));
-				formParams.append('file', fileValue);
-			}
+			formParams.append(
+				'file',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.file))], { type: 'application/json' })
+			);
 		}
 
 		const response = await this.request(

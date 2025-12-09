@@ -13,7 +13,6 @@
  */
 
 import * as runtime from '../runtime';
-import { anyToJSON } from '../runtime';
 import type {
 	GameServerPublic,
 	GameServerResponse,
@@ -151,66 +150,58 @@ export class GameServersApi extends runtime.BaseAPI {
 		}
 
 		if (requestParameters.name !== undefined) {
-			const nameValue =
-				typeof requestParameters.name === 'string'
-					? requestParameters.name
-					: JSON.stringify(anyToJSON(requestParameters.name));
-			formParams.append('name', nameValue);
+			formParams.append(
+				'name',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.gameTypeId !== undefined) {
-			const gameTypeIdValue =
-				typeof requestParameters.gameTypeId === 'string'
-					? requestParameters.gameTypeId
-					: JSON.stringify(anyToJSON(requestParameters.gameTypeId));
-			formParams.append('game_type_id', gameTypeIdValue);
+			formParams.append(
+				'game_type_id',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.gameTypeId))], {
+					type: 'application/json',
+				})
+			);
 		}
 
 		if (requestParameters.description !== undefined) {
-			const descriptionValue =
-				typeof requestParameters.description === 'string'
-					? requestParameters.description
-					: JSON.stringify(anyToJSON(requestParameters.description));
-			formParams.append('description', descriptionValue);
+			formParams.append(
+				'description',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.description))], {
+					type: 'application/json',
+				})
+			);
 		}
 
 		if (requestParameters.mods !== undefined) {
-			const modsValue =
-				typeof requestParameters.mods === 'string'
-					? requestParameters.mods
-					: JSON.stringify(anyToJSON(requestParameters.mods));
-			formParams.append('mods', modsValue);
+			formParams.append(
+				'mods',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.ip !== undefined) {
-			const ipValue =
-				typeof requestParameters.ip === 'string'
-					? requestParameters.ip
-					: JSON.stringify(anyToJSON(requestParameters.ip));
-			formParams.append('ip', ipValue);
+			formParams.append(
+				'ip',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.port !== undefined) {
-			const portValue =
-				typeof requestParameters.port === 'string'
-					? requestParameters.port
-					: JSON.stringify(PortToJSON(requestParameters.port));
-			formParams.append('port', portValue);
+			formParams.append(
+				'port',
+				new Blob([JSON.stringify(PortToJSON(requestParameters.port))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.banner !== undefined) {
-			if (
-				requestParameters.banner instanceof File ||
-				(typeof Blob !== 'undefined' && requestParameters.banner instanceof Blob)
-			) {
-				formParams.append('banner', requestParameters.banner);
-			} else {
-				const bannerValue =
-					typeof requestParameters.banner === 'string'
-						? requestParameters.banner
-						: JSON.stringify(anyToJSON(requestParameters.banner));
-				formParams.append('banner', bannerValue);
-			}
+			formParams.append(
+				'banner',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.banner))], {
+					type: 'application/json',
+				})
+			);
 		}
 
 		const response = await this.request(
@@ -807,66 +798,58 @@ export class GameServersApi extends runtime.BaseAPI {
 		}
 
 		if (requestParameters.name !== undefined) {
-			const nameValue =
-				typeof requestParameters.name === 'string'
-					? requestParameters.name
-					: JSON.stringify(anyToJSON(requestParameters.name));
-			formParams.append('name', nameValue);
+			formParams.append(
+				'name',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.gameTypeId !== undefined) {
-			const gameTypeIdValue =
-				typeof requestParameters.gameTypeId === 'string'
-					? requestParameters.gameTypeId
-					: JSON.stringify(anyToJSON(requestParameters.gameTypeId));
-			formParams.append('game_type_id', gameTypeIdValue);
+			formParams.append(
+				'game_type_id',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.gameTypeId))], {
+					type: 'application/json',
+				})
+			);
 		}
 
 		if (requestParameters.description !== undefined) {
-			const descriptionValue =
-				typeof requestParameters.description === 'string'
-					? requestParameters.description
-					: JSON.stringify(anyToJSON(requestParameters.description));
-			formParams.append('description', descriptionValue);
+			formParams.append(
+				'description',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.description))], {
+					type: 'application/json',
+				})
+			);
 		}
 
 		if (requestParameters.mods !== undefined) {
-			const modsValue =
-				typeof requestParameters.mods === 'string'
-					? requestParameters.mods
-					: JSON.stringify(anyToJSON(requestParameters.mods));
-			formParams.append('mods', modsValue);
+			formParams.append(
+				'mods',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.ip !== undefined) {
-			const ipValue =
-				typeof requestParameters.ip === 'string'
-					? requestParameters.ip
-					: JSON.stringify(anyToJSON(requestParameters.ip));
-			formParams.append('ip', ipValue);
+			formParams.append(
+				'ip',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.port !== undefined) {
-			const portValue =
-				typeof requestParameters.port === 'string'
-					? requestParameters.port
-					: JSON.stringify(PortToJSON(requestParameters.port));
-			formParams.append('port', portValue);
+			formParams.append(
+				'port',
+				new Blob([JSON.stringify(PortToJSON(requestParameters.port))], { type: 'application/json' })
+			);
 		}
 
 		if (requestParameters.banner !== undefined) {
-			if (
-				requestParameters.banner instanceof File ||
-				(typeof Blob !== 'undefined' && requestParameters.banner instanceof Blob)
-			) {
-				formParams.append('banner', requestParameters.banner);
-			} else {
-				const bannerValue =
-					typeof requestParameters.banner === 'string'
-						? requestParameters.banner
-						: JSON.stringify(anyToJSON(requestParameters.banner));
-				formParams.append('banner', bannerValue);
-			}
+			formParams.append(
+				'banner',
+				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.banner))], {
+					type: 'application/json',
+				})
+			);
 		}
 
 		const response = await this.request(
