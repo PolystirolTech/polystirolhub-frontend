@@ -23,12 +23,25 @@ export function MinecraftStats() {
 					setLoading(true);
 					const response = await authService.checkLinkStatus(user.id);
 
+					console.log('[MinecraftStats] Full link status response:', JSON.stringify(response, null, 2));
+
 					if (response.links && Array.isArray(response.links)) {
+						console.log('[MinecraftStats] All links:', response.links);
+						
 						const mcLink = response.links.find((link: ExternalLinkResponse | unknown) => {
 							if (typeof link !== 'object' || link === null) return false;
 
 							const linkObj = link as ExternalLinkResponse;
 							const platform = linkObj.platform;
+
+							console.log('[MinecraftStats] Checking link:', {
+								platform,
+								platformType: typeof platform,
+								externalId: linkObj.externalId,
+								externalIdType: typeof linkObj.externalId,
+								id: linkObj.id,
+								platformUsername: linkObj.platformUsername,
+							});
 
 							// Более гибкая проверка платформы
 							if (platform === null || platform === undefined) return false;
@@ -37,18 +50,31 @@ export function MinecraftStats() {
 						});
 
 						if (mcLink) {
+							console.log('[MinecraftStats] Found Minecraft link:', mcLink);
 							setMinecraftLink(mcLink as ExternalLinkResponse);
+							
 							// externalId содержит UUID игрока для Minecraft
 							const uuid = (mcLink as ExternalLinkResponse).externalId;
+							console.log('[MinecraftStats] externalId value:', uuid, 'type:', typeof uuid);
 
 							// Более гибкая проверка UUID - может быть строкой или числом
 							if (uuid !== null && uuid !== undefined) {
 								const uuidString = String(uuid).trim();
+								console.log('[MinecraftStats] UUID string:', uuidString);
 								if (uuidString.length > 0) {
 									setPlayerUuid(uuidString);
+									console.log('[MinecraftStats] Set playerUuid to:', uuidString);
+								} else {
+									console.warn('[MinecraftStats] UUID string is empty');
 								}
+							} else {
+								console.warn('[MinecraftStats] externalId is null or undefined');
 							}
+						} else {
+							console.warn('[MinecraftStats] Minecraft link not found in links array');
 						}
+					} else {
+						console.warn('[MinecraftStats] No links array in response');
 					}
 				} catch (error) {
 					console.error('Failed to check Minecraft link:', error);
