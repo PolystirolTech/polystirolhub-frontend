@@ -25,19 +25,28 @@ export function MinecraftStats() {
 
 					if (response.links && Array.isArray(response.links)) {
 						const mcLink = response.links.find((link: ExternalLinkResponse | unknown) => {
-							const platform =
-								typeof link === 'object' && link !== null
-									? (link as ExternalLinkResponse).platform
-									: null;
-							return platform === 'MC' || platform === 'mc' || platform === 'minecraft';
+							if (typeof link !== 'object' || link === null) return false;
+
+							const linkObj = link as ExternalLinkResponse;
+							const platform = linkObj.platform;
+
+							// Более гибкая проверка платформы
+							if (platform === null || platform === undefined) return false;
+							const platformStr = String(platform).toLowerCase().trim();
+							return platformStr === 'mc' || platformStr === 'minecraft';
 						});
 
 						if (mcLink) {
 							setMinecraftLink(mcLink as ExternalLinkResponse);
 							// externalId содержит UUID игрока для Minecraft
 							const uuid = (mcLink as ExternalLinkResponse).externalId;
-							if (uuid && typeof uuid === 'string') {
-								setPlayerUuid(uuid);
+
+							// Более гибкая проверка UUID - может быть строкой или числом
+							if (uuid !== null && uuid !== undefined) {
+								const uuidString = String(uuid).trim();
+								if (uuidString.length > 0) {
+									setPlayerUuid(uuidString);
+								}
 							}
 						}
 					}
