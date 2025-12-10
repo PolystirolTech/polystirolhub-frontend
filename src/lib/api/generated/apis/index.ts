@@ -4,4 +4,5 @@ export * from './AdminApi';
 export * from './AuthApi';
 export * from './DefaultApi';
 export * from './GameServersApi';
+export * from './StatisticsApi';
 export * from './UsersApi';

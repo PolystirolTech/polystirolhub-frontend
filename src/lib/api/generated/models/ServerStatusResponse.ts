@@ -21,8 +21,8 @@ import type { PlayersList } from './PlayersList';
 import { PlayersListFromJSON, PlayersListFromJSONTyped, PlayersListToJSON } from './PlayersList';
 import type { ServerIcon } from './ServerIcon';
 import { ServerIconFromJSON, ServerIconFromJSONTyped, ServerIconToJSON } from './ServerIcon';
-import type { Version } from './Version';
-import { VersionFromJSON, VersionFromJSONTyped, VersionToJSON } from './Version';
+import type { Version2 } from './Version2';
+import { Version2FromJSON, Version2FromJSONTyped, Version2ToJSON } from './Version2';
 
 /**
  *
@@ -68,10 +68,10 @@ export interface ServerStatusResponse {
 	ping?: Ping;
 	/**
 	 *
-	 * @type {Version}
+	 * @type {Version2}
 	 * @memberof ServerStatusResponse
 	 */
-	version?: Version;
+	version?: Version2;
 	/**
 	 *
 	 * @type {any}
@@ -115,7 +115,7 @@ export function ServerStatusResponseFromJSONTyped(
 			? undefined
 			: PlayersListFromJSON(json['players_list']),
 		ping: !exists(json, 'ping') ? undefined : PingFromJSON(json['ping']),
-		version: !exists(json, 'version') ? undefined : VersionFromJSON(json['version']),
+		version: !exists(json, 'version') ? undefined : Version2FromJSON(json['version']),
 		online: !exists(json, 'online') ? undefined : json['online'],
 		error: !exists(json, 'error') ? undefined : json['error'],
 	};
@@ -135,7 +135,7 @@ export function ServerStatusResponseToJSON(value?: ServerStatusResponse | null):
 		players_max: value.playersMax,
 		players_list: PlayersListToJSON(value.playersList),
 		ping: PingToJSON(value.ping),
-		version: VersionToJSON(value.version),
+		version: Version2ToJSON(value.version),
 		online: value.online,
 		error: value.error,
 	};

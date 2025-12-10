@@ -13,6 +13,7 @@
  */
 
 import * as runtime from '../runtime';
+const { anyToJSON } = runtime;
 import type {
 	GameServerPublic,
 	GameServerResponse,
@@ -152,16 +153,14 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.name !== undefined) {
 			formParams.append(
 				'name',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], {
-					type: 'application/json',
-				})
+				new Blob([JSON.stringify(anyToJSON(requestParameters.name))], { type: 'application/json' })
 			);
 		}
 
 		if (requestParameters.gameTypeId !== undefined) {
 			formParams.append(
 				'game_type_id',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.gameTypeId))], {
+				new Blob([JSON.stringify(anyToJSON(requestParameters.gameTypeId))], {
 					type: 'application/json',
 				})
 			);
@@ -170,7 +169,7 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.description !== undefined) {
 			formParams.append(
 				'description',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.description))], {
+				new Blob([JSON.stringify(anyToJSON(requestParameters.description))], {
 					type: 'application/json',
 				})
 			);
@@ -179,18 +178,14 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.mods !== undefined) {
 			formParams.append(
 				'mods',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], {
-					type: 'application/json',
-				})
+				new Blob([JSON.stringify(anyToJSON(requestParameters.mods))], { type: 'application/json' })
 			);
 		}
 
 		if (requestParameters.ip !== undefined) {
 			formParams.append(
 				'ip',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], {
-					type: 'application/json',
-				})
+				new Blob([JSON.stringify(anyToJSON(requestParameters.ip))], { type: 'application/json' })
 			);
 		}
 
@@ -204,7 +199,7 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.banner !== undefined) {
 			formParams.append(
 				'banner',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.banner))], {
+				new Blob([JSON.stringify(anyToJSON(requestParameters.banner))], {
 					type: 'application/json',
 				})
 			);
@@ -806,16 +801,14 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.name !== undefined) {
 			formParams.append(
 				'name',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.name))], {
-					type: 'application/json',
-				})
+				new Blob([JSON.stringify(anyToJSON(requestParameters.name))], { type: 'application/json' })
 			);
 		}
 
 		if (requestParameters.gameTypeId !== undefined) {
 			formParams.append(
 				'game_type_id',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.gameTypeId))], {
+				new Blob([JSON.stringify(anyToJSON(requestParameters.gameTypeId))], {
 					type: 'application/json',
 				})
 			);
@@ -824,7 +817,7 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.description !== undefined) {
 			formParams.append(
 				'description',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.description))], {
+				new Blob([JSON.stringify(anyToJSON(requestParameters.description))], {
 					type: 'application/json',
 				})
 			);
@@ -833,18 +826,14 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.mods !== undefined) {
 			formParams.append(
 				'mods',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.mods))], {
-					type: 'application/json',
-				})
+				new Blob([JSON.stringify(anyToJSON(requestParameters.mods))], { type: 'application/json' })
 			);
 		}
 
 		if (requestParameters.ip !== undefined) {
 			formParams.append(
 				'ip',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.ip))], {
-					type: 'application/json',
-				})
+				new Blob([JSON.stringify(anyToJSON(requestParameters.ip))], { type: 'application/json' })
 			);
 		}
 
@@ -858,7 +847,7 @@ export class GameServersApi extends runtime.BaseAPI {
 		if (requestParameters.banner !== undefined) {
 			formParams.append(
 				'banner',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.banner))], {
+				new Blob([JSON.stringify(anyToJSON(requestParameters.banner))], {
 					type: 'application/json',
 				})
 			);

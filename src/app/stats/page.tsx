@@ -1,6 +1,87 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
+import { useAuth } from '@/lib/auth';
+import { gameService } from '@/lib/game/game-service';
+import type { GameServerPublic } from '@/lib/api/generated';
+import { MinecraftStats } from '@/components/stats/minecraft/minecraft-stats';
+import { MinecraftServerStatsCard } from '@/components/stats/minecraft/minecraft-server-stats-card';
+import { MinecraftServerTopPlayers } from '@/components/stats/minecraft/minecraft-server-top-players';
+import { StatsLoading } from '@/components/stats/common/stats-loading';
+import { StatsError } from '@/components/stats/common/stats-error';
+import { StatsEmpty } from '@/components/stats/common/stats-empty';
+
+type GameType = 'minecraft';
 
 export default function StatsPage() {
+	const { user, isAuthenticated, isLoading } = useAuth();
+	const router = useRouter();
+	const [selectedGame, setSelectedGame] = useState<GameType>('minecraft');
+	const [servers, setServers] = useState<GameServerPublic[]>([]);
+	const [loadingServers, setLoadingServers] = useState(true);
+	const [serversError, setServersError] = useState<string | null>(null);
+
+	// Redirect to login if not authenticated
+	useEffect(() => {
+		if (!isLoading && !isAuthenticated) {
+			router.push('/login');
+		}
+	}, [isAuthenticated, isLoading, router]);
+
+	// Load servers
+	useEffect(() => {
+		async function loadServers() {
+			try {
+				setLoadingServers(true);
+				setServersError(null);
+				const data = await gameService.getGameServers();
+				// Фильтруем только Minecraft серверы
+				const minecraftServers = data.filter((server) => {
+					const gameTypeName =
+						typeof server.gameType === 'object' && server.gameType !== null
+							? (server.gameType as { name?: string }).name
+							: null;
+					return (
+						gameTypeName &&
+						(gameTypeName.toLowerCase().includes('minecraft') ||
+							gameTypeName.toLowerCase().includes('mc'))
+					);
+				});
+				setServers(minecraftServers);
+			} catch (err) {
+				setServersError(err instanceof Error ? err.message : 'Не удалось загрузить серверы');
+			} finally {
+				setLoadingServers(false);
+			}
+		}
+
+		if (isAuthenticated) {
+			loadServers();
+		}
+	}, [isAuthenticated]);
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen pb-20 pt-24">
+				<Header />
+				<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex min-h-[60vh] flex-col items-center justify-center p-10">
+						<StatsLoading message="Загрузка..." />
+					</div>
+				</main>
+			</div>
+		);
+	}
+
+	if (!isAuthenticated || !user) {
+		return null; // Will redirect to login
+	}
+
+	const availableGames: GameType[] = ['minecraft'];
+	// В будущем можно добавить: ['minecraft', 'cs2', 'dota2']
+
 	return (
 		<div className="min-h-screen pb-20 pt-24">
 			<Header />
@@ -13,8 +94,60 @@ export default function StatsPage() {
 					<p className="text-lg text-white/60">Ваша статистика и достижения</p>
 				</div>
 
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8">
-					<p className="text-white/60">Страница в разработке</p>
+				{/* Game Tabs */}
+				{availableGames.length > 1 && (
+					<div className="mb-6 flex gap-2 border-b border-white/10">
+						{availableGames.map((game) => (
+							<button
+								key={game}
+								onClick={() => setSelectedGame(game)}
+								className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+									selectedGame === game
+										? 'border-primary text-primary'
+										: 'border-transparent text-white/60 hover:text-white'
+								}`}
+							>
+								{game === 'minecraft' ? 'Minecraft' : String(game).toUpperCase()}
+							</button>
+						))}
+					</div>
+				)}
+
+				{/* Player Stats Section */}
+				<div className="mb-8">
+					<h2 className="text-2xl font-bold text-white mb-4">Моя статистика</h2>
+					{selectedGame === 'minecraft' && <MinecraftStats />}
+					{/* В будущем: selectedGame === 'cs2' && <CS2Stats /> */}
+				</div>
+
+				{/* Server Stats Section */}
+				<div className="mb-8">
+					<h2 className="text-2xl font-bold text-white mb-4">Статистика серверов</h2>
+					{loadingServers ? (
+						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
+							<StatsLoading message="Загрузка серверов..." />
+						</div>
+					) : serversError ? (
+						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
+							<StatsError message={serversError} onRetry={() => window.location.reload()} />
+						</div>
+					) : servers.length === 0 ? (
+						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
+							<StatsEmpty message="Нет доступных серверов" />
+						</div>
+					) : (
+						<div>
+							{servers.map((server) => {
+								if (!server.id) return null;
+								return (
+									<div key={server.id}>
+										<MinecraftServerStatsCard serverId={server.id} />
+										<MinecraftServerTopPlayers serverId={server.id} limit={10} />
+									</div>
+								);
+							})}
+						</div>
+					)}
 				</div>
 			</main>
 		</div>

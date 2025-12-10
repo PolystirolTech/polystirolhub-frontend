@@ -13,6 +13,7 @@
  */
 
 import * as runtime from '../runtime';
+const { anyToJSON } = runtime;
 import type {
 	HTTPValidationError,
 	LinkCodeGenerateResponse,
@@ -742,9 +743,7 @@ export class AuthApi extends runtime.BaseAPI {
 		if (requestParameters.file !== undefined) {
 			formParams.append(
 				'file',
-				new Blob([JSON.stringify(runtime.anyToJSON(requestParameters.file))], {
-					type: 'application/json',
-				})
+				new Blob([JSON.stringify(anyToJSON(requestParameters.file))], { type: 'application/json' })
 			);
 		}
 
