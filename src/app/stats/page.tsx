@@ -37,18 +37,46 @@ export default function StatsPage() {
 				setLoadingServers(true);
 				setServersError(null);
 				const data = await gameService.getGameServers();
+
+				console.log('[StatsPage] All servers from API:', data);
+
+				// Функция для извлечения имени типа игры (как в servers/page.tsx)
+				const getGameTypeName = (gameType: unknown): string | null => {
+					if (!gameType || typeof gameType !== 'object') return null;
+
+					const gameTypeObj = gameType as Record<string, unknown>;
+
+					// Проверяем поле name
+					if (gameTypeObj.name) {
+						if (typeof gameTypeObj.name === 'string') {
+							return gameTypeObj.name;
+						}
+						if (typeof gameTypeObj.name === 'object' && gameTypeObj.name !== null) {
+							const nameObj = gameTypeObj.name as Record<string, unknown>;
+							for (const key in nameObj) {
+								const val = nameObj[key];
+								if (typeof val === 'string' && val.trim()) {
+									return val;
+								}
+							}
+						}
+					}
+
+					return null;
+				};
+
 				// Фильтруем только Minecraft серверы
 				const minecraftServers = data.filter((server) => {
-					const gameTypeName =
-						typeof server.gameType === 'object' && server.gameType !== null
-							? (server.gameType as { name?: string }).name
-							: null;
-					return (
-						gameTypeName &&
-						(gameTypeName.toLowerCase().includes('minecraft') ||
-							gameTypeName.toLowerCase().includes('mc'))
-					);
+					const gameTypeName = getGameTypeName(server.gameType);
+					console.log('[StatsPage] Server:', server.name, 'GameType:', gameTypeName);
+
+					if (!gameTypeName) return false;
+
+					const nameLower = gameTypeName.toLowerCase().trim();
+					return nameLower.includes('minecraft') || nameLower.includes('mc');
 				});
+
+				console.log('[StatsPage] Filtered Minecraft servers:', minecraftServers);
 				setServers(minecraftServers);
 			} catch (err) {
 				setServersError(err instanceof Error ? err.message : 'Не удалось загрузить серверы');

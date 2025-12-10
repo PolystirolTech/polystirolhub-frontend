@@ -23,11 +23,14 @@ export function MinecraftStats() {
 					setLoading(true);
 					const response = await authService.checkLinkStatus(user.id);
 
-					console.log('[MinecraftStats] Full link status response:', JSON.stringify(response, null, 2));
+					console.log(
+						'[MinecraftStats] Full link status response:',
+						JSON.stringify(response, null, 2)
+					);
 
 					if (response.links && Array.isArray(response.links)) {
 						console.log('[MinecraftStats] All links:', response.links);
-						
+
 						const mcLink = response.links.find((link: ExternalLinkResponse | unknown) => {
 							if (typeof link !== 'object' || link === null) return false;
 
@@ -52,9 +55,11 @@ export function MinecraftStats() {
 						if (mcLink) {
 							console.log('[MinecraftStats] Found Minecraft link:', mcLink);
 							setMinecraftLink(mcLink as ExternalLinkResponse);
-							
-							// externalId содержит UUID игрока для Minecraft
-							const uuid = (mcLink as ExternalLinkResponse).externalId;
+
+							// API возвращает external_id в snake_case, но TypeScript интерфейс использует camelCase
+							// Нужно обращаться к сырому объекту
+							const rawLink = mcLink as unknown as Record<string, unknown>;
+							const uuid = rawLink.external_id || (mcLink as ExternalLinkResponse).externalId;
 							console.log('[MinecraftStats] externalId value:', uuid, 'type:', typeof uuid);
 
 							// Более гибкая проверка UUID - может быть строкой или числом
