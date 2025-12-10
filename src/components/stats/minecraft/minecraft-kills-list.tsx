@@ -94,7 +94,8 @@ export function MinecraftKillsList({ playerUuid }: MinecraftKillsListProps) {
 						{kills.map((kill) => {
 							const victimName = getStringValue(kill.victimName) || 'Неизвестно';
 							const weapon = getStringValue(kill.weapon) || 'Неизвестно';
-							const date = getValue(kill.date);
+							const dateValue = getValue(kill.date);
+							const date = typeof dateValue === 'number' ? dateValue : null;
 
 							return (
 								<tr key={kill.id} className="border-b border-white/5 hover:bg-white/5">
