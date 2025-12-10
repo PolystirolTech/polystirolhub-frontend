@@ -234,6 +234,17 @@ export default function ProfilePage() {
 		}
 	};
 
+	// Compute Minecraft username and avatar URL
+	const minecraftUsername = minecraftLink?.platformUsername
+		? typeof minecraftLink.platformUsername === 'string'
+			? minecraftLink.platformUsername
+			: String(minecraftLink.platformUsername)
+		: null;
+	const minecraftDisplayName = minecraftUsername || 'Minecraft';
+	const minecraftHeadImageUrl = minecraftUsername
+		? `https://minotar.net/avatar/${encodeURIComponent(minecraftUsername)}`
+		: null;
+
 	if (isLoading) {
 		return (
 			<div className="min-h-screen pb-20 pt-24">
@@ -480,19 +491,24 @@ export default function ProfilePage() {
 									</div>
 								) : minecraftLink ? (
 									<div className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 group relative">
-										<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 text-2xl">
-											<span className="text-green-400">⛏️</span>
+										<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 overflow-hidden">
+											{minecraftHeadImageUrl ? (
+												<Image
+													src={minecraftHeadImageUrl}
+													alt={minecraftDisplayName}
+													className="h-full w-full object-cover"
+													width={48}
+													height={48}
+													unoptimized
+												/>
+											) : (
+												<span className="text-green-400 text-2xl">⛏️</span>
+											)}
 										</div>
 										<div className="flex-1">
-											<div className="font-medium text-white">
-												{typeof minecraftLink.platformUsername === 'string'
-													? minecraftLink.platformUsername
-													: minecraftLink.platformUsername
-														? String(minecraftLink.platformUsername)
-														: 'Minecraft'}
-											</div>
+											<div className="font-medium text-white">{minecraftDisplayName}</div>
 											<div className="text-xs text-muted">
-												Minecraft •{' '}
+												{minecraftDisplayName} •{' '}
 												{minecraftLink.createdAt
 													? new Date(minecraftLink.createdAt).toLocaleDateString()
 													: 'Привязан'}
