@@ -234,17 +234,6 @@ export default function ProfilePage() {
 		}
 	};
 
-	// Compute Minecraft username and avatar URL
-	const minecraftUsername = minecraftLink?.platformUsername
-		? typeof minecraftLink.platformUsername === 'string'
-			? minecraftLink.platformUsername
-			: String(minecraftLink.platformUsername)
-		: null;
-	const minecraftDisplayName = minecraftUsername || 'Minecraft';
-	const minecraftHeadImageUrl = minecraftUsername
-		? `https://minotar.net/avatar/${encodeURIComponent(minecraftUsername)}`
-		: null;
-
 	if (isLoading) {
 		return (
 			<div className="min-h-screen pb-20 pt-24">
@@ -490,31 +479,70 @@ export default function ProfilePage() {
 										<div className="text-sm text-muted">Загрузка...</div>
 									</div>
 								) : minecraftLink ? (
-									<div className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 group relative">
-										<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 overflow-hidden">
-											{minecraftHeadImageUrl ? (
-												<Image
-													src={minecraftHeadImageUrl}
-													alt={minecraftDisplayName}
-													className="h-full w-full object-cover"
-													width={48}
-													height={48}
-													unoptimized
-												/>
-											) : (
-												<span className="text-green-400 text-2xl">⛏️</span>
-											)}
-										</div>
-										<div className="flex-1">
-											<div className="font-medium text-white">{minecraftDisplayName}</div>
-											<div className="text-xs text-muted">
-												{minecraftDisplayName} •{' '}
-												{minecraftLink.createdAt
-													? new Date(minecraftLink.createdAt).toLocaleDateString()
-													: 'Привязан'}
+									(() => {
+										// Extract username from platformUsername with improved logic
+										let minecraftUsername: string | null = null;
+										const platformUsername = minecraftLink.platformUsername;
+
+										// Debug logging
+										console.log(
+											'Minecraft link platformUsername:',
+											platformUsername,
+											typeof platformUsername
+										);
+
+										if (platformUsername) {
+											if (typeof platformUsername === 'string') {
+												minecraftUsername = platformUsername.trim() || null;
+											} else if (
+												typeof platformUsername === 'object' &&
+												platformUsername !== null
+											) {
+												// Try to extract from common object fields
+												const obj = platformUsername as Record<string, unknown>;
+												minecraftUsername =
+													(typeof obj.username === 'string' ? obj.username.trim() : null) ||
+													(typeof obj.name === 'string' ? obj.name.trim() : null) ||
+													(typeof obj.value === 'string' ? obj.value.trim() : null) ||
+													(String(obj).trim() !== '[object Object]' ? String(obj).trim() : null);
+											} else {
+												minecraftUsername = String(platformUsername).trim() || null;
+											}
+										}
+
+										const displayName = minecraftUsername || 'Minecraft';
+										const headImageUrl = minecraftUsername
+											? `https://minotar.net/avatar/${encodeURIComponent(minecraftUsername)}`
+											: null;
+
+										return (
+											<div className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 group relative">
+												<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 overflow-hidden">
+													{headImageUrl ? (
+														<Image
+															src={headImageUrl}
+															alt={displayName}
+															className="h-full w-full object-cover"
+															width={48}
+															height={48}
+															unoptimized
+														/>
+													) : (
+														<span className="text-green-400 text-2xl">⛏️</span>
+													)}
+												</div>
+												<div className="flex-1">
+													<div className="font-medium text-white">{displayName}</div>
+													<div className="text-xs text-muted">
+														{displayName} •{' '}
+														{minecraftLink.createdAt
+															? new Date(minecraftLink.createdAt).toLocaleDateString()
+															: 'Привязан'}
+													</div>
+												</div>
 											</div>
-										</div>
-									</div>
+										);
+									})()
 								) : (
 									<button
 										onClick={() => setMinecraftLinkModal(true)}
