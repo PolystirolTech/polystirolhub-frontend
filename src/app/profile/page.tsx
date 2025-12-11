@@ -529,9 +529,9 @@ export default function ProfilePage() {
 													)}
 												</div>
 												<div className="flex-1">
-													<div className="font-medium text-white">Minecraft</div>
+													<div className="font-medium text-white">{displayName}</div>
 													<div className="text-xs text-muted">
-														{displayName} •{' '}
+														Minecraft •{' '}
 														{minecraftLink.createdAt
 															? new Date(minecraftLink.createdAt).toLocaleDateString()
 															: 'Привязан'}
