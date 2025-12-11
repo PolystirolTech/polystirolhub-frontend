@@ -482,14 +482,34 @@ export default function ProfilePage() {
 									(() => {
 										// Extract username from platformUsername with improved logic
 										let minecraftUsername: string | null = null;
-										const platformUsername = minecraftLink.platformUsername;
 
-										// Debug logging
+										// Debug logging - log entire minecraftLink object
 										console.log(
-											'Minecraft link platformUsername:',
-											platformUsername,
-											typeof platformUsername
+											'[Profile] Full minecraftLink object:',
+											JSON.stringify(minecraftLink, null, 2)
 										);
+										console.log('[Profile] minecraftLink keys:', Object.keys(minecraftLink));
+
+										// Check both camelCase and snake_case versions
+										const rawLink = minecraftLink as unknown as Record<string, unknown>;
+										const platformUsernameCamel = minecraftLink.platformUsername;
+										const platformUsernameSnake = rawLink.platform_username;
+
+										console.log(
+											'[Profile] platformUsername (camelCase):',
+											platformUsernameCamel,
+											typeof platformUsernameCamel
+										);
+										console.log(
+											'[Profile] platform_username (snake_case):',
+											platformUsernameSnake,
+											typeof platformUsernameSnake
+										);
+										console.log('[Profile] externalId:', minecraftLink.externalId);
+										console.log('[Profile] external_id:', rawLink.external_id);
+
+										// Try camelCase first
+										const platformUsername = platformUsernameCamel || platformUsernameSnake;
 
 										if (platformUsername) {
 											if (typeof platformUsername === 'string') {
