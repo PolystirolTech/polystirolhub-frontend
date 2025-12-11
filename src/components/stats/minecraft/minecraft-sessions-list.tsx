@@ -44,9 +44,39 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 	}, [playerUuid, page]);
 
 	const getValue = (obj: unknown): number | null => {
+		// Если это число, возвращаем его
 		if (typeof obj === 'number') return obj;
-		if (obj && typeof obj === 'object' && 'value' in obj) return (obj as { value: number }).value;
+
+		// Если это строка, которая может быть числом, пытаемся преобразовать
+		if (typeof obj === 'string') {
+			const num = Number(obj);
+			if (!isNaN(num) && isFinite(num)) return num;
+		}
+
+		// Если это объект с полем value
+		if (obj && typeof obj === 'object' && 'value' in obj) {
+			const value = (obj as { value: unknown }).value;
+			if (typeof value === 'number') return value;
+			if (typeof value === 'string') {
+				const num = Number(value);
+				if (!isNaN(num) && isFinite(num)) return num;
+			}
+		}
+
+		// Если это null или undefined, возвращаем null
+		if (obj === null || obj === undefined) return null;
+
 		return null;
+	};
+
+	// Вычисляет длительность сессии в миллисекундах
+	const calculateSessionDuration = (
+		sessionStart: number | null,
+		sessionEnd: number | null
+	): number | null => {
+		if (sessionStart === null || sessionEnd === null) return null;
+		if (sessionEnd <= sessionStart) return null;
+		return sessionEnd - sessionStart;
 	};
 
 	if (loading && sessions.length === 0) {
@@ -96,16 +126,28 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 							const mobKills = getValue(session.mobKills);
 							const deaths = getValue(session.deaths);
 
+							// Вычисляем длительность сессии: используем playtime если есть и больше 0, иначе вычисляем из timestamps
+							const sessionDuration =
+								playtime !== null && playtime > 0
+									? playtime
+									: calculateSessionDuration(sessionStart, sessionEnd);
+
 							return (
 								<tr key={session.id} className="border-b border-white/5 hover:bg-white/5">
 									<td className="py-3 px-4 text-sm text-white">
-										{sessionStart ? formatTimestamp(sessionStart) : 'Неизвестно'}
+										{sessionStart !== null && sessionStart > 0
+											? formatTimestamp(sessionStart)
+											: 'Неизвестно'}
 									</td>
 									<td className="py-3 px-4 text-sm text-white">
-										{sessionEnd ? formatTimestamp(sessionEnd) : 'В игре'}
+										{sessionEnd !== null && sessionEnd > 0 ? formatTimestamp(sessionEnd) : 'В игре'}
 									</td>
 									<td className="py-3 px-4 text-sm text-white">
-										{playtime ? formatPlaytime(playtime) : 'Не завершена'}
+										{sessionDuration !== null
+											? formatPlaytime(sessionDuration)
+											: sessionEnd === null
+												? 'В игре'
+												: 'Не завершена'}
 									</td>
 									<td className="py-3 px-4 text-sm text-white">{mobKills ?? 0}</td>
 									<td className="py-3 px-4 text-sm text-white">{deaths ?? 0}</td>

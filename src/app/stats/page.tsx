@@ -40,23 +40,36 @@ export default function StatsPage() {
 
 				console.log('[StatsPage] All servers from API:', data);
 
-				// Функция для извлечения имени типа игры (как в servers/page.tsx)
+				// Функция для извлечения имени типа игры
 				const getGameTypeName = (gameType: unknown): string | null => {
 					if (!gameType || typeof gameType !== 'object') return null;
 
 					const gameTypeObj = gameType as Record<string, unknown>;
 
-					// Проверяем поле name
+					// Проверяем поле name - должно быть строкой согласно GameTypeResponse
 					if (gameTypeObj.name) {
+						// Если это строка напрямую
 						if (typeof gameTypeObj.name === 'string') {
-							return gameTypeObj.name;
+							return gameTypeObj.name.trim() || null;
 						}
+						// Если это объект с полем value (fallback для совместимости)
+						if (
+							typeof gameTypeObj.name === 'object' &&
+							gameTypeObj.name !== null &&
+							'value' in gameTypeObj.name
+						) {
+							const value = (gameTypeObj.name as { value: unknown }).value;
+							if (typeof value === 'string') {
+								return value.trim() || null;
+							}
+						}
+						// Если это объект, пытаемся найти строковое значение
 						if (typeof gameTypeObj.name === 'object' && gameTypeObj.name !== null) {
 							const nameObj = gameTypeObj.name as Record<string, unknown>;
 							for (const key in nameObj) {
 								const val = nameObj[key];
 								if (typeof val === 'string' && val.trim()) {
-									return val;
+									return val.trim();
 								}
 							}
 						}
@@ -70,10 +83,20 @@ export default function StatsPage() {
 					const gameTypeName = getGameTypeName(server.gameType);
 					console.log('[StatsPage] Server:', server.name, 'GameType:', gameTypeName);
 
-					if (!gameTypeName) return false;
+					if (!gameTypeName) {
+						console.log('[StatsPage] Skipping server - no gameType name');
+						return false;
+					}
 
 					const nameLower = gameTypeName.toLowerCase().trim();
-					return nameLower.includes('minecraft') || nameLower.includes('mc');
+					const isMinecraft =
+						nameLower === 'minecraft' ||
+						nameLower === 'mc' ||
+						nameLower.includes('minecraft') ||
+						nameLower.includes('mc');
+
+					console.log('[StatsPage] Server:', server.name, 'isMinecraft:', isMinecraft);
+					return isMinecraft;
 				});
 
 				console.log('[StatsPage] Filtered Minecraft servers:', minecraftServers);

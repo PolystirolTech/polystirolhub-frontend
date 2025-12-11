@@ -36,15 +36,46 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 	}, [serverId]);
 
 	const getValue = (obj: unknown): number | null => {
+		// Если это число, возвращаем его
 		if (typeof obj === 'number') return obj;
-		if (obj && typeof obj === 'object' && 'value' in obj) return (obj as { value: number }).value;
+
+		// Если это строка, которая может быть числом, пытаемся преобразовать
+		if (typeof obj === 'string') {
+			const num = Number(obj);
+			if (!isNaN(num) && isFinite(num)) return num;
+		}
+
+		// Если это объект с полем value
+		if (obj && typeof obj === 'object' && 'value' in obj) {
+			const value = (obj as { value: unknown }).value;
+			if (typeof value === 'number') return value;
+			if (typeof value === 'string') {
+				const num = Number(value);
+				if (!isNaN(num) && isFinite(num)) return num;
+			}
+		}
+
+		// Если это null или undefined, возвращаем null
+		if (obj === null || obj === undefined) return null;
+
 		return null;
 	};
 
 	const getStringValue = (obj: unknown): string | null => {
+		// Если это строка, возвращаем её
 		if (typeof obj === 'string') return obj;
-		if (obj && typeof obj === 'object' && 'value' in obj)
-			return String((obj as { value: unknown }).value);
+
+		// Если это объект с полем value
+		if (obj && typeof obj === 'object' && 'value' in obj) {
+			const value = (obj as { value: unknown }).value;
+			if (typeof value === 'string') return value;
+			// Преобразуем в строку, если это не null/undefined
+			if (value !== null && value !== undefined) return String(value);
+		}
+
+		// Если это null или undefined, возвращаем null
+		if (obj === null || obj === undefined) return null;
+
 		return null;
 	};
 
