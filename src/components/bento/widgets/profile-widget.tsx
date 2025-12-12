@@ -4,6 +4,7 @@ import { useAuth } from '@/lib/auth';
 import { useLevel } from '@/lib/level/level-context';
 import Image from 'next/image';
 import Link from 'next/link';
+import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 
 export function ProfileWidget() {
 	const { user } = useAuth();
@@ -47,6 +48,9 @@ export function ProfileWidget() {
 				<div className="flex-1 min-w-0">
 					<div className="flex items-center gap-2">
 						<h3 className="font-bold text-white truncate">{user.username}</h3>
+						{user.selected_badge_id && (
+							<UserBadgeDisplay badgeId={user.selected_badge_id} size="sm" />
+						)}
 						<span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
 							{level}
 						</span>

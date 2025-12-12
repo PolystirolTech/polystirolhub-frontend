@@ -29,6 +29,12 @@ import {
 } from './IsSuperAdmin';
 import type { Level } from './Level';
 import { LevelFromJSON, LevelFromJSONTyped, LevelToJSON } from './Level';
+import type { SelectedBadgeId } from './SelectedBadgeId';
+import {
+	SelectedBadgeIdFromJSON,
+	SelectedBadgeIdFromJSONTyped,
+	SelectedBadgeIdToJSON,
+} from './SelectedBadgeId';
 import type { Username } from './Username';
 import { UsernameFromJSON, UsernameFromJSONTyped, UsernameToJSON } from './Username';
 import type { Xp } from './Xp';
@@ -88,6 +94,12 @@ export interface UserUpdate {
 	 * @memberof UserUpdate
 	 */
 	level?: Level;
+	/**
+	 *
+	 * @type {SelectedBadgeId}
+	 * @memberof UserUpdate
+	 */
+	selectedBadgeId?: SelectedBadgeId;
 }
 
 /**
@@ -118,6 +130,9 @@ export function UserUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
 			: IsSuperAdminFromJSON(json['is_super_admin']),
 		xp: !exists(json, 'xp') ? undefined : XpFromJSON(json['xp']),
 		level: !exists(json, 'level') ? undefined : LevelFromJSON(json['level']),
+		selectedBadgeId: !exists(json, 'selected_badge_id')
+			? undefined
+			: SelectedBadgeIdFromJSON(json['selected_badge_id']),
 	};
 }
 
@@ -137,5 +152,6 @@ export function UserUpdateToJSON(value?: UserUpdate | null): any {
 		is_super_admin: IsSuperAdminToJSON(value.isSuperAdmin),
 		xp: XpToJSON(value.xp),
 		level: LevelToJSON(value.level),
+		selected_badge_id: SelectedBadgeIdToJSON(value.selectedBadgeId),
 	};
 }

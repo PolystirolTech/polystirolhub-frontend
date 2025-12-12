@@ -1,5 +1,6 @@
 apis/AdminApi.ts
 apis/AuthApi.ts
+apis/BadgesApi.ts
 apis/DefaultApi.ts
 apis/GameServersApi.ts
 apis/StatisticsApi.ts
@@ -12,7 +13,10 @@ models/AfkTime1.ts
 models/Avatar.ts
 models/AverageTps.ts
 models/AvgPing.ts
+models/AwardBadgeRequest.ts
 models/AwardXPRequest.ts
+models/Badge.ts
+models/BadgeType.ts
 models/BannerUrl.ts
 models/BatchResponse.ts
 models/BedrockUsername.ts
@@ -27,6 +31,7 @@ models/Email.ts
 models/Email1.ts
 models/Entities.ts
 models/Errors.ts
+models/ExpiresAt.ts
 models/ExternalLinkResponse.ts
 models/FreeDiskSpace.ts
 models/GameServerPublic.ts
@@ -37,6 +42,7 @@ models/GameTypeUpdate.ts
 models/Geolocation.ts
 models/Geolocations.ts
 models/HTTPValidationError.ts
+models/Image.ts
 models/IsActive.ts
 models/IsAdmin.ts
 models/IsSuperAdmin.ts
@@ -95,6 +101,7 @@ models/Port.ts
 models/ProviderAvatar.ts
 models/ProviderUsername.ts
 models/RamUsage.ts
+models/SelectedBadgeId.ts
 models/ServerIcon.ts
 models/ServerStatusResponse.ts
 models/Servers.ts
@@ -104,6 +111,7 @@ models/SessionId.ts
 models/Sessions.ts
 models/Tps.ts
 models/Tps1.ts
+models/UserBadgeWithBadge.ts
 models/UserInfo.ts
 models/UserResponse.ts
 models/UserUpdate.ts

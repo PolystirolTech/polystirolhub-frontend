@@ -8,6 +8,7 @@ import { UserAdminWidget } from '@/components/admin/user-admin-widget';
 import { GameTypesWidget } from '@/components/admin/game-types-widget';
 import { ServerCreateForm } from '@/components/admin/server-create-form';
 import { ServersListWidget } from '@/components/admin/servers-list-widget';
+import Link from 'next/link';
 
 export default function AdminPage() {
 	const { user, isAuthenticated, isLoading } = useAuth();
@@ -84,7 +85,15 @@ export default function AdminPage() {
 							</div>
 						)}
 					</div>
-					<p className="text-xs text-white/60">Страница администрирования.</p>
+					<div className="flex items-center gap-4">
+						<p className="text-xs text-white/60">Страница администрирования.</p>
+						<Link
+							href="/admin/badges"
+							className="text-xs text-primary hover:text-primary/80 transition-colors underline"
+						>
+							Управление бэджиками →
+						</Link>
+					</div>
 				</div>
 
 				{/* Grid layout для виджетов */}

@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 
 interface AdminUser {
 	id: string;
@@ -18,6 +19,7 @@ interface AdminUser {
 	is_super_admin: boolean;
 	xp: number;
 	level: number;
+	selected_badge_id?: string | null;
 	created_at: string;
 }
 
@@ -278,6 +280,9 @@ export function UserAdminWidget() {
 									<div className="flex-1 min-w-0">
 										<div className="flex items-center gap-2">
 											<span className="font-medium text-white truncate">{user.username}</span>
+											{user.selected_badge_id && (
+												<UserBadgeDisplay badgeId={user.selected_badge_id} size="sm" />
+											)}
 											{user.is_super_admin && (
 												<span className="flex items-center gap-1 rounded-full bg-purple-500/20 px-2 py-0.5 text-xs text-purple-400">
 													Супер админ
@@ -321,6 +326,9 @@ export function UserAdminWidget() {
 						<div className="flex-1 min-w-0">
 							<div className="flex items-center gap-1.5 mb-1 flex-wrap">
 								<h3 className="text-xs font-bold text-white truncate">{selectedUser.username}</h3>
+								{selectedUser.selected_badge_id && (
+									<UserBadgeDisplay badgeId={selectedUser.selected_badge_id} size="sm" />
+								)}
 								{selectedUser.is_super_admin && (
 									<span className="flex items-center gap-0.5 rounded-full bg-purple-500/20 px-1.5 py-0.5 text-[10px] text-purple-400 shrink-0">
 										Супер админ

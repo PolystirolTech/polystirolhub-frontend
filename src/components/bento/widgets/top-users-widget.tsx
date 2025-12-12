@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import type { LeaderboardPlayer } from '@/lib/api/generated';
 import { UsersApi, apiConfig } from '@/lib/api';
+import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 
 export function TopUsersWidget() {
 	const [topUsers, setTopUsers] = useState<LeaderboardPlayer[]>([]);
@@ -72,7 +73,19 @@ export function TopUsersWidget() {
 											</div>
 										)}
 									</div>
-									<span className="text-sm font-medium text-white truncate">{username}</span>
+									<div className="flex items-center gap-1.5 min-w-0">
+										<span className="text-sm font-medium text-white truncate">{username}</span>
+										{user.selectedBadgeId && (
+											<UserBadgeDisplay
+												badgeId={
+													typeof user.selectedBadgeId === 'string'
+														? user.selectedBadgeId
+														: String(user.selectedBadgeId || '')
+												}
+												size="sm"
+											/>
+										)}
+									</div>
 								</div>
 								<div className="ml-2 flex shrink-0 items-center justify-center rounded-full bg-primary/20 px-2 py-0.5 text-[9px] text-primary">
 									{user.level ?? 0}

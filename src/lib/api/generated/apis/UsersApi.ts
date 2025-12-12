@@ -142,6 +142,53 @@ export class UsersApi extends runtime.BaseAPI {
 	}
 
 	/**
+	 * Получить текущий баланс пользователя
+	 * Get Balance
+	 */
+	async getBalanceApiV1UsersMeBalanceGetRaw(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<runtime.ApiResponse<any>> {
+		const queryParameters: any = {};
+
+		const headerParameters: runtime.HTTPHeaders = {};
+
+		if (this.configuration && this.configuration.accessToken) {
+			// oauth required
+			headerParameters['Authorization'] = await this.configuration.accessToken(
+				'OAuth2PasswordBearer',
+				[]
+			);
+		}
+
+		const response = await this.request(
+			{
+				path: `/api/v1/users/me/balance`,
+				method: 'GET',
+				headers: headerParameters,
+				query: queryParameters,
+			},
+			initOverrides
+		);
+
+		if (this.isJsonMime(response.headers.get('content-type'))) {
+			return new runtime.JSONApiResponse<any>(response);
+		} else {
+			return new runtime.TextApiResponse(response) as any;
+		}
+	}
+
+	/**
+	 * Получить текущий баланс пользователя
+	 * Get Balance
+	 */
+	async getBalanceApiV1UsersMeBalanceGet(
+		initOverrides?: RequestInit | runtime.InitOverrideFunction
+	): Promise<any> {
+		const response = await this.getBalanceApiV1UsersMeBalanceGetRaw(initOverrides);
+		return await response.value();
+	}
+
+	/**
 	 * Получить топ 5 игроков по уровню. Результат кэшируется на 1 минуту.
 	 * Get Leaderboard
 	 */

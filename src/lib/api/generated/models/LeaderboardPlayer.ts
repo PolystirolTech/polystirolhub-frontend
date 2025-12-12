@@ -15,6 +15,12 @@
 import { exists, mapValues } from '../runtime';
 import type { Avatar } from './Avatar';
 import { AvatarFromJSON, AvatarFromJSONTyped, AvatarToJSON } from './Avatar';
+import type { SelectedBadgeId } from './SelectedBadgeId';
+import {
+	SelectedBadgeIdFromJSON,
+	SelectedBadgeIdFromJSONTyped,
+	SelectedBadgeIdToJSON,
+} from './SelectedBadgeId';
 import type { Username } from './Username';
 import { UsernameFromJSON, UsernameFromJSONTyped, UsernameToJSON } from './Username';
 
@@ -54,6 +60,12 @@ export interface LeaderboardPlayer {
 	 * @memberof LeaderboardPlayer
 	 */
 	avatar?: Avatar;
+	/**
+	 *
+	 * @type {SelectedBadgeId}
+	 * @memberof LeaderboardPlayer
+	 */
+	selectedBadgeId?: SelectedBadgeId;
 }
 
 /**
@@ -85,6 +97,9 @@ export function LeaderboardPlayerFromJSONTyped(
 		level: json['level'],
 		xp: json['xp'],
 		avatar: !exists(json, 'avatar') ? undefined : AvatarFromJSON(json['avatar']),
+		selectedBadgeId: !exists(json, 'selected_badge_id')
+			? undefined
+			: SelectedBadgeIdFromJSON(json['selected_badge_id']),
 	};
 }
 
@@ -101,5 +116,6 @@ export function LeaderboardPlayerToJSON(value?: LeaderboardPlayer | null): any {
 		level: value.level,
 		xp: value.xp,
 		avatar: AvatarToJSON(value.avatar),
+		selected_badge_id: SelectedBadgeIdToJSON(value.selectedBadgeId),
 	};
 }

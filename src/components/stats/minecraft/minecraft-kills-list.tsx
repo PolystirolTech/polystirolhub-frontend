@@ -88,7 +88,7 @@ export function MinecraftKillsList({ playerUuid }: MinecraftKillsListProps) {
 						const name = typeof profile.name === 'string' ? profile.name : null;
 						return { uuid, name };
 					}
-				} catch (err) {
+				} catch {
 					// Игнорируем ошибки загрузки профиля (404 и т.д.)
 				} finally {
 					loadingUuidsRef.current.delete(uuid);

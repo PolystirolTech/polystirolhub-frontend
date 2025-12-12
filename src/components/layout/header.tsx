@@ -8,6 +8,7 @@ import { useLevel } from '@/lib/level/level-context';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { useApiStatus } from '@/hooks/use-api-status';
 import { useBalance } from '@/hooks/use-balance';
+import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 
 export function Header() {
 	const { user, isAuthenticated, logout, isLoading } = useAuth();
@@ -487,7 +488,12 @@ export function Header() {
 									)}
 								</div>
 								<div className="flex-1">
-									<div className="text-sm font-medium text-white/90">{user.username}</div>
+									<div className="flex items-center gap-2">
+										<span className="text-sm font-medium text-white/90">{user.username}</span>
+										{user.selected_badge_id && (
+											<UserBadgeDisplay badgeId={user.selected_badge_id} size="sm" />
+										)}
+									</div>
 									<div className="text-xs text-white/60">Уровень {level}</div>
 								</div>
 								<span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">

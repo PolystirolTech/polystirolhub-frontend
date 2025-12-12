@@ -14,6 +14,7 @@ export interface User {
 	is_active: boolean;
 	is_admin?: boolean;
 	is_super_admin?: boolean;
+	selected_badge_id?: string | null;
 	created_at?: string;
 	updated_at?: string;
 }

@@ -17,6 +17,9 @@ import { maskEmail } from '@/lib/utils';
 import { ProfileUpdateForm } from '@/components/profile/profile-update-form';
 import { AdminApi, apiConfig } from '@/lib/api';
 import type { ExternalLinkResponse } from '@/lib/api/generated';
+import Link from 'next/link';
+import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
+import { BadgesPreview } from '@/components/badges/badges-preview';
 
 export default function ProfilePage() {
 	const { user, isAuthenticated, isLoading, refreshUser } = useAuth();
@@ -289,7 +292,12 @@ export default function ProfilePage() {
 							<div className="flex-1">
 								<div className="flex items-start justify-between">
 									<div>
-										<h2 className="text-3xl font-bold text-white mb-2">{user.username}</h2>
+										<div className="flex items-center gap-2 mb-2">
+											<h2 className="text-3xl font-bold text-white">{user.username}</h2>
+											{user.selected_badge_id && (
+												<UserBadgeDisplay badgeId={user.selected_badge_id} size="md" />
+											)}
+										</div>
 										<p className="text-muted">{maskEmail(user.email) || 'Email не указан'}</p>
 										<div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-green-500/20 px-3 py-1">
 											<span className="h-2 w-2 rounded-full bg-green-500"></span>
@@ -373,6 +381,23 @@ export default function ProfilePage() {
 							</div>
 						</div>
 					)}
+
+					{/* Badges Preview */}
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
+						<div className="flex items-center justify-between mb-4">
+							<div>
+								<h3 className="text-xl font-bold text-white mb-2">Мои бэджики</h3>
+								<p className="text-muted">Последние награды</p>
+							</div>
+							<Link
+								href="/profile/badges"
+								className="text-sm text-primary hover:text-primary/80 transition-colors underline"
+							>
+								Все бэджики →
+							</Link>
+						</div>
+						<BadgesPreview />
+					</div>
 
 					{/* Connected Accounts */}
 					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
