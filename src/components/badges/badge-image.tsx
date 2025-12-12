@@ -35,7 +35,7 @@ export function BadgeImage({ src, alt, size = 'md', className, lazy = true }: Ba
 		return (
 			<div
 				className={cn(
-					'relative inline-flex items-center justify-center rounded-full overflow-hidden',
+					'relative inline-flex items-center justify-center overflow-hidden',
 					className
 				)}
 				style={{ width: imageSize, height: imageSize }}
@@ -52,10 +52,7 @@ export function BadgeImage({ src, alt, size = 'md', className, lazy = true }: Ba
 
 	return (
 		<div
-			className={cn(
-				'relative inline-flex items-center justify-center rounded-full overflow-hidden',
-				className
-			)}
+			className={cn('relative inline-flex items-center justify-center overflow-hidden', className)}
 			style={{ width: imageSize, height: imageSize }}
 		>
 			{isLoading && (
@@ -77,7 +74,7 @@ export function BadgeImage({ src, alt, size = 'md', className, lazy = true }: Ba
 					alt={alt}
 					width={imageSize}
 					height={imageSize}
-					className={cn('rounded-full object-cover', isLoading && 'opacity-0')}
+					className={cn('object-cover', isLoading && 'opacity-0')}
 					loading={lazy ? 'lazy' : 'eager'}
 					unoptimized={src?.startsWith('http://localhost') || src?.startsWith('https://')}
 					onLoad={() => setIsLoading(false)}
