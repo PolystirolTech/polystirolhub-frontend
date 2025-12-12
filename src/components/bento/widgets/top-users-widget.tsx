@@ -19,7 +19,22 @@ export function TopUsersWidget() {
 				const usersApi = new UsersApi(apiConfig);
 				const response = await usersApi.getLeaderboardApiV1UsersLeaderboardGet();
 				// API возвращает массив LeaderboardPlayer
-				const players = Array.isArray(response) ? response : [];
+				// Используем FromJSON для правильного маппинга snake_case -> camelCase
+				const players = Array.isArray(response)
+					? response.map((item: any) => {
+							// Если это уже объект с camelCase, используем как есть
+							// Иначе конвертируем из snake_case
+							if (item.selectedBadgeId !== undefined) {
+								return item;
+							}
+							// Проверяем snake_case вариант
+							const badgeId = item.selected_badge_id || item.selectedBadgeId || null;
+							return {
+								...item,
+								selectedBadgeId: badgeId,
+							};
+						})
+					: [];
 				setTopUsers(players);
 			} catch (err) {
 				console.error('Failed to fetch leaderboard:', err);
@@ -75,16 +90,22 @@ export function TopUsersWidget() {
 									</div>
 									<div className="flex items-center gap-1.5 min-w-0">
 										<span className="text-sm font-medium text-white truncate">{username}</span>
-										{user.selectedBadgeId && (
-											<UserBadgeDisplay
-												badgeId={
-													typeof user.selectedBadgeId === 'string'
-														? user.selectedBadgeId
-														: String(user.selectedBadgeId || '')
-												}
-												size="sm"
-											/>
-										)}
+										{(() => {
+											// Получаем badgeId, проверяя оба варианта (camelCase и snake_case)
+											const badgeId =
+												user.selectedBadgeId || (user as any).selected_badge_id || null;
+											if (!badgeId) return null;
+											const badgeIdString =
+												typeof badgeId === 'string' ? badgeId : String(badgeId || '');
+											if (
+												!badgeIdString ||
+												badgeIdString === 'null' ||
+												badgeIdString === 'undefined'
+											) {
+												return null;
+											}
+											return <UserBadgeDisplay badgeId={badgeIdString} size="sm" />;
+										})()}
 									</div>
 								</div>
 								<div className="ml-2 flex shrink-0 items-center justify-center rounded-full bg-primary/20 px-2 py-0.5 text-[9px] text-primary">
