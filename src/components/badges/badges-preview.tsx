@@ -20,8 +20,8 @@ export function BadgesPreview() {
 		async function loadBadges() {
 			try {
 				const data = await badgeService.getMyBadges();
-				// Берем последние 5 бэджиков
-				const lastBadges = data.slice(0, 5);
+				// Берем последние 10 бэджиков
+				const lastBadges = data.slice(0, 10);
 				setBadges(lastBadges);
 			} catch (err) {
 				console.error('Failed to load badges:', err);
