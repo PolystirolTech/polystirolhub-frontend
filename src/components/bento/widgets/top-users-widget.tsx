@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import type { LeaderboardPlayer } from '@/lib/api/generated';
+import type { LeaderboardPlayer, SelectedBadgeId } from '@/lib/api/generated';
 import { UsersApi, apiConfig } from '@/lib/api';
 import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 
@@ -20,19 +20,21 @@ export function TopUsersWidget() {
 				const response = await usersApi.getLeaderboardApiV1UsersLeaderboardGet();
 				// API возвращает массив LeaderboardPlayer
 				// Используем FromJSON для правильного маппинга snake_case -> camelCase
-				const players = Array.isArray(response)
+				const players: LeaderboardPlayer[] = Array.isArray(response)
 					? response.map((item: LeaderboardPlayer & { selected_badge_id?: string | null }) => {
 							// Если это уже объект с camelCase, используем как есть
-							// Иначе конвертируем из snake_case
 							if (item.selectedBadgeId !== undefined) {
-								return item;
+								return item as LeaderboardPlayer;
 							}
-							// Проверяем snake_case вариант
-							const badgeId = item.selected_badge_id || item.selectedBadgeId || null;
-							return {
-								...item,
-								selectedBadgeId: badgeId,
-							};
+							// Проверяем snake_case вариант и конвертируем
+							const badgeId = item.selected_badge_id;
+							if (badgeId) {
+								return {
+									...item,
+									selectedBadgeId: badgeId as unknown as SelectedBadgeId,
+								} as LeaderboardPlayer;
+							}
+							return item as LeaderboardPlayer;
 						})
 					: [];
 				setTopUsers(players);
