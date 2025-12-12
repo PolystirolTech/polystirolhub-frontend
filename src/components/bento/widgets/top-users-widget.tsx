@@ -21,7 +21,7 @@ export function TopUsersWidget() {
 				// API возвращает массив LeaderboardPlayer
 				// Используем FromJSON для правильного маппинга snake_case -> camelCase
 				const players = Array.isArray(response)
-					? response.map((item: any) => {
+					? response.map((item: LeaderboardPlayer & { selected_badge_id?: string | null }) => {
 							// Если это уже объект с camelCase, используем как есть
 							// Иначе конвертируем из snake_case
 							if (item.selectedBadgeId !== undefined) {
@@ -92,8 +92,11 @@ export function TopUsersWidget() {
 										<span className="text-sm font-medium text-white truncate">{username}</span>
 										{(() => {
 											// Получаем badgeId, проверяя оба варианта (camelCase и snake_case)
+											const userWithSnakeCase = user as LeaderboardPlayer & {
+												selected_badge_id?: string | null;
+											};
 											const badgeId =
-												user.selectedBadgeId || (user as any).selected_badge_id || null;
+												user.selectedBadgeId || userWithSnakeCase.selected_badge_id || null;
 											if (!badgeId) return null;
 											const badgeIdString =
 												typeof badgeId === 'string' ? badgeId : String(badgeId || '');
