@@ -7,11 +7,13 @@ import { useAuth } from '@/lib/auth';
 import { useLevel } from '@/lib/level/level-context';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { useApiStatus } from '@/hooks/use-api-status';
+import { useBalance } from '@/hooks/use-balance';
 
 export function Header() {
 	const { user, isAuthenticated, logout, isLoading } = useAuth();
 	const { status: apiStatus } = useApiStatus();
 	const { level, currentXp, nextLevelXp } = useLevel();
+	const { balance, isLoading: isBalanceLoading } = useBalance();
 	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -160,6 +162,30 @@ export function Header() {
 					{/* Authenticated User Blocks */}
 					{user && (
 						<>
+							{/* Block: Balance */}
+							<div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 lg:gap-3 rounded-2xl px-3 lg:px-4 shadow-lg transition-transform">
+								<svg
+									className="h-5 w-5 text-white/90"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+									/>
+								</svg>
+								{isBalanceLoading ? (
+									<div className="h-4 w-8 animate-pulse bg-white/20 rounded"></div>
+								) : (
+									<span className="text-sm font-medium text-white/90">
+										{balance !== null ? balance.toLocaleString('ru-RU') : '—'}
+									</span>
+								)}
+							</div>
+
 							{/* Block 2: Profile */}
 							<Link
 								href="/profile"
@@ -404,6 +430,33 @@ export function Header() {
 
 						{/* Divider */}
 						{(user || !isAuthenticated) && <div className="h-px bg-white/10 my-2"></div>}
+
+						{/* Balance */}
+						{user && (
+							<div className="flex items-center gap-3 px-4 py-3 rounded-xl">
+								<svg
+									className="h-5 w-5 text-white/90"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+									/>
+								</svg>
+								<span className="text-sm font-medium text-white/90">Баланс:</span>
+								{isBalanceLoading ? (
+									<div className="h-4 w-16 animate-pulse bg-white/20 rounded"></div>
+								) : (
+									<span className="text-sm font-bold text-white/90">
+										{balance !== null ? balance.toLocaleString('ru-RU') : '—'}
+									</span>
+								)}
+							</div>
+						)}
 
 						{/* Profile */}
 						{user && (
