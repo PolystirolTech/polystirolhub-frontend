@@ -72,7 +72,10 @@ export function LevelProvider({ children }: { children: ReactNode }) {
 			setIsLoading(true);
 			setError(null);
 			const data = await progressionService.getProgression();
-			updateFromProgression(data);
+			if (data) {
+				updateFromProgression(data);
+			}
+			// If data is null, user is not authenticated - keep default values from localStorage
 		} catch (err) {
 			console.error('Failed to fetch progression:', err);
 			setError(err instanceof Error ? err.message : 'Unknown error');
@@ -105,11 +108,13 @@ export function LevelProvider({ children }: { children: ReactNode }) {
 		try {
 			setError(null);
 			const data = await progressionService.awardXp(amount);
-			// Optionally update from response if it contains full data,
-			// but refreshing ensures we get the exact same format as getProgression
-			updateFromProgression(data);
-			// Verify by re-fetching (can generate double update but ensures consistency)
-			await refreshProgression();
+			if (data) {
+				// Optionally update from response if it contains full data,
+				// but refreshing ensures we get the exact same format as getProgression
+				updateFromProgression(data);
+				// Verify by re-fetching (can generate double update but ensures consistency)
+				await refreshProgression();
+			}
 		} catch (err) {
 			console.error('Failed to award XP:', err);
 			setError(err instanceof Error ? err.message : 'Failed to award XP');
@@ -122,8 +127,10 @@ export function LevelProvider({ children }: { children: ReactNode }) {
 		try {
 			setError(null);
 			const data = await progressionService.resetProgression();
-			updateFromProgression(data);
-			await refreshProgression();
+			if (data) {
+				updateFromProgression(data);
+				await refreshProgression();
+			}
 		} catch (err) {
 			console.error('Failed to reset progression:', err);
 			setError(err instanceof Error ? err.message : 'Failed to reset progression');

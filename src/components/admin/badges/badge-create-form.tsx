@@ -128,12 +128,17 @@ export function BadgeCreateForm({ onSuccess, onCancel }: BadgeCreateFormProps) {
 
 		// Validate condition requirements
 		if (conditionKey && selectedCondition) {
-			if (selectedCondition.requiresTargetValue && (targetValue === '' || targetValue === undefined)) {
+			if (
+				selectedCondition.requiresTargetValue &&
+				(targetValue === '' || targetValue === undefined)
+			) {
 				setError(`Для условия "${selectedCondition.name}" требуется указать целевое значение`);
 				return;
 			}
 			if (selectedCondition.requiresAutoCheck && !autoCheck) {
-				setError(`Для условия "${selectedCondition.name}" требуется включить автоматическую проверку`);
+				setError(
+					`Для условия "${selectedCondition.name}" требуется включить автоматическую проверку`
+				);
 				return;
 			}
 		}
@@ -274,12 +279,8 @@ export function BadgeCreateForm({ onSuccess, onCancel }: BadgeCreateFormProps) {
 								</select>
 								{selectedCondition && (
 									<div className="mt-2 p-3 rounded-lg bg-white/5 border border-white/10">
-										<p className="text-sm font-medium text-white mb-1">
-											{selectedCondition.name}
-										</p>
-										<p className="text-xs text-white/70 mb-2">
-											{selectedCondition.description}
-										</p>
+										<p className="text-sm font-medium text-white mb-1">{selectedCondition.name}</p>
+										<p className="text-xs text-white/70 mb-2">{selectedCondition.description}</p>
 										<div className="flex flex-wrap gap-2 text-xs">
 											<span className="px-2 py-1 rounded bg-white/10 text-white/80">
 												Тип: {selectedCondition.type === 'periodic' ? 'Периодическое' : 'Событие'}
@@ -315,7 +316,9 @@ export function BadgeCreateForm({ onSuccess, onCancel }: BadgeCreateFormProps) {
 							<Input
 								type="number"
 								value={targetValue}
-								onChange={(e) => setTargetValue(e.target.value === '' ? '' : Number(e.target.value))}
+								onChange={(e) =>
+									setTargetValue(e.target.value === '' ? '' : Number(e.target.value))
+								}
 								placeholder="Целевое значение"
 								required
 							/>
@@ -329,7 +332,9 @@ export function BadgeCreateForm({ onSuccess, onCancel }: BadgeCreateFormProps) {
 							<Input
 								type="number"
 								value={targetValue}
-								onChange={(e) => setTargetValue(e.target.value === '' ? '' : Number(e.target.value))}
+								onChange={(e) =>
+									setTargetValue(e.target.value === '' ? '' : Number(e.target.value))
+								}
 								placeholder="Целевое значение (опционально)"
 							/>
 						</div>
@@ -347,17 +352,13 @@ export function BadgeCreateForm({ onSuccess, onCancel }: BadgeCreateFormProps) {
 						/>
 						<label htmlFor="autoCheck" className="text-sm font-medium text-white/90">
 							Автоматическая проверка
-							{selectedCondition?.requiresAutoCheck && (
-								<span className="text-red-400 ml-1">*</span>
-							)}
+							{selectedCondition?.requiresAutoCheck && <span className="text-red-400 ml-1">*</span>}
 						</label>
 					</div>
 
 					{/* Reward XP */}
 					<div>
-						<label className="block text-sm font-medium text-white/90 mb-2">
-							Награда XP
-						</label>
+						<label className="block text-sm font-medium text-white/90 mb-2">Награда XP</label>
 						<Input
 							type="number"
 							value={rewardXp}
@@ -368,22 +369,20 @@ export function BadgeCreateForm({ onSuccess, onCancel }: BadgeCreateFormProps) {
 
 					{/* Reward Balance */}
 					<div>
-						<label className="block text-sm font-medium text-white/90 mb-2">
-							Награда в валюте
-						</label>
+						<label className="block text-sm font-medium text-white/90 mb-2">Награда в валюте</label>
 						<Input
 							type="number"
 							value={rewardBalance}
-							onChange={(e) => setRewardBalance(e.target.value === '' ? '' : Number(e.target.value))}
+							onChange={(e) =>
+								setRewardBalance(e.target.value === '' ? '' : Number(e.target.value))
+							}
 							placeholder="0"
 						/>
 					</div>
 
 					{/* Unicode Char */}
 					<div>
-						<label className="block text-sm font-medium text-white/90 mb-2">
-							Юникод символ
-						</label>
+						<label className="block text-sm font-medium text-white/90 mb-2">Юникод символ</label>
 						<Input
 							type="text"
 							value={unicodeChar}

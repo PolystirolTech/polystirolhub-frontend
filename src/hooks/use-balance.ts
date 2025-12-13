@@ -25,6 +25,12 @@ export function useBalance() {
 					},
 				});
 
+				// If 401, user is not authenticated - just set balance to null, don't show error
+				if (response.status === 401) {
+					setBalance(null);
+					return;
+				}
+
 				if (!response.ok) {
 					throw new Error(`Failed to fetch balance: ${response.statusText}`);
 				}

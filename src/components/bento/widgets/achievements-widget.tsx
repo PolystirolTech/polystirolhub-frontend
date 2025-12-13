@@ -1,32 +1,119 @@
 'use client';
 
+import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/lib/auth';
+import { questService } from '@/lib/quests';
+import type { UserQuestWithQuest } from '@/lib/quests';
+import {
+	formatQuestName,
+	isQuestCompleted,
+	formatQuestProgress,
+} from '@/lib/utils/quest-formatters';
+
 export function AchievementsWidget() {
-	// TODO: Подключить реальные достижения
-	const allAchievements = [
-		{ id: 1, name: 'Первые шаги', unlocked: true, progress: 100, maxProgress: 100, icon: '🏆' },
-		{ id: 2, name: 'Мастер игры', unlocked: true, progress: 100, maxProgress: 100, icon: '⭐' },
-		{ id: 3, name: 'Легенда', unlocked: false, progress: 75, maxProgress: 100, icon: '👑' },
-		{ id: 4, name: 'Новичок', unlocked: true, progress: 100, maxProgress: 100, icon: '🎯' },
-		{ id: 5, name: 'Ветеран', unlocked: false, progress: 60, maxProgress: 100, icon: '🛡️' },
-		{ id: 6, name: 'Исследователь', unlocked: false, progress: 45, maxProgress: 100, icon: '🗺️' },
-		{ id: 7, name: 'Коллекционер', unlocked: false, progress: 30, maxProgress: 100, icon: '📦' },
-	];
+	const { isAuthenticated } = useAuth();
+	const [achievements, setAchievements] = useState<UserQuestWithQuest[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
-	// Фильтруем неразблокированные и сортируем по прогрессу (ближайшие к разблокированию)
-	const nearestAchievements = allAchievements
-		.filter((a) => !a.unlocked)
-		.sort((a, b) => {
-			const progressA = (a.progress / a.maxProgress) * 100;
-			const progressB = (b.progress / b.maxProgress) * 100;
-			return progressB - progressA;
-		})
-		.slice(0, 4);
+	const loadAchievements = useCallback(async () => {
+		if (!isAuthenticated) {
+			setIsLoading(false);
+			return;
+		}
 
-	if (nearestAchievements.length === 0) {
+		try {
+			setError(null);
+			const data = await questService.getMyQuests();
+			// Filter only achievement quests
+			const achievementQuests = data.filter(
+				(userQuest) =>
+					userQuest.quest.questType === 'achievement' ||
+					String(userQuest.quest.questType) === 'achievement'
+			);
+			setAchievements(achievementQuests);
+		} catch (err) {
+			console.error('Failed to load achievements:', err);
+			setError('Не удалось загрузить достижения');
+		} finally {
+			setIsLoading(false);
+		}
+	}, [isAuthenticated]);
+
+	useEffect(() => {
+		loadAchievements();
+
+		if (!isAuthenticated) {
+			return;
+		}
+
+		// Auto-refresh every 45 seconds
+		const interval = setInterval(() => {
+			loadAchievements();
+		}, 45000);
+
+		return () => clearInterval(interval);
+	}, [isAuthenticated, loadAchievements]);
+
+	if (!isAuthenticated) {
 		return (
 			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
-				<p className="text-xs text-white/40">Все достижения разблокированы!</p>
+				<p className="text-xs text-white/60">Войдите для просмотра достижений</p>
+			</div>
+		);
+	}
+
+	if (isLoading) {
+		return (
+			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
+				<div className="flex items-center justify-center py-4">
+					<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
+				</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
+				<p className="text-xs text-white/60">{error}</p>
+			</div>
+		);
+	}
+
+	// Filter uncompleted achievements and sort by progress (nearest to unlock)
+	const uncompletedAchievements = achievements
+		.filter((a) => !isQuestCompleted(a.completedAt))
+		.sort((a, b) => {
+			const progressA = a.progress ?? 0;
+			const targetA = a.quest.targetValue ?? 1;
+			const progressB = b.progress ?? 0;
+			const targetB = b.quest.targetValue ?? 1;
+			const percentA = targetA > 0 ? (progressA / targetA) * 100 : 0;
+			const percentB = targetB > 0 ? (progressB / targetB) * 100 : 0;
+			return percentB - percentA;
+		})
+		.slice(0, 3);
+
+	if (uncompletedAchievements.length === 0) {
+		// Check if all achievements are completed
+		const hasCompleted = achievements.some((a) => isQuestCompleted(a.completedAt));
+		if (hasCompleted) {
+			return (
+				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+					<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
+					<p className="text-xs text-white/40">Все достижения разблокированы!</p>
+				</div>
+			);
+		}
+		return (
+			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
+				<p className="text-xs text-white/60">Нет активных достижений</p>
 			</div>
 		);
 	}
@@ -34,15 +121,22 @@ export function AchievementsWidget() {
 	return (
 		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
 			<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
-			<div className="space-y-2">
-				{nearestAchievements.map((achievement) => {
-					const progressPercent = (achievement.progress / achievement.maxProgress) * 100;
+			<div className="space-y-2 mb-3">
+				{uncompletedAchievements.map((userQuest) => {
+					const quest = userQuest.quest;
+					const progress = userQuest.progress ?? 0;
+					const targetValue = quest.targetValue ?? 1;
+					const progressPercent =
+						targetValue > 0 ? Math.min(100, (progress / targetValue) * 100) : 0;
+					const questName = formatQuestName(quest.name);
+					const progressText = formatQuestProgress(progress, targetValue);
+
 					return (
-						<div key={achievement.id} className="rounded-lg bg-white/5 p-2">
+						<div key={userQuest.id} className="rounded-lg bg-white/5 p-2">
 							<div className="mb-1 flex items-center gap-2">
-								<div className="text-lg">{achievement.icon}</div>
-								<span className="flex-1 text-xs font-medium text-white">{achievement.name}</span>
-								<span className="text-xs text-white/60">{Math.round(progressPercent)}%</span>
+								<div className="text-lg">🏆</div>
+								<span className="flex-1 text-xs font-medium text-white">{questName}</span>
+								<span className="text-xs text-white/60">{progressText}</span>
 							</div>
 							<div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
 								<div
@@ -54,6 +148,12 @@ export function AchievementsWidget() {
 					);
 				})}
 			</div>
+			<Link
+				href="/profile/achievements"
+				className="text-xs text-primary hover:text-primary/80 transition-colors underline block text-center"
+			>
+				Посмотреть все достижения →
+			</Link>
 		</div>
 	);
 }

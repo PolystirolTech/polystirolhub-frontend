@@ -3,6 +3,7 @@ apis/AuthApi.ts
 apis/BadgesApi.ts
 apis/DefaultApi.ts
 apis/GameServersApi.ts
+apis/QuestsApi.ts
 apis/StatisticsApi.ts
 apis/UsersApi.ts
 apis/index.ts
@@ -23,6 +24,8 @@ models/BannerUrl.ts
 models/BatchResponse.ts
 models/BedrockUsername.ts
 models/ChunksLoaded.ts
+models/ClaimedAt.ts
+models/CompletedAt.ts
 models/ConditionKey.ts
 models/CpuUsage.ts
 models/CreateSuperAdminRequest.ts
@@ -47,6 +50,7 @@ models/Geolocations.ts
 models/HTTPValidationError.ts
 models/Image.ts
 models/IsActive.ts
+models/IsActive1.ts
 models/IsAdmin.ts
 models/IsSuperAdmin.ts
 models/JavaUsername.ts
@@ -103,6 +107,9 @@ models/PluginVersions.ts
 models/Port.ts
 models/ProviderAvatar.ts
 models/ProviderUsername.ts
+models/Quest.ts
+models/QuestDate.ts
+models/QuestType.ts
 models/RamUsage.ts
 models/ResourcePackHash.ts
 models/ResourcePackUrl.ts
@@ -125,6 +132,7 @@ models/Tps1.ts
 models/UnicodeChar.ts
 models/UserBadgeWithBadge.ts
 models/UserInfo.ts
+models/UserQuestWithQuest.ts
 models/UserResponse.ts
 models/UserUpdate.ts
 models/Username.ts

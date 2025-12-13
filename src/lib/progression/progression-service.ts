@@ -15,8 +15,9 @@ class ProgressionService {
 
 	/**
 	 * Get current user progression data
+	 * Returns default values if user is not authenticated (401)
 	 */
-	async getProgression(): Promise<ProgressionData> {
+	async getProgression(): Promise<ProgressionData | null> {
 		const response = await fetch(`${this.baseUrl}/api/v1/users/me/progression`, {
 			method: 'GET',
 			credentials: 'include',
@@ -24,6 +25,11 @@ class ProgressionService {
 				'Content-Type': 'application/json',
 			},
 		});
+
+		// If 401, user is not authenticated - return null
+		if (response.status === 401) {
+			return null;
+		}
 
 		if (!response.ok) {
 			throw new Error(`Failed to fetch progression: ${response.statusText}`);
@@ -36,7 +42,7 @@ class ProgressionService {
 	 * Award XP to the current user
 	 * NOTE: This endpoint is debug-only on the backend
 	 */
-	async awardXp(amount: number): Promise<ProgressionData> {
+	async awardXp(amount: number): Promise<ProgressionData | null> {
 		const response = await fetch(`${this.baseUrl}/api/v1/users/me/award-xp`, {
 			method: 'POST',
 			credentials: 'include',
@@ -45,6 +51,11 @@ class ProgressionService {
 			},
 			body: JSON.stringify({ xp_amount: amount } as AwardXpRequest),
 		});
+
+		// If 401, user is not authenticated
+		if (response.status === 401) {
+			return null;
+		}
 
 		if (!response.ok) {
 			// Check if this is a debug-only endpoint error
@@ -61,7 +72,7 @@ class ProgressionService {
 	 * Reset user progression to default values
 	 * NOTE: This endpoint is debug-only on the backend
 	 */
-	async resetProgression(): Promise<ProgressionData> {
+	async resetProgression(): Promise<ProgressionData | null> {
 		const response = await fetch(`${this.baseUrl}/api/v1/users/me/reset-progression`, {
 			method: 'POST',
 			credentials: 'include',
@@ -69,6 +80,11 @@ class ProgressionService {
 				'Content-Type': 'application/json',
 			},
 		});
+
+		// If 401, user is not authenticated
+		if (response.status === 401) {
+			return null;
+		}
 
 		if (!response.ok) {
 			// Check if this is a debug-only endpoint error

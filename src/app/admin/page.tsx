@@ -85,13 +85,19 @@ export default function AdminPage() {
 							</div>
 						)}
 					</div>
-					<div className="flex items-center gap-4">
+					<div className="flex items-center gap-4 flex-wrap">
 						<p className="text-xs text-white/60">Страница администрирования.</p>
 						<Link
 							href="/admin/badges"
 							className="text-xs text-primary hover:text-primary/80 transition-colors underline"
 						>
 							Управление бэджиками →
+						</Link>
+						<Link
+							href="/admin/quests"
+							className="text-xs text-primary hover:text-primary/80 transition-colors underline"
+						>
+							Управление квестами →
 						</Link>
 					</div>
 				</div>
