@@ -10,6 +10,8 @@ index.ts
 models/AdminResponse.ts
 models/AfkTime.ts
 models/AfkTime1.ts
+models/AutoCheck.ts
+models/AutoCheck1.ts
 models/Avatar.ts
 models/AverageTps.ts
 models/AvgPing.ts
@@ -21,6 +23,7 @@ models/BannerUrl.ts
 models/BatchResponse.ts
 models/BedrockUsername.ts
 models/ChunksLoaded.ts
+models/ConditionKey.ts
 models/CpuUsage.ts
 models/CreateSuperAdminRequest.ts
 models/CurrentNickname.ts
@@ -101,6 +104,13 @@ models/Port.ts
 models/ProviderAvatar.ts
 models/ProviderUsername.ts
 models/RamUsage.ts
+models/ResourcePackHash.ts
+models/ResourcePackUrl.ts
+models/ResponseGetMinecraftPlayerSelectedBadgeApiV1BadgesMinecraftPlayerUuidGet.ts
+models/RewardBalance.ts
+models/RewardBalance1.ts
+models/RewardXp.ts
+models/RewardXp1.ts
 models/SelectedBadgeId.ts
 models/ServerIcon.ts
 models/ServerStatusResponse.ts
@@ -109,8 +119,10 @@ models/SessionEnd.ts
 models/SessionEnd1.ts
 models/SessionId.ts
 models/Sessions.ts
+models/TargetValue.ts
 models/Tps.ts
 models/Tps1.ts
+models/UnicodeChar.ts
 models/UserBadgeWithBadge.ts
 models/UserInfo.ts
 models/UserResponse.ts

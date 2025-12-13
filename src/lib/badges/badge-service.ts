@@ -16,6 +16,16 @@ import { BadgeFromJSON } from '@/lib/api/generated/models/Badge';
 import { ExpiresAtFromJSON } from '@/lib/api/generated/models/ExpiresAt';
 import type { BadgeTypeValue } from './types';
 
+export interface BadgeCondition {
+	key: string;
+	name: string;
+	description: string;
+	type: 'periodic' | 'event';
+	requiresTargetValue: boolean;
+	requiresAutoCheck: boolean;
+	implementationStatus: string;
+}
+
 class BadgeService {
 	private badgesApi: BadgesApi;
 
@@ -154,6 +164,12 @@ class BadgeService {
 		description?: string;
 		badgeType: BadgeTypeValue;
 		image: File;
+		conditionKey?: string;
+		targetValue?: number;
+		autoCheck?: boolean;
+		rewardXp?: number;
+		rewardBalance?: number;
+		unicodeChar?: string;
 	}): Promise<Badge> {
 		const formData = new FormData();
 		formData.append('name', data.name);
@@ -162,6 +178,24 @@ class BadgeService {
 		}
 		formData.append('badge_type', data.badgeType);
 		formData.append('image', data.image);
+		if (data.conditionKey !== undefined) {
+			formData.append('condition_key', data.conditionKey);
+		}
+		if (data.targetValue !== undefined) {
+			formData.append('target_value', String(data.targetValue));
+		}
+		if (data.autoCheck !== undefined) {
+			formData.append('auto_check', String(data.autoCheck));
+		}
+		if (data.rewardXp !== undefined) {
+			formData.append('reward_xp', String(data.rewardXp));
+		}
+		if (data.rewardBalance !== undefined) {
+			formData.append('reward_balance', String(data.rewardBalance));
+		}
+		if (data.unicodeChar !== undefined) {
+			formData.append('unicode_char', data.unicodeChar);
+		}
 
 		const basePath = apiConfig.basePath || 'http://localhost:8000';
 		const response = await fetch(`${basePath}/api/v1/admin/badges`, {
@@ -189,6 +223,12 @@ class BadgeService {
 			description?: string;
 			badgeType?: BadgeTypeValue;
 			image?: File;
+			conditionKey?: string;
+			targetValue?: number;
+			autoCheck?: boolean;
+			rewardXp?: number;
+			rewardBalance?: number;
+			unicodeChar?: string;
 		}
 	): Promise<Badge> {
 		const formData = new FormData();
@@ -203,6 +243,24 @@ class BadgeService {
 		}
 		if (data.image) {
 			formData.append('image', data.image);
+		}
+		if (data.conditionKey !== undefined) {
+			formData.append('condition_key', data.conditionKey);
+		}
+		if (data.targetValue !== undefined) {
+			formData.append('target_value', String(data.targetValue));
+		}
+		if (data.autoCheck !== undefined) {
+			formData.append('auto_check', String(data.autoCheck));
+		}
+		if (data.rewardXp !== undefined) {
+			formData.append('reward_xp', String(data.rewardXp));
+		}
+		if (data.rewardBalance !== undefined) {
+			formData.append('reward_balance', String(data.rewardBalance));
+		}
+		if (data.unicodeChar !== undefined) {
+			formData.append('unicode_char', data.unicodeChar);
 		}
 
 		const basePath = apiConfig.basePath || 'http://localhost:8000';
@@ -257,6 +315,31 @@ class BadgeService {
 	 */
 	async revokeBadge(badgeId: string, userId: string): Promise<void> {
 		await this.badgesApi.revokeBadgeApiV1AdminBadgesBadgeIdRevokeUserIdDelete({ badgeId, userId });
+	}
+
+	/**
+	 * Get badge conditions (public)
+	 * Returns list of all available condition keys with descriptions
+	 */
+	async getBadgeConditions(): Promise<BadgeCondition[]> {
+		const basePath = apiConfig.basePath || 'http://localhost:8000';
+		const response = await fetch(`${basePath}/api/v1/badges/conditions`, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			const error = await response
+				.json()
+				.catch(() => ({ message: 'Ошибка при получении условий' }));
+			throw new Error(error.message || 'Ошибка при получении условий');
+		}
+
+		const data = await response.json();
+		return Array.isArray(data) ? data : [];
 	}
 }
 

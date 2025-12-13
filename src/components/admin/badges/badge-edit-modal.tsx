@@ -7,7 +7,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { badgeService } from '@/lib/badges/badge-service';
+import { badgeService, type BadgeCondition } from '@/lib/badges/badge-service';
 import { validateImageFile } from '@/lib/badges/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,9 +31,45 @@ export function BadgeEditModal({ badge, onSuccess, onCancel }: BadgeEditModalPro
 	);
 	const [image, setImage] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(badge.imageUrl || null);
+	const [conditionKey, setConditionKey] = useState(
+		typeof badge.conditionKey === 'string' ? badge.conditionKey : ''
+	);
+	const [targetValue, setTargetValue] = useState<number | ''>(
+		typeof badge.targetValue === 'number' ? badge.targetValue : ''
+	);
+	const [autoCheck, setAutoCheck] = useState(
+		typeof badge.autoCheck === 'boolean' ? badge.autoCheck : false
+	);
+	const [rewardXp, setRewardXp] = useState<number | ''>(
+		typeof badge.rewardXp === 'number' ? badge.rewardXp : ''
+	);
+	const [rewardBalance, setRewardBalance] = useState<number | ''>(
+		typeof badge.rewardBalance === 'number' ? badge.rewardBalance : ''
+	);
+	const [unicodeChar, setUnicodeChar] = useState(
+		typeof badge.unicodeChar === 'string' ? badge.unicodeChar : ''
+	);
+	const [conditions, setConditions] = useState<BadgeCondition[]>([]);
+	const [selectedCondition, setSelectedCondition] = useState<BadgeCondition | null>(null);
+	const [isLoadingConditions, setIsLoadingConditions] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		async function loadConditions() {
+			try {
+				setIsLoadingConditions(true);
+				const data = await badgeService.getBadgeConditions();
+				setConditions(data);
+			} catch (err) {
+				console.error('Failed to load conditions:', err);
+			} finally {
+				setIsLoadingConditions(false);
+			}
+		}
+		loadConditions();
+	}, []);
 
 	useEffect(() => {
 		setName(badge.name || '');
@@ -41,7 +77,22 @@ export function BadgeEditModal({ badge, onSuccess, onCancel }: BadgeEditModalPro
 		setBadgeType((badge.badgeType as BadgeTypeValue) || 'permanent');
 		setImagePreview(badge.imageUrl || null);
 		setImage(null);
+		setConditionKey(typeof badge.conditionKey === 'string' ? badge.conditionKey : '');
+		setTargetValue(typeof badge.targetValue === 'number' ? badge.targetValue : '');
+		setAutoCheck(typeof badge.autoCheck === 'boolean' ? badge.autoCheck : false);
+		setRewardXp(typeof badge.rewardXp === 'number' ? badge.rewardXp : '');
+		setRewardBalance(typeof badge.rewardBalance === 'number' ? badge.rewardBalance : '');
+		setUnicodeChar(typeof badge.unicodeChar === 'string' ? badge.unicodeChar : '');
 	}, [badge]);
+
+	useEffect(() => {
+		if (conditionKey) {
+			const condition = conditions.find((c) => c.key === conditionKey);
+			setSelectedCondition(condition || null);
+		} else {
+			setSelectedCondition(null);
+		}
+	}, [conditionKey, conditions]);
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -97,6 +148,18 @@ export function BadgeEditModal({ badge, onSuccess, onCancel }: BadgeEditModalPro
 		e.preventDefault();
 		setError(null);
 
+		// Validate condition requirements
+		if (conditionKey && selectedCondition) {
+			if (selectedCondition.requiresTargetValue && (targetValue === '' || targetValue === undefined)) {
+				setError(`Для условия "${selectedCondition.name}" требуется указать целевое значение`);
+				return;
+			}
+			if (selectedCondition.requiresAutoCheck && !autoCheck) {
+				setError(`Для условия "${selectedCondition.name}" требуется включить автоматическую проверку`);
+				return;
+			}
+		}
+
 		try {
 			setIsSubmitting(true);
 			const updateData: {
@@ -104,6 +167,12 @@ export function BadgeEditModal({ badge, onSuccess, onCancel }: BadgeEditModalPro
 				description?: string;
 				badgeType?: BadgeTypeValue;
 				image?: File;
+				conditionKey?: string;
+				targetValue?: number;
+				autoCheck?: boolean;
+				rewardXp?: number;
+				rewardBalance?: number;
+				unicodeChar?: string;
 			} = {};
 
 			if (name.trim() !== badge.name) {
@@ -117,6 +186,30 @@ export function BadgeEditModal({ badge, onSuccess, onCancel }: BadgeEditModalPro
 			}
 			if (image) {
 				updateData.image = image;
+			}
+			const currentConditionKey = typeof badge.conditionKey === 'string' ? badge.conditionKey : '';
+			if (conditionKey.trim() !== currentConditionKey) {
+				updateData.conditionKey = conditionKey.trim() || undefined;
+			}
+			const currentTargetValue = typeof badge.targetValue === 'number' ? badge.targetValue : '';
+			if (targetValue !== currentTargetValue) {
+				updateData.targetValue = targetValue !== '' ? Number(targetValue) : undefined;
+			}
+			const currentAutoCheck = typeof badge.autoCheck === 'boolean' ? badge.autoCheck : false;
+			if (autoCheck !== currentAutoCheck) {
+				updateData.autoCheck = autoCheck;
+			}
+			const currentRewardXp = typeof badge.rewardXp === 'number' ? badge.rewardXp : '';
+			if (rewardXp !== currentRewardXp) {
+				updateData.rewardXp = rewardXp !== '' ? Number(rewardXp) : undefined;
+			}
+			const currentRewardBalance = typeof badge.rewardBalance === 'number' ? badge.rewardBalance : '';
+			if (rewardBalance !== currentRewardBalance) {
+				updateData.rewardBalance = rewardBalance !== '' ? Number(rewardBalance) : undefined;
+			}
+			const currentUnicodeChar = typeof badge.unicodeChar === 'string' ? badge.unicodeChar : '';
+			if (unicodeChar.trim() !== currentUnicodeChar) {
+				updateData.unicodeChar = unicodeChar.trim() || undefined;
 			}
 
 			// Only update if there are changes
@@ -212,6 +305,147 @@ export function BadgeEditModal({ badge, onSuccess, onCancel }: BadgeEditModalPro
 								</div>
 							)}
 						</div>
+					</div>
+
+					{/* Condition Key */}
+					<div>
+						<label className="block text-sm font-medium text-white/90 mb-2">
+							Условие получения
+						</label>
+						{isLoadingConditions ? (
+							<div className="text-sm text-white/60">Загрузка условий...</div>
+						) : (
+							<>
+								<select
+									value={conditionKey}
+									onChange={(e) => setConditionKey(e.target.value)}
+									className="flex h-10 w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-sm"
+								>
+									<option value="">Без условия</option>
+									{conditions.map((condition) => (
+										<option key={condition.key} value={condition.key}>
+											{condition.name}
+										</option>
+									))}
+								</select>
+								{selectedCondition && (
+									<div className="mt-2 p-3 rounded-lg bg-white/5 border border-white/10">
+										<p className="text-sm font-medium text-white mb-1">
+											{selectedCondition.name}
+										</p>
+										<p className="text-xs text-white/70 mb-2">
+											{selectedCondition.description}
+										</p>
+										<div className="flex flex-wrap gap-2 text-xs">
+											<span className="px-2 py-1 rounded bg-white/10 text-white/80">
+												Тип: {selectedCondition.type === 'periodic' ? 'Периодическое' : 'Событие'}
+											</span>
+											{selectedCondition.requiresTargetValue && (
+												<span className="px-2 py-1 rounded bg-yellow-500/20 text-yellow-400">
+													Требуется целевое значение
+												</span>
+											)}
+											{selectedCondition.requiresAutoCheck && (
+												<span className="px-2 py-1 rounded bg-blue-500/20 text-blue-400">
+													Требуется авто-проверка
+												</span>
+											)}
+											{selectedCondition.implementationStatus && (
+												<span className="px-2 py-1 rounded bg-white/10 text-white/60">
+													{selectedCondition.implementationStatus}
+												</span>
+											)}
+										</div>
+									</div>
+								)}
+							</>
+						)}
+					</div>
+
+					{/* Target Value */}
+					{selectedCondition?.requiresTargetValue && (
+						<div>
+							<label className="block text-sm font-medium text-white/90 mb-2">
+								Целевое значение <span className="text-red-400">*</span>
+							</label>
+							<Input
+								type="number"
+								value={targetValue}
+								onChange={(e) => setTargetValue(e.target.value === '' ? '' : Number(e.target.value))}
+								placeholder="Целевое значение"
+								required
+							/>
+						</div>
+					)}
+					{!selectedCondition?.requiresTargetValue && conditionKey && (
+						<div>
+							<label className="block text-sm font-medium text-white/90 mb-2">
+								Целевое значение
+							</label>
+							<Input
+								type="number"
+								value={targetValue}
+								onChange={(e) => setTargetValue(e.target.value === '' ? '' : Number(e.target.value))}
+								placeholder="Целевое значение (опционально)"
+							/>
+						</div>
+					)}
+
+					{/* Auto Check */}
+					<div className="flex items-center gap-2">
+						<input
+							type="checkbox"
+							id="autoCheck"
+							checked={autoCheck}
+							onChange={(e) => setAutoCheck(e.target.checked)}
+							className="h-4 w-4 rounded border-input bg-background/50 text-primary focus:ring-2 focus:ring-ring"
+							required={selectedCondition?.requiresAutoCheck}
+						/>
+						<label htmlFor="autoCheck" className="text-sm font-medium text-white/90">
+							Автоматическая проверка
+							{selectedCondition?.requiresAutoCheck && (
+								<span className="text-red-400 ml-1">*</span>
+							)}
+						</label>
+					</div>
+
+					{/* Reward XP */}
+					<div>
+						<label className="block text-sm font-medium text-white/90 mb-2">
+							Награда XP
+						</label>
+						<Input
+							type="number"
+							value={rewardXp}
+							onChange={(e) => setRewardXp(e.target.value === '' ? '' : Number(e.target.value))}
+							placeholder="0"
+						/>
+					</div>
+
+					{/* Reward Balance */}
+					<div>
+						<label className="block text-sm font-medium text-white/90 mb-2">
+							Награда в валюте
+						</label>
+						<Input
+							type="number"
+							value={rewardBalance}
+							onChange={(e) => setRewardBalance(e.target.value === '' ? '' : Number(e.target.value))}
+							placeholder="0"
+						/>
+					</div>
+
+					{/* Unicode Char */}
+					<div>
+						<label className="block text-sm font-medium text-white/90 mb-2">
+							Юникод символ
+						</label>
+						<Input
+							type="text"
+							value={unicodeChar}
+							onChange={(e) => setUnicodeChar(e.target.value)}
+							placeholder="Автоматически, если не указан"
+						/>
 					</div>
 
 					{/* Error */}
