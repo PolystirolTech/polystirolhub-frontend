@@ -10,7 +10,7 @@
 		"type-check": "tsc --noEmit",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"generate:api": "openapi-generator-cli generate -i http://localhost:8000/openapi.json -g typescript-fetch -o src/lib/api/generated"
+		"generate:api": "openapi-generator-cli generate -i http://localhost:8000/openapi.json -g typescript-fetch -o src/lib/api/generated && node scripts/add-ts-nocheck.mjs"
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",

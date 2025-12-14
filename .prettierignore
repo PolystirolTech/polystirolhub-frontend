@@ -7,3 +7,4 @@ coverage
 *.log
 .env*
 !.env.example
+src/lib/api/generated

@@ -1,4 +1,6 @@
+// @ts-nocheck
 /* tslint:disable */
+/* eslint-disable */
 export * from './AdminResponse';
 export * from './AfkTime';
 export * from './AfkTime1';
@@ -59,6 +61,8 @@ export * from './LinkResponse';
 export * from './LinkStatusResponse';
 export * from './LinkedPlayer';
 export * from './MaxPing';
+export * from './Message';
+export * from './MetaData';
 export * from './MinPing';
 export * from './MinecraftGeolocationData';
 export * from './MinecraftKillData';
@@ -85,6 +89,7 @@ export * from './ModelError';
 export * from './Motd';
 export * from './Name';
 export * from './Nicknames';
+export * from './NotificationResponse';
 export * from './OAuthAccountPublic';
 export * from './Ping';
 export * from './Pings';

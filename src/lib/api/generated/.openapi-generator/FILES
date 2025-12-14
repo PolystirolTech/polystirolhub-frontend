@@ -3,6 +3,7 @@ apis/AuthApi.ts
 apis/BadgesApi.ts
 apis/DefaultApi.ts
 apis/GameServersApi.ts
+apis/NotificationsApi.ts
 apis/QuestsApi.ts
 apis/StatisticsApi.ts
 apis/UsersApi.ts
@@ -68,6 +69,8 @@ models/LinkResponse.ts
 models/LinkStatusResponse.ts
 models/LinkedPlayer.ts
 models/MaxPing.ts
+models/Message.ts
+models/MetaData.ts
 models/MinPing.ts
 models/MinecraftGeolocationData.ts
 models/MinecraftKillData.ts
@@ -94,6 +97,7 @@ models/ModelError.ts
 models/Motd.ts
 models/Name.ts
 models/Nicknames.ts
+models/NotificationResponse.ts
 models/OAuthAccountPublic.ts
 models/Ping.ts
 models/Pings.ts
