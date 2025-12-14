@@ -170,6 +170,16 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 					</thead>
 					<tbody>
 						{sessions.map((session) => {
+							// ОТЛАДКА: логируем весь объект сессии
+							console.log('[MinecraftSessionsList] Session object:', session);
+							console.log(
+								'[MinecraftSessionsList] session.sessionDate:',
+								session.sessionDate,
+								'type:',
+								typeof session.sessionDate
+							);
+							console.log('[MinecraftSessionsList] session keys:', Object.keys(session));
+
 							const sessionStart = getValue(session.sessionStart);
 							// sessionEnd может быть числом напрямую или объектом SessionEnd1
 							let sessionEnd: number | null = null;
@@ -189,9 +199,40 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 									? playtime
 									: calculateSessionDuration(sessionStart, sessionEnd);
 
-							// Извлекаем дату сессии - просто берем sessionDate, если есть
-							const sessionDate =
-								typeof session.sessionDate === 'string' ? session.sessionDate.trim() : null;
+							// Извлекаем дату сессии - проверяем все возможные варианты
+							let sessionDate: string | null = null;
+
+							// Прямая проверка строки
+							if (typeof session.sessionDate === 'string' && session.sessionDate.trim()) {
+								sessionDate = session.sessionDate.trim();
+								console.log('[MinecraftSessionsList] Found sessionDate as string:', sessionDate);
+							}
+							// Проверяем через getStringValue
+							else if (session.sessionDate !== null && session.sessionDate !== undefined) {
+								sessionDate = getStringValue(session.sessionDate);
+								console.log(
+									'[MinecraftSessionsList] Found sessionDate via getStringValue:',
+									sessionDate
+								);
+							}
+							// Проверяем сырой объект (на случай если это объект напрямую)
+							else if (session && typeof session === 'object') {
+								const rawSession = session as Record<string, unknown>;
+								if ('session_date' in rawSession && typeof rawSession.session_date === 'string') {
+									sessionDate = rawSession.session_date.trim();
+									console.log(
+										'[MinecraftSessionsList] Found session_date in raw object:',
+										sessionDate
+									);
+								}
+							}
+
+							console.log(
+								'[MinecraftSessionsList] Final sessionDate:',
+								sessionDate,
+								'sessionStart:',
+								sessionStart
+							);
 
 							// Форматируем дату сессии
 							const dateDisplay = sessionDate
@@ -203,6 +244,8 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 											day: 'numeric',
 										})
 									: 'Неизвестно';
+
+							console.log('[MinecraftSessionsList] Final dateDisplay:', dateDisplay);
 
 							return (
 								<tr key={session.id} className="border-b border-white/5 hover:bg-white/5">
