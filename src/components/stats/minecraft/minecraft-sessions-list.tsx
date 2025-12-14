@@ -217,7 +217,7 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 							}
 							// Проверяем сырой объект (на случай если это объект напрямую)
 							else if (session && typeof session === 'object') {
-								const rawSession = session as Record<string, unknown>;
+								const rawSession = session as unknown as Record<string, unknown>;
 								if ('session_date' in rawSession && typeof rawSession.session_date === 'string') {
 									sessionDate = rawSession.session_date.trim();
 									console.log(
