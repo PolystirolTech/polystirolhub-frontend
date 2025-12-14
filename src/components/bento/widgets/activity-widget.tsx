@@ -47,7 +47,7 @@ export function ActivityWidget() {
 				const basePath =
 					apiConfig.basePath || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 				const url = new URL(`${basePath}/api/v1/activity`);
-				url.searchParams.set('limit', '25');
+				url.searchParams.set('limit', '10');
 
 				const response = await fetch(url.toString(), {
 					method: 'GET',
