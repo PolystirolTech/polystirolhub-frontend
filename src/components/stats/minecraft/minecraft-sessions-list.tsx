@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { minecraftStatsService } from '@/lib/stats/minecraft/minecraft-stats-service';
 import type { MinecraftSessionResponse } from '@/lib/api/generated/models';
-import { formatTimestamp, formatPlaytime } from '@/lib/utils/stats-formatters';
+import { formatPlaytime } from '@/lib/utils/stats-formatters';
 import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
@@ -148,8 +148,7 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 				<table className="w-full">
 					<thead>
 						<tr className="border-b border-white/10">
-							<th className="text-left py-3 px-4 text-sm font-medium text-white/60">Начало</th>
-							<th className="text-left py-3 px-4 text-sm font-medium text-white/60">Конец</th>
+							<th className="text-left py-3 px-4 text-sm font-medium text-white/60">Дата</th>
 							<th className="text-left py-3 px-4 text-sm font-medium text-white/60">Время игры</th>
 							<th className="text-left py-3 px-4 text-sm font-medium text-white/60">
 								Убийства мобов
@@ -159,13 +158,24 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 					</thead>
 					<tbody>
 						{sessions.map((session) => {
+							// Извлекаем дату сессии
+							const sessionDate =
+								typeof session.sessionDate === 'string'
+									? session.sessionDate
+									: getStringValue(session.sessionDate);
+
 							const sessionStart = getValue(session.sessionStart);
-							const sessionEnd = getValue(session.sessionEnd);
+							// sessionEnd может быть числом напрямую или объектом SessionEnd1
+							let sessionEnd: number | null = null;
+							if (typeof session.sessionEnd === 'number') {
+								sessionEnd = session.sessionEnd;
+							} else {
+								sessionEnd = getValue(session.sessionEnd);
+							}
+
 							const playtime = getValue(session.playtime);
 							const mobKills = getValue(session.mobKills);
 							const deaths = getValue(session.deaths);
-							const sessionDate = getStringValue(session.sessionDate);
-							const sessionDateEnd = getStringValue(session.sessionDateEnd);
 
 							// Вычисляем длительность сессии: используем playtime если есть и больше 0, иначе вычисляем из timestamps
 							const sessionDuration =
@@ -173,24 +183,20 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 									? playtime
 									: calculateSessionDuration(sessionStart, sessionEnd);
 
-							// Форматируем дату начала: используем sessionDate если есть, иначе timestamp
-							const startDisplay = sessionDate
+							// Форматируем дату сессии
+							const dateDisplay = sessionDate
 								? formatDate(sessionDate)
 								: sessionStart !== null && sessionStart > 0
-									? formatTimestamp(sessionStart)
+									? new Date(sessionStart).toLocaleDateString('ru-RU', {
+											year: 'numeric',
+											month: 'long',
+											day: 'numeric',
+										})
 									: 'Неизвестно';
-
-							// Форматируем дату конца: используем sessionDateEnd если есть, иначе timestamp
-							const endDisplay = sessionDateEnd
-								? formatDate(sessionDateEnd)
-								: sessionEnd !== null && sessionEnd > 0
-									? formatTimestamp(sessionEnd)
-									: 'В игре';
 
 							return (
 								<tr key={session.id} className="border-b border-white/5 hover:bg-white/5">
-									<td className="py-3 px-4 text-sm text-white">{startDisplay}</td>
-									<td className="py-3 px-4 text-sm text-white">{endDisplay}</td>
+									<td className="py-3 px-4 text-sm text-white">{dateDisplay}</td>
 									<td className="py-3 px-4 text-sm text-white">
 										{sessionDuration !== null && sessionDuration > 0
 											? formatPlaytime(sessionDuration)
