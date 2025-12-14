@@ -116,6 +116,7 @@ export * from './RewardXp';
 export * from './RewardXp1';
 export * from './SelectedBadgeId';
 export * from './ServerIcon';
+export * from './ServerStatus';
 export * from './ServerStatusResponse';
 export * from './Servers';
 export * from './SessionEnd';

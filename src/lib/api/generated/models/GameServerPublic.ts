@@ -50,6 +50,12 @@ import {
     ResourcePackUrlFromJSONTyped,
     ResourcePackUrlToJSON,
 } from './ResourcePackUrl';
+import type { ServerStatus } from './ServerStatus';
+import {
+    ServerStatusFromJSON,
+    ServerStatusFromJSONTyped,
+    ServerStatusToJSON,
+} from './ServerStatus';
 
 /**
  * 
@@ -119,6 +125,12 @@ export interface GameServerPublic {
     resourcePackHash?: ResourcePackHash;
     /**
      * 
+     * @type {ServerStatus}
+     * @memberof GameServerPublic
+     */
+    status: ServerStatus;
+    /**
+     * 
      * @type {any}
      * @memberof GameServerPublic
      */
@@ -141,6 +153,7 @@ export function instanceOfGameServerPublic(value: object): boolean {
     isInstance = isInstance && "gameType" in value;
     isInstance = isInstance && "mods" in value;
     isInstance = isInstance && "ip" in value;
+    isInstance = isInstance && "status" in value;
     isInstance = isInstance && "createdAt" in value;
     isInstance = isInstance && "updatedAt" in value;
 
@@ -167,6 +180,7 @@ export function GameServerPublicFromJSONTyped(json: any, ignoreDiscriminator: bo
         'port': !exists(json, 'port') ? undefined : PortFromJSON(json['port']),
         'resourcePackUrl': !exists(json, 'resource_pack_url') ? undefined : ResourcePackUrlFromJSON(json['resource_pack_url']),
         'resourcePackHash': !exists(json, 'resource_pack_hash') ? undefined : ResourcePackHashFromJSON(json['resource_pack_hash']),
+        'status': ServerStatusFromJSON(json['status']),
         'createdAt': json['created_at'],
         'updatedAt': json['updated_at'],
     };
@@ -191,6 +205,7 @@ export function GameServerPublicToJSON(value?: GameServerPublic | null): any {
         'port': PortToJSON(value.port),
         'resource_pack_url': ResourcePackUrlToJSON(value.resourcePackUrl),
         'resource_pack_hash': ResourcePackHashToJSON(value.resourcePackHash),
+        'status': ServerStatusToJSON(value.status),
         'created_at': value.createdAt,
         'updated_at': value.updatedAt,
     };

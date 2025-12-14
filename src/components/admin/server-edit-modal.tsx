@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { gameService } from '@/lib/game/game-service';
-import type { GameTypeResponse, GameServerResponse } from '@/lib/api/generated';
+import type { GameTypeResponse, GameServerResponse, ServerStatus } from '@/lib/api/generated';
 
 interface ServerEditModalProps {
 	server: GameServerResponse;
@@ -30,6 +30,7 @@ export function ServerEditModal({
 		banner: null as File | null,
 		ip: server.ip || '',
 		port: ('port' in server && typeof server.port === 'string' ? server.port : '') || '',
+		serverStatus: (server.status as ServerStatus) || ('active' as ServerStatus),
 	});
 	const [modName, setModName] = useState('');
 	const [modUrl, setModUrl] = useState('');
@@ -85,6 +86,7 @@ export function ServerEditModal({
 				banner: null,
 				ip: server.ip || '',
 				port: ('port' in server && typeof server.port === 'string' ? server.port : '') || '',
+				serverStatus: (server.status as ServerStatus) || ('active' as ServerStatus),
 			});
 			setModName('');
 			setModUrl('');
@@ -237,6 +239,7 @@ export function ServerEditModal({
 				ip: formData.ip.trim(),
 				port: formData.port?.trim() || undefined,
 				banner: formData.banner,
+				serverStatus: formData.serverStatus,
 			});
 			onServerUpdated(updatedServer);
 			setMessage({ type: 'success', text: 'Сервер успешно обновлен!' });
@@ -454,6 +457,25 @@ export function ServerEditModal({
 							placeholder="25565"
 							className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
 						/>
+					</div>
+
+					{/* Статус сервера */}
+					<div className="space-y-1.5">
+						<label htmlFor="edit-serverStatus" className="text-xs font-medium text-white">
+							Статус сервера
+						</label>
+						<select
+							id="edit-serverStatus"
+							value={formData.serverStatus as string}
+							onChange={(e) =>
+								setFormData((prev) => ({ ...prev, serverStatus: e.target.value as ServerStatus }))
+							}
+							className="flex h-10 w-full rounded-md border border-white/10 bg-black/20 px-3 py-2 text-sm text-white placeholder:text-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-sm"
+						>
+							<option value="active">Работает</option>
+							<option value="disabled">Выключен</option>
+							<option value="maintenance">На обслуживании</option>
+						</select>
 					</div>
 
 					{/* Сообщения */}

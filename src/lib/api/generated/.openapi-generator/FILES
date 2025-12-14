@@ -124,6 +124,7 @@ models/RewardXp.ts
 models/RewardXp1.ts
 models/SelectedBadgeId.ts
 models/ServerIcon.ts
+models/ServerStatus.ts
 models/ServerStatusResponse.ts
 models/Servers.ts
 models/SessionEnd.ts

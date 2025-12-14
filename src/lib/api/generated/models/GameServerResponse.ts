@@ -50,6 +50,12 @@ import {
     ResourcePackUrlFromJSONTyped,
     ResourcePackUrlToJSON,
 } from './ResourcePackUrl';
+import type { ServerStatus } from './ServerStatus';
+import {
+    ServerStatusFromJSON,
+    ServerStatusFromJSONTyped,
+    ServerStatusToJSON,
+} from './ServerStatus';
 
 /**
  * 
@@ -113,6 +119,12 @@ export interface GameServerResponse {
     resourcePackHash?: ResourcePackHash;
     /**
      * 
+     * @type {ServerStatus}
+     * @memberof GameServerResponse
+     */
+    status: ServerStatus;
+    /**
+     * 
      * @type {any}
      * @memberof GameServerResponse
      */
@@ -145,6 +157,7 @@ export function instanceOfGameServerResponse(value: object): boolean {
     isInstance = isInstance && "name" in value;
     isInstance = isInstance && "gameTypeId" in value;
     isInstance = isInstance && "ip" in value;
+    isInstance = isInstance && "status" in value;
     isInstance = isInstance && "id" in value;
     isInstance = isInstance && "createdAt" in value;
     isInstance = isInstance && "updatedAt" in value;
@@ -172,6 +185,7 @@ export function GameServerResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'port': !exists(json, 'port') ? undefined : PortFromJSON(json['port']),
         'resourcePackUrl': !exists(json, 'resource_pack_url') ? undefined : ResourcePackUrlFromJSON(json['resource_pack_url']),
         'resourcePackHash': !exists(json, 'resource_pack_hash') ? undefined : ResourcePackHashFromJSON(json['resource_pack_hash']),
+        'status': ServerStatusFromJSON(json['status']),
         'id': json['id'],
         'createdAt': json['created_at'],
         'updatedAt': json['updated_at'],
@@ -197,6 +211,7 @@ export function GameServerResponseToJSON(value?: GameServerResponse | null): any
         'port': PortToJSON(value.port),
         'resource_pack_url': ResourcePackUrlToJSON(value.resourcePackUrl),
         'resource_pack_hash': ResourcePackHashToJSON(value.resourcePackHash),
+        'status': ServerStatusToJSON(value.status),
         'id': value.id,
         'created_at': value.createdAt,
         'updated_at': value.updatedAt,

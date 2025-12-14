@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { gameService } from '@/lib/game/game-service';
-import type { GameTypeResponse } from '@/lib/api/generated';
+import type { GameTypeResponse, ServerStatus } from '@/lib/api/generated';
 
 interface ServerFormData {
 	gameTypeId: string;
@@ -16,6 +16,7 @@ interface ServerFormData {
 	banner: File | null;
 	ip: string;
 	port?: string;
+	serverStatus: ServerStatus;
 }
 
 export function ServerCreateForm() {
@@ -28,6 +29,7 @@ export function ServerCreateForm() {
 		banner: null,
 		ip: '',
 		port: '',
+		serverStatus: 'active' as ServerStatus,
 	});
 	const [modName, setModName] = useState('');
 	const [modUrl, setModUrl] = useState('');
@@ -154,6 +156,7 @@ export function ServerCreateForm() {
 				ip: formData.ip.trim(),
 				port: formData.port?.trim() || undefined,
 				banner: formData.banner,
+				serverStatus: formData.serverStatus,
 			});
 			setMessage({ type: 'success', text: 'Сервер успешно создан!' });
 			// Отправляем событие для обновления списка серверов
@@ -167,6 +170,7 @@ export function ServerCreateForm() {
 				banner: null,
 				ip: '',
 				port: '',
+				serverStatus: 'active' as ServerStatus,
 			});
 			setModName('');
 			setModUrl('');
@@ -375,6 +379,25 @@ export function ServerCreateForm() {
 						placeholder="25565"
 						className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
 					/>
+				</div>
+
+				{/* Статус сервера */}
+				<div className="space-y-1.5">
+					<label htmlFor="serverStatus" className="text-xs font-medium text-white">
+						Статус сервера
+					</label>
+					<select
+						id="serverStatus"
+						value={formData.serverStatus as string}
+						onChange={(e) =>
+							setFormData((prev) => ({ ...prev, serverStatus: e.target.value as ServerStatus }))
+						}
+						className="flex h-10 w-full rounded-md border border-white/10 bg-black/20 px-3 py-2 text-sm text-white placeholder:text-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-sm"
+					>
+						<option value="active">Работает</option>
+						<option value="disabled">Выключен</option>
+						<option value="maintenance">На обслуживании</option>
+					</select>
 				</div>
 
 				{/* Сообщения */}

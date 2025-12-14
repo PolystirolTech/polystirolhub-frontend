@@ -23,6 +23,7 @@ import type {
   GameTypeUpdate,
   HTTPValidationError,
   Port,
+  ServerStatus,
   ServerStatusResponse,
 } from '../models/index';
 import {
@@ -40,6 +41,8 @@ import {
     HTTPValidationErrorToJSON,
     PortFromJSON,
     PortToJSON,
+    ServerStatusFromJSON,
+    ServerStatusToJSON,
     ServerStatusResponseFromJSON,
     ServerStatusResponseToJSON,
 } from '../models/index';
@@ -51,6 +54,7 @@ export interface CreateGameServerApiV1AdminGameServersPostRequest {
     description?: any | null;
     mods?: any | null;
     port?: Port;
+    serverStatus?: ServerStatus;
     banner?: any | null;
 }
 
@@ -86,6 +90,7 @@ export interface UpdateGameServerApiV1AdminGameServersServerIdPutRequest {
     mods?: any | null;
     ip?: any | null;
     port?: Port;
+    serverStatus?: ServerStatus;
     banner?: any | null;
 }
 
@@ -161,6 +166,10 @@ export class GameServersApi extends runtime.BaseAPI {
 
         if (requestParameters.port !== undefined) {
             formParams.append('port', new Blob([JSON.stringify(PortToJSON(requestParameters.port))], { type: "application/json", }));
+                    }
+
+        if (requestParameters.serverStatus !== undefined) {
+            formParams.append('server_status', new Blob([JSON.stringify(ServerStatusToJSON(requestParameters.serverStatus))], { type: "application/json", }));
                     }
 
         if (requestParameters.banner !== undefined) {
@@ -602,6 +611,10 @@ export class GameServersApi extends runtime.BaseAPI {
 
         if (requestParameters.port !== undefined) {
             formParams.append('port', new Blob([JSON.stringify(PortToJSON(requestParameters.port))], { type: "application/json", }));
+                    }
+
+        if (requestParameters.serverStatus !== undefined) {
+            formParams.append('server_status', new Blob([JSON.stringify(ServerStatusToJSON(requestParameters.serverStatus))], { type: "application/json", }));
                     }
 
         if (requestParameters.banner !== undefined) {

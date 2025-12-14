@@ -13,6 +13,7 @@ import type {
 	GameTypeCreate,
 	GameTypeUpdate,
 	ServerStatusResponse,
+	ServerStatus,
 } from '@/lib/api/generated';
 
 interface CreateGameServerData {
@@ -23,6 +24,7 @@ interface CreateGameServerData {
 	ip: string;
 	port?: string;
 	banner?: File | null;
+	serverStatus?: ServerStatus;
 }
 
 interface UpdateGameServerData {
@@ -33,6 +35,7 @@ interface UpdateGameServerData {
 	ip?: string;
 	port?: string;
 	banner?: File | null;
+	serverStatus?: ServerStatus;
 }
 
 class GameService {
@@ -241,6 +244,9 @@ class GameService {
 			if (data.port) {
 				formData.append('port', data.port);
 			}
+			if (data.serverStatus) {
+				formData.append('server_status', data.serverStatus as string);
+			}
 			if (data.banner) {
 				formData.append('banner', data.banner);
 			}
@@ -298,6 +304,9 @@ class GameService {
 				if (data.port.trim()) {
 					formData.append('port', data.port.trim());
 				}
+			}
+			if (data.serverStatus !== undefined) {
+				formData.append('server_status', data.serverStatus as string);
 			}
 			if (data.banner) {
 				formData.append('banner', data.banner);

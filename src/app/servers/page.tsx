@@ -6,7 +6,7 @@ import { gameService } from '@/lib/game/game-service';
 import type { GameServerPublic, ServerStatusResponse, GameTypeResponse } from '@/lib/api/generated';
 
 interface ServerWithStatus extends GameServerPublic {
-	status?: ServerStatusResponse;
+	mcStatus?: ServerStatusResponse;
 }
 
 export default function ServersPage() {
@@ -219,6 +219,37 @@ export default function ServersPage() {
 		return 'Без названия';
 	};
 
+	// Функция для определения визуального состояния статуса
+	const getServerStatusDisplay = (serverStatus: string | unknown) => {
+		const status = typeof serverStatus === 'string' ? serverStatus : 'active';
+		switch (status) {
+			case 'active':
+				return {
+					indicatorColor: 'bg-green-500',
+					text: null,
+					message: null,
+				};
+			case 'disabled':
+				return {
+					indicatorColor: 'bg-red-500',
+					text: 'Выключен',
+					message: 'Сервер выключен',
+				};
+			case 'maintenance':
+				return {
+					indicatorColor: 'bg-yellow-500',
+					text: 'Обслуживание',
+					message: 'Сервер на обслуживании',
+				};
+			default:
+				return {
+					indicatorColor: 'bg-gray-500',
+					text: null,
+					message: null,
+				};
+		}
+	};
+
 	const getIpString = (ip: unknown): string => {
 		if (typeof ip === 'string') return ip;
 		return '';
@@ -243,16 +274,22 @@ export default function ServersPage() {
 				// Загружаем серверы
 				const allServers = await gameService.getGameServers();
 
-				// Получаем статусы для всех серверов параллельно
+				// Получаем статусы для всех серверов параллельно (только для active)
 				const serversWithStatus = await Promise.allSettled(
 					allServers.map(async (server) => {
-						if (!server.id) return { ...server, status: undefined };
+						if (!server.id) return { ...server, mcStatus: undefined };
+
+						// Не запрашиваем статус для disabled/maintenance
+						const serverStatus = server.status as string;
+						if (serverStatus === 'disabled' || serverStatus === 'maintenance') {
+							return { ...server, mcStatus: undefined };
+						}
 
 						try {
-							const status = await gameService.getGameServerStatus(String(server.id));
-							return { ...server, status };
+							const mcStatus = await gameService.getGameServerStatus(String(server.id));
+							return { ...server, mcStatus };
 						} catch {
-							return { ...server, status: undefined };
+							return { ...server, mcStatus: undefined };
 						}
 					})
 				);
@@ -272,7 +309,7 @@ export default function ServersPage() {
 
 						try {
 							const fullServerInfo = await gameService.getGameServer(String(server.id));
-							return { ...fullServerInfo, status: server.status };
+							return { ...fullServerInfo, mcStatus: server.mcStatus };
 						} catch {
 							return server;
 						}
@@ -392,20 +429,26 @@ export default function ServersPage() {
 							<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 								{filteredServers.map((server) => {
 									const bannerUrl = getBannerUrl(server.bannerUrl);
-									const iconUrl = getIconUrl(server.status?.serverIcon);
-									const isOnline = server.status?.online ?? false;
-									const playersOnline = server.status?.playersOnline ?? 0;
-									const playersMax = server.status?.playersMax ?? 0;
+									const iconUrl = getIconUrl(server.mcStatus?.serverIcon);
+									const serverStatus = server.status as string;
+									const statusDisplay = getServerStatusDisplay(serverStatus);
+									const isActive = serverStatus === 'active';
+									const isOnline = server.mcStatus?.online ?? false;
+									const playersOnline = server.mcStatus?.playersOnline ?? 0;
+									const playersMax = server.mcStatus?.playersMax ?? 0;
 									const serverName = getServerName(server.name);
 									const ip = getIpString(server.ip);
 									const port = getPortString(server.port);
 									const description = getDescription(server.description);
 									const mods = getModsArray(server.mods);
 									const version =
-										typeof server.status?.version === 'string' ? server.status.version : '';
+										typeof server.mcStatus?.version === 'string' ? server.mcStatus.version : '';
 									const ping =
-										typeof server.status?.ping === 'number' ? Math.trunc(server.status.ping) : null;
-									const motdRaw = typeof server.status?.motd === 'string' ? server.status.motd : '';
+										typeof server.mcStatus?.ping === 'number'
+											? Math.trunc(server.mcStatus.ping)
+											: null;
+									const motdRaw =
+										typeof server.mcStatus?.motd === 'string' ? server.mcStatus.motd : '';
 									const motd = motdRaw ? cleanMotd(motdRaw) : '';
 
 									return (
@@ -442,16 +485,30 @@ export default function ServersPage() {
 														<div className="flex items-center gap-2 mb-1">
 															<span
 																className={`h-2 w-2 rounded-full shrink-0 ${
-																	isOnline ? 'bg-green-500' : 'bg-red-500'
+																	isActive
+																		? isOnline
+																			? 'bg-green-500'
+																			: 'bg-red-500'
+																		: statusDisplay.indicatorColor
 																}`}
 															/>
 															<h3 className="text-lg font-bold text-white truncate">
 																{serverName}
 															</h3>
+															{statusDisplay.text && (
+																<span className="text-xs text-white/60">
+																	({statusDisplay.text})
+																</span>
+															)}
 														</div>
 														<p className="text-sm text-white/70">
 															{getGameTypeName(server.gameType)}
 														</p>
+														{statusDisplay.message && (
+															<p className="text-xs text-yellow-400 mt-1">
+																{statusDisplay.message}
+															</p>
+														)}
 													</div>
 												</div>
 
@@ -480,16 +537,23 @@ export default function ServersPage() {
 
 												{/* Статистика */}
 												<div className="mt-auto space-y-2">
-													{/* Онлайн */}
-													<div className="flex items-center justify-between text-sm">
-														<span className="text-white/60">Онлайн:</span>
-														<span className="text-white font-medium">
-															{playersOnline}/{playersMax}
-														</span>
-													</div>
+													{/* Онлайн или статус */}
+													{isActive ? (
+														<div className="flex items-center justify-between text-sm">
+															<span className="text-white/60">Онлайн:</span>
+															<span className="text-white font-medium">
+																{playersOnline}/{playersMax}
+															</span>
+														</div>
+													) : (
+														<div className="flex items-center justify-between text-sm">
+															<span className="text-white/60">Статус:</span>
+															<span className="text-white font-medium">{statusDisplay.text}</span>
+														</div>
+													)}
 
 													{/* Ping */}
-													{ping !== null && (
+													{isActive && ping !== null && (
 														<div className="flex items-center justify-between text-sm">
 															<span className="text-white/60">Ping:</span>
 															<span className="text-white font-medium">{ping}ms</span>
@@ -497,7 +561,7 @@ export default function ServersPage() {
 													)}
 
 													{/* Версия */}
-													{version && (
+													{isActive && version && (
 														<div className="flex items-center justify-between text-sm">
 															<span className="text-white/60">Версия:</span>
 															<span className="text-white font-medium">{version}</span>
@@ -533,7 +597,7 @@ export default function ServersPage() {
 													)}
 
 													{/* MOTD */}
-													{motd && (
+													{isActive && motd && (
 														<div className="pt-2 border-t border-white/10">
 															<p className="text-xs text-white/80 line-clamp-2">{motd}</p>
 														</div>
