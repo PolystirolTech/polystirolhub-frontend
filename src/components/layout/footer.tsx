@@ -17,7 +17,7 @@ export function Footer() {
 						href="https://boosty.to/sluicee/donate"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="glass bg-[#d45124] backdrop-blur-md border border-[#9333EA]/30 hover:bg-[#9333EA]/30 transition-all px-4 py-2 rounded-xl text-white font-medium text-xs hover:scale-[1.02] active:scale-[0.98]"
+						className="glass bg-[#d45124] backdrop-blur-md border border-[#d45124]/30 hover:bg-[#d45124]/30 transition-all px-4 py-2 rounded-xl text-white font-medium text-xs hover:scale-[1.02] active:scale-[0.98]"
 					>
 						Поддержать проект
 					</a>
