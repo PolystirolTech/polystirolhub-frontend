@@ -18,10 +18,31 @@ class QuestService {
 	/**
 	 * Get all public active quests
 	 */
-	async getAllQuests(): Promise<Quest[]> {
-		const response = await this.questsApi.getQuestsApiV1QuestsGet();
-		if (!Array.isArray(response)) return [];
-		return response.map((item: unknown) => QuestFromJSON(item));
+	async getAllQuests(skip: number = 0, limit: number = 50): Promise<Quest[]> {
+		const basePath = apiConfig.basePath || 'http://localhost:8000';
+		const params = new URLSearchParams();
+		if (skip !== undefined && skip > 0) params.append('skip', String(skip));
+		if (limit !== undefined && limit !== 50) params.append('limit', String(limit));
+		const url = `${basePath}/api/v1/quests${params.toString() ? `?${params.toString()}` : ''}`;
+
+		const response = await fetch(url, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			const error = await response
+				.json()
+				.catch(() => ({ message: 'Ошибка при получении квестов' }));
+			throw new Error(error.message || error.detail || 'Ошибка при получении квестов');
+		}
+
+		const data = await response.json();
+		if (!Array.isArray(data)) return [];
+		return data.map((item: unknown) => QuestFromJSON(item));
 	}
 
 	/**
@@ -29,9 +50,14 @@ class QuestService {
 	 * Uses fetch directly to ensure cookies are sent correctly
 	 * Maps snake_case to camelCase for proper type compatibility
 	 */
-	async getMyQuests(): Promise<UserQuestWithQuest[]> {
+	async getMyQuests(skip: number = 0, limit: number = 50): Promise<UserQuestWithQuest[]> {
 		const basePath = apiConfig.basePath || 'http://localhost:8000';
-		const response = await fetch(`${basePath}/api/v1/quests/me`, {
+		const params = new URLSearchParams();
+		if (skip !== undefined && skip > 0) params.append('skip', String(skip));
+		if (limit !== undefined && limit !== 50) params.append('limit', String(limit));
+		const url = `${basePath}/api/v1/quests/me${params.toString() ? `?${params.toString()}` : ''}`;
+
+		const response = await fetch(url, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
@@ -62,9 +88,14 @@ class QuestService {
 	 * Get all quests (admin)
 	 * Uses fetch directly and maps snake_case to camelCase
 	 */
-	async getAllQuestsAdmin(): Promise<Quest[]> {
+	async getAllQuestsAdmin(skip: number = 0, limit: number = 50): Promise<Quest[]> {
 		const basePath = apiConfig.basePath || 'http://localhost:8000';
-		const response = await fetch(`${basePath}/api/v1/admin/quests`, {
+		const params = new URLSearchParams();
+		if (skip !== undefined && skip > 0) params.append('skip', String(skip));
+		if (limit !== undefined && limit !== 50) params.append('limit', String(limit));
+		const url = `${basePath}/api/v1/admin/quests${params.toString() ? `?${params.toString()}` : ''}`;
+
+		const response = await fetch(url, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {

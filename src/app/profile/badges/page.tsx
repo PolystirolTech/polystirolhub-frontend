@@ -29,6 +29,10 @@ export default function MyBadgesPage() {
 	const [typeFilter, setTypeFilter] = useState<BadgeTypeValue | 'all'>('all');
 	const [sortBy, setSortBy] = useState<SortOption>('date');
 	const [isSelecting, setIsSelecting] = useState<string | null>(null);
+	const [page, setPage] = useState(1);
+	const [hasMore, setHasMore] = useState(false);
+
+	const PAGE_SIZE = 50;
 
 	// Redirect to login if not authenticated
 	useEffect(() => {
@@ -45,9 +49,11 @@ export default function MyBadgesPage() {
 			try {
 				setIsLoading(true);
 				setError(null);
-				const data = await badgeService.getMyBadges();
+				const skip = (page - 1) * PAGE_SIZE;
+				const data = await badgeService.getMyBadges(skip, PAGE_SIZE);
 				setBadges(data);
 				setFilteredBadges(data);
+				setHasMore(data.length === PAGE_SIZE);
 			} catch (err) {
 				console.error('Failed to load badges:', err);
 				setError('Не удалось загрузить бэджики');
@@ -57,7 +63,7 @@ export default function MyBadgesPage() {
 		}
 
 		loadBadges();
-	}, [isAuthenticated]);
+	}, [isAuthenticated, page]);
 
 	// Filter and sort badges
 	useEffect(() => {
@@ -113,6 +119,14 @@ export default function MyBadgesPage() {
 
 		setFilteredBadges(filtered);
 	}, [badges, searchQuery, typeFilter, sortBy]);
+
+	// Reset to page 1 when filters change
+	useEffect(() => {
+		if (page !== 1) {
+			setPage(1);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchQuery, typeFilter, sortBy]);
 
 	const handleSelectBadge = async (badgeId: string) => {
 		try {
@@ -231,7 +245,7 @@ export default function MyBadgesPage() {
 				)}
 
 				{/* Badges List */}
-				{filteredBadges.length === 0 ? (
+				{filteredBadges.length === 0 && !isLoading ? (
 					<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
 						<p className="text-white/60">
 							{searchQuery || typeFilter !== 'all'
@@ -240,31 +254,54 @@ export default function MyBadgesPage() {
 						</p>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-						{filteredBadges.map((item) => {
-							const isSelected = item.badge.id === selectedBadgeId;
-							const badgeType =
-								typeof item.badge.badgeType === 'string'
-									? item.badge.badgeType
-									: String(item.badge.badgeType || '');
-							const expiresAt =
-								typeof item.expiresAt === 'string' || item.expiresAt === null
-									? item.expiresAt
-									: String(item.expiresAt || '');
-							return (
-								<BadgeCard
-									key={item.id}
-									badge={{ ...item.badge, badgeType: badgeType as BadgeTypeValue }}
-									receivedAt={item.receivedAt}
-									expiresAt={expiresAt}
-									isSelected={isSelected}
-									onSelect={isSelected ? undefined : () => handleSelectBadge(item.badge.id || '')}
-									onDeselect={isSelected ? handleDeselectBadge : undefined}
-									isSelecting={isSelecting === item.badge.id || isSelecting === 'deselect'}
-								/>
-							);
-						})}
-					</div>
+					<>
+						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+							{filteredBadges.map((item) => {
+								const isSelected = item.badge.id === selectedBadgeId;
+								const badgeType =
+									typeof item.badge.badgeType === 'string'
+										? item.badge.badgeType
+										: String(item.badge.badgeType || '');
+								const expiresAt =
+									typeof item.expiresAt === 'string' || item.expiresAt === null
+										? item.expiresAt
+										: String(item.expiresAt || '');
+								return (
+									<BadgeCard
+										key={item.id}
+										badge={{ ...item.badge, badgeType: badgeType as BadgeTypeValue }}
+										receivedAt={item.receivedAt}
+										expiresAt={expiresAt}
+										isSelected={isSelected}
+										onSelect={isSelected ? undefined : () => handleSelectBadge(item.badge.id || '')}
+										onDeselect={isSelected ? handleDeselectBadge : undefined}
+										isSelecting={isSelecting === item.badge.id || isSelecting === 'deselect'}
+									/>
+								);
+							})}
+						</div>
+
+						{/* Pagination */}
+						{(hasMore || page > 1) && (
+							<div className="flex items-center justify-between mt-6">
+								<button
+									onClick={() => setPage((p) => Math.max(1, p - 1))}
+									disabled={page === 1 || isLoading}
+									className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+								>
+									Назад
+								</button>
+								<span className="text-sm text-white/60">Страница {page}</span>
+								<button
+									onClick={() => setPage((p) => p + 1)}
+									disabled={!hasMore || isLoading}
+									className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+								>
+									Вперед
+								</button>
+							</div>
+						)}
+					</>
 				)}
 			</main>
 		</div>

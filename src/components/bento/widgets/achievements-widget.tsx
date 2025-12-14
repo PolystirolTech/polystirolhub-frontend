@@ -25,7 +25,7 @@ export function AchievementsWidget() {
 
 		try {
 			setError(null);
-			const data = await questService.getMyQuests();
+			const data = await questService.getMyQuests(0, 20);
 			// Filter only achievement quests
 			const achievementQuests = data.filter(
 				(userQuest) =>

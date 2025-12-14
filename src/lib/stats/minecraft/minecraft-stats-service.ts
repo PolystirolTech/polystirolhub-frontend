@@ -130,14 +130,35 @@ class MinecraftStatsService {
 	 */
 	async getServerTopPlayers(
 		serverId: string | number,
-		limit: number = 50
+		limit: number = 50,
+		offset: number = 0
 	): Promise<MinecraftTopPlayer[]> {
 		try {
-			const players =
-				await this.api.getServerTopPlayersApiV1StatisticsMinecraftServersServerIdPlayersGet({
-					serverId: String(serverId),
-					limit,
-				});
+			const basePath = apiConfig.basePath || 'http://localhost:8000';
+			const params = new URLSearchParams();
+			if (limit !== undefined && limit !== 50) params.append('limit', String(limit));
+			if (offset !== undefined && offset > 0) params.append('offset', String(offset));
+			const url = `${basePath}/api/v1/statistics/minecraft/servers/${serverId}/players${params.toString() ? `?${params.toString()}` : ''}`;
+
+			const response = await fetch(url, {
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (!response.ok) {
+				if (response.status === 404) {
+					return [];
+				}
+				const error = await response
+					.json()
+					.catch(() => ({ message: 'Ошибка при получении топа игроков' }));
+				throw new Error(error.message || error.detail || 'Ошибка при получении топа игроков');
+			}
+
+			const players = await response.json();
 			return Array.isArray(players) ? players : [];
 		} catch (error) {
 			if (

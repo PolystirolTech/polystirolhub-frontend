@@ -6,7 +6,7 @@
  * Widget for displaying and managing badges in admin panel
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { badgeService } from '@/lib/badges/badge-service';
 import { BadgeImage } from '@/components/badges/badge-image';
 import { BadgeTypeBadge } from '@/components/badges/badge-type-badge';
@@ -20,6 +20,8 @@ import type { Badge } from '@/lib/api/generated';
 import type { BadgeTypeValue } from '@/lib/badges/types';
 import { formatBadgeDate } from '@/lib/badges/types';
 
+const PAGE_SIZE = 50;
+
 export function BadgesListWidget() {
 	const [badges, setBadges] = useState<Badge[]>([]);
 	const [filteredBadges, setFilteredBadges] = useState<Badge[]>([]);
@@ -31,26 +33,30 @@ export function BadgesListWidget() {
 	const [editingBadge, setEditingBadge] = useState<Badge | null>(null);
 	const [awardingBadge, setAwardingBadge] = useState<Badge | null>(null);
 	const [deletingBadge, setDeletingBadge] = useState<Badge | null>(null);
+	const [page, setPage] = useState(1);
+	const [hasMore, setHasMore] = useState(false);
 
-	// Load badges
-	useEffect(() => {
-		loadBadges();
-	}, []);
-
-	async function loadBadges() {
+	const loadBadges = useCallback(async () => {
 		try {
 			setIsLoading(true);
 			setError(null);
-			const data = await badgeService.getAllBadgesAdmin();
+			const skip = (page - 1) * PAGE_SIZE;
+			const data = await badgeService.getAllBadgesAdmin(skip, PAGE_SIZE);
 			setBadges(data);
 			setFilteredBadges(data);
+			setHasMore(data.length === PAGE_SIZE);
 		} catch (err) {
 			console.error('Failed to load badges:', err);
 			setError('Не удалось загрузить бэджики');
 		} finally {
 			setIsLoading(false);
 		}
-	}
+	}, [page]);
+
+	// Load badges
+	useEffect(() => {
+		loadBadges();
+	}, [loadBadges]);
 
 	// Filter badges
 	useEffect(() => {
@@ -80,6 +86,14 @@ export function BadgesListWidget() {
 
 		setFilteredBadges(filtered);
 	}, [badges, searchQuery, typeFilter]);
+
+	// Reset to page 1 when filters change
+	useEffect(() => {
+		if (page !== 1) {
+			setPage(1);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchQuery, typeFilter]);
 
 	const handleDeleteBadge = async () => {
 		if (!deletingBadge) return;
@@ -158,75 +172,98 @@ export function BadgesListWidget() {
 			)}
 
 			{/* Badges Grid */}
-			{filteredBadges.length === 0 ? (
+			{filteredBadges.length === 0 && !isLoading ? (
 				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
 					<p className="text-white/60">
 						{searchQuery || typeFilter !== 'all' ? 'Бэджики не найдены' : 'Бэджики не созданы'}
 					</p>
 				</div>
 			) : (
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-					{filteredBadges.map((badge) => (
-						<div
-							key={badge.id}
-							className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 rounded-lg"
-						>
-							<div className="flex items-start gap-4 mb-4">
-								<BadgeImage src={badge.imageUrl || ''} alt={badge.name || ''} size="lg" />
-								<div className="flex-1 min-w-0">
-									<h3 className="text-lg font-bold text-white truncate mb-1">{badge.name}</h3>
-									{badge.description && (
-										<p className="text-sm text-white/70 line-clamp-2 mb-2">
-											{typeof badge.description === 'string'
-												? badge.description
-												: String(badge.description || '')}
-										</p>
-									)}
-									{badge.badgeType && (
-										<BadgeTypeBadge
-											type={
-												typeof badge.badgeType === 'string'
-													? badge.badgeType
-													: String(badge.badgeType || '')
-											}
-										/>
-									)}
+				<>
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+						{filteredBadges.map((badge) => (
+							<div
+								key={badge.id}
+								className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 rounded-lg"
+							>
+								<div className="flex items-start gap-4 mb-4">
+									<BadgeImage src={badge.imageUrl || ''} alt={badge.name || ''} size="lg" />
+									<div className="flex-1 min-w-0">
+										<h3 className="text-lg font-bold text-white truncate mb-1">{badge.name}</h3>
+										{badge.description && (
+											<p className="text-sm text-white/70 line-clamp-2 mb-2">
+												{typeof badge.description === 'string'
+													? badge.description
+													: String(badge.description || '')}
+											</p>
+										)}
+										{badge.badgeType && (
+											<BadgeTypeBadge
+												type={
+													typeof badge.badgeType === 'string'
+														? badge.badgeType
+														: String(badge.badgeType || '')
+												}
+											/>
+										)}
+									</div>
+								</div>
+
+								<div className="text-xs text-white/60 mb-4">
+									Создан: {formatBadgeDate(badge.createdAt)}
+								</div>
+
+								<div className="flex gap-2">
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setEditingBadge(badge)}
+										className="flex-1"
+									>
+										Редактировать
+									</Button>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setAwardingBadge(badge)}
+										className="flex-1"
+									>
+										Выдать
+									</Button>
+									<Button
+										variant="destructive"
+										size="sm"
+										onClick={() => setDeletingBadge(badge)}
+										className="flex-1 text-red-500"
+									>
+										X
+									</Button>
 								</div>
 							</div>
+						))}
+					</div>
 
-							<div className="text-xs text-white/60 mb-4">
-								Создан: {formatBadgeDate(badge.createdAt)}
-							</div>
-
-							<div className="flex gap-2">
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => setEditingBadge(badge)}
-									className="flex-1"
-								>
-									Редактировать
-								</Button>
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => setAwardingBadge(badge)}
-									className="flex-1"
-								>
-									Выдать
-								</Button>
-								<Button
-									variant="destructive"
-									size="sm"
-									onClick={() => setDeletingBadge(badge)}
-									className="flex-1 text-red-500"
-								>
-									X
-								</Button>
-							</div>
+					{/* Pagination */}
+					{(hasMore || page > 1) && (
+						<div className="flex items-center justify-between mt-6">
+							<button
+								onClick={() => setPage((p) => Math.max(1, p - 1))}
+								disabled={page === 1 || isLoading}
+								className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								Назад
+							</button>
+							<span className="text-sm text-white/60">Страница {page}</span>
+							<button
+								onClick={() => setPage((p) => p + 1)}
+								disabled={!hasMore || isLoading}
+								className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								Вперед
+							</button>
 						</div>
-					))}
-				</div>
+					)}
+				</>
 			)}
 
 			{/* Create Form */}

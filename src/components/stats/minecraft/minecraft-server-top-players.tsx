@@ -27,7 +27,7 @@ export function MinecraftServerTopPlayers({
 			try {
 				setLoading(true);
 				setError(null);
-				const data = await minecraftStatsService.getServerTopPlayers(serverId, limit);
+				const data = await minecraftStatsService.getServerTopPlayers(serverId, limit, 0);
 				setPlayers(data);
 			} catch (err) {
 				setError(err instanceof Error ? err.message : 'Не удалось загрузить топ игроков');

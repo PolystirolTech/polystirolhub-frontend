@@ -24,6 +24,10 @@ export default function BadgesPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [typeFilter, setTypeFilter] = useState<BadgeTypeValue | 'all'>('all');
+	const [page, setPage] = useState(1);
+	const [hasMore, setHasMore] = useState(false);
+
+	const PAGE_SIZE = 50;
 
 	// Load badges
 	useEffect(() => {
@@ -31,9 +35,11 @@ export default function BadgesPage() {
 			try {
 				setIsLoading(true);
 				setError(null);
-				const data = await badgeService.getAllBadges();
+				const skip = (page - 1) * PAGE_SIZE;
+				const data = await badgeService.getAllBadges(skip, PAGE_SIZE);
 				setBadges(data);
 				setFilteredBadges(data);
+				setHasMore(data.length === PAGE_SIZE);
 			} catch (err) {
 				console.error('Failed to load badges:', err);
 				setError('Не удалось загрузить бэджики');
@@ -43,7 +49,7 @@ export default function BadgesPage() {
 		}
 
 		loadBadges();
-	}, []);
+	}, [page]);
 
 	// Filter badges
 	useEffect(() => {
@@ -73,6 +79,14 @@ export default function BadgesPage() {
 
 		setFilteredBadges(filtered);
 	}, [badges, searchQuery, typeFilter]);
+
+	// Reset to page 1 when filters change
+	useEffect(() => {
+		if (page !== 1) {
+			setPage(1);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchQuery, typeFilter]);
 
 	const handleBadgeClick = async (badge: Badge) => {
 		try {
@@ -147,38 +161,61 @@ export default function BadgesPage() {
 				)}
 
 				{/* Badges Grid */}
-				{filteredBadges.length === 0 ? (
+				{filteredBadges.length === 0 && !isLoading ? (
 					<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
 						<p className="text-white/60">
 							{searchQuery || typeFilter !== 'all' ? 'Бэджики не найдены' : 'Бэджики не найдены'}
 						</p>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-						{filteredBadges.map((badge) => (
-							<button
-								key={badge.id}
-								onClick={() => handleBadgeClick(badge)}
-								className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 rounded-lg text-left transition-all hover:border-white/20 hover:scale-[1.02] cursor-pointer"
-							>
-								<div className="flex flex-col items-center gap-3">
-									<BadgeImage src={badge.imageUrl || ''} alt={badge.name || ''} size="xl" />
-									<div className="text-center w-full">
-										<h3 className="text-lg font-bold text-white mb-1">{badge.name}</h3>
-										{badge.badgeType && (
-											<BadgeTypeBadge
-												type={
-													typeof badge.badgeType === 'string'
-														? badge.badgeType
-														: String(badge.badgeType || '')
-												}
-											/>
-										)}
+					<>
+						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+							{filteredBadges.map((badge) => (
+								<button
+									key={badge.id}
+									onClick={() => handleBadgeClick(badge)}
+									className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 rounded-lg text-left transition-all hover:border-white/20 hover:scale-[1.02] cursor-pointer"
+								>
+									<div className="flex flex-col items-center gap-3">
+										<BadgeImage src={badge.imageUrl || ''} alt={badge.name || ''} size="xl" />
+										<div className="text-center w-full">
+											<h3 className="text-lg font-bold text-white mb-1">{badge.name}</h3>
+											{badge.badgeType && (
+												<BadgeTypeBadge
+													type={
+														typeof badge.badgeType === 'string'
+															? badge.badgeType
+															: String(badge.badgeType || '')
+													}
+												/>
+											)}
+										</div>
 									</div>
-								</div>
-							</button>
-						))}
-					</div>
+								</button>
+							))}
+						</div>
+
+						{/* Pagination */}
+						{(hasMore || page > 1) && (
+							<div className="flex items-center justify-between mt-6">
+								<button
+									onClick={() => setPage((p) => Math.max(1, p - 1))}
+									disabled={page === 1 || isLoading}
+									className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+								>
+									Назад
+								</button>
+								<span className="text-sm text-white/60">Страница {page}</span>
+								<button
+									onClick={() => setPage((p) => p + 1)}
+									disabled={!hasMore || isLoading}
+									className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+								>
+									Вперед
+								</button>
+							</div>
+						)}
+					</>
 				)}
 
 				{/* Badge Detail Modal */}

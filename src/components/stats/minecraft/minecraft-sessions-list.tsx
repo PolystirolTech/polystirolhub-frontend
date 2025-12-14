@@ -13,7 +13,7 @@ interface MinecraftSessionsListProps {
 	playerUuid: string;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps) {
 	const [sessions, setSessions] = useState<MinecraftSessionResponse[]>([]);

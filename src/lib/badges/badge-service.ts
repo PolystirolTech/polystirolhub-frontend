@@ -36,9 +36,30 @@ class BadgeService {
 	/**
 	 * Get all public badges
 	 */
-	async getAllBadges(): Promise<Badge[]> {
-		const response = await this.badgesApi.getBadgesApiV1BadgesGet();
-		return Array.isArray(response) ? response : [];
+	async getAllBadges(skip: number = 0, limit: number = 50): Promise<Badge[]> {
+		const basePath = apiConfig.basePath || 'http://localhost:8000';
+		const params = new URLSearchParams();
+		if (skip !== undefined && skip > 0) params.append('skip', String(skip));
+		if (limit !== undefined && limit !== 50) params.append('limit', String(limit));
+		const url = `${basePath}/api/v1/badges${params.toString() ? `?${params.toString()}` : ''}`;
+
+		const response = await fetch(url, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			const error = await response
+				.json()
+				.catch(() => ({ message: 'Ошибка при получении бэджиков' }));
+			throw new Error(error.message || error.detail || 'Ошибка при получении бэджиков');
+		}
+
+		const data = await response.json();
+		return Array.isArray(data) ? data : [];
 	}
 
 	/**
@@ -53,9 +74,14 @@ class BadgeService {
 	 * Uses fetch directly to ensure cookies are sent correctly
 	 * Maps snake_case to camelCase for proper type compatibility
 	 */
-	async getMyBadges(): Promise<UserBadgeWithBadge[]> {
+	async getMyBadges(skip: number = 0, limit: number = 50): Promise<UserBadgeWithBadge[]> {
 		const basePath = apiConfig.basePath || 'http://localhost:8000';
-		const response = await fetch(`${basePath}/api/v1/badges/me`, {
+		const params = new URLSearchParams();
+		if (skip !== undefined && skip > 0) params.append('skip', String(skip));
+		if (limit !== undefined && limit !== 50) params.append('limit', String(limit));
+		const url = `${basePath}/api/v1/badges/me${params.toString() ? `?${params.toString()}` : ''}`;
+
+		const response = await fetch(url, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
@@ -124,9 +150,14 @@ class BadgeService {
 	 * Get all badges (admin)
 	 * Uses fetch directly and maps snake_case to camelCase
 	 */
-	async getAllBadgesAdmin(): Promise<Badge[]> {
+	async getAllBadgesAdmin(skip: number = 0, limit: number = 50): Promise<Badge[]> {
 		const basePath = apiConfig.basePath || 'http://localhost:8000';
-		const response = await fetch(`${basePath}/api/v1/admin/badges`, {
+		const params = new URLSearchParams();
+		if (skip !== undefined && skip > 0) params.append('skip', String(skip));
+		if (limit !== undefined && limit !== 50) params.append('limit', String(limit));
+		const url = `${basePath}/api/v1/admin/badges${params.toString() ? `?${params.toString()}` : ''}`;
+
+		const response = await fetch(url, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {

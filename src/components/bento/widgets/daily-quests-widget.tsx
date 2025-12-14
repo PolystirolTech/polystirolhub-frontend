@@ -25,7 +25,7 @@ export function DailyQuestsWidget() {
 
 		try {
 			setError(null);
-			const data = await questService.getMyQuests();
+			const data = await questService.getMyQuests(0, 20);
 			// Filter only daily quests
 			const dailyQuests = data.filter(
 				(userQuest) =>

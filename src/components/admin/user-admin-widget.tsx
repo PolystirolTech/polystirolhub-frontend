@@ -50,11 +50,28 @@ export function UserAdminWidget() {
 			try {
 				setIsLoading(true);
 				setError(null);
-				const adminApi = new AdminApi(apiConfig);
-				const response = await adminApi.getAllUsersApiV1AdminUsersGet();
-				const usersList = Array.isArray(response) ? response : [];
-				setUsers(usersList as AdminUser[]);
-				setFilteredUsers(usersList as AdminUser[]);
+				const basePath = apiConfig.basePath || 'http://localhost:8000';
+				const params = new URLSearchParams();
+				params.append('skip', '0');
+				params.append('limit', '100');
+				const url = `${basePath}/api/v1/admin/users?${params.toString()}`;
+
+				const response = await fetch(url, {
+					method: 'GET',
+					credentials: 'include',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error('Не удалось загрузить пользователей');
+				}
+
+				const usersList = await response.json();
+				const usersArray = Array.isArray(usersList) ? usersList : [];
+				setUsers(usersArray as AdminUser[]);
+				setFilteredUsers(usersArray as AdminUser[]);
 			} catch (err) {
 				console.error('Failed to load users:', err);
 				setError('Не удалось загрузить пользователей');
@@ -113,9 +130,27 @@ export function UserAdminWidget() {
 				userId: promoteModal.user.id,
 			});
 			// Обновляем список пользователей
-			const response = await adminApi.getAllUsersApiV1AdminUsersGet();
-			const usersList = Array.isArray(response) ? response : [];
-			setUsers(usersList as AdminUser[]);
+			const basePath = apiConfig.basePath || 'http://localhost:8000';
+			const params = new URLSearchParams();
+			params.append('skip', '0');
+			params.append('limit', '100');
+			const url = `${basePath}/api/v1/admin/users?${params.toString()}`;
+
+			const response = await fetch(url, {
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error('Не удалось загрузить пользователей');
+			}
+
+			const usersList = await response.json();
+			const usersArray = Array.isArray(usersList) ? usersList : [];
+			setUsers(usersArray as AdminUser[]);
 			// Обновляем фильтрованный список
 			const query = searchQuery.toLowerCase();
 			if (!query) {
@@ -155,9 +190,27 @@ export function UserAdminWidget() {
 				userId: demoteModal.user.id,
 			});
 			// Обновляем список пользователей
-			const response = await adminApi.getAllUsersApiV1AdminUsersGet();
-			const usersList = Array.isArray(response) ? response : [];
-			setUsers(usersList as AdminUser[]);
+			const basePath = apiConfig.basePath || 'http://localhost:8000';
+			const params = new URLSearchParams();
+			params.append('skip', '0');
+			params.append('limit', '100');
+			const url = `${basePath}/api/v1/admin/users?${params.toString()}`;
+
+			const response = await fetch(url, {
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error('Не удалось загрузить пользователей');
+			}
+
+			const usersList = await response.json();
+			const usersArray = Array.isArray(usersList) ? usersList : [];
+			setUsers(usersArray as AdminUser[]);
 			// Обновляем фильтрованный список
 			const query = searchQuery.toLowerCase();
 			if (!query) {
