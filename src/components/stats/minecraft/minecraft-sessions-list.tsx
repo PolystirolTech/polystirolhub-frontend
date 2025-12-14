@@ -85,10 +85,22 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 		// Если это null или undefined, возвращаем null
 		if (obj === null || obj === undefined) return null;
 
-		// Если это объект с полем value
-		if (typeof obj === 'object' && 'value' in obj) {
-			const value = (obj as { value: unknown }).value;
-			if (typeof value === 'string' && value.trim()) return value.trim();
+		// Если это число, преобразуем в строку (на случай если пришло число)
+		if (typeof obj === 'number') return String(obj);
+
+		// Если это объект, пытаемся извлечь значение
+		if (typeof obj === 'object') {
+			// Проверяем поле value
+			if ('value' in obj) {
+				const value = (obj as { value: unknown }).value;
+				if (typeof value === 'string' && value.trim()) return value.trim();
+				if (typeof value === 'number') return String(value);
+			}
+			// Проверяем, может быть это объект с датой напрямую
+			if ('date' in obj) {
+				const date = (obj as { date: unknown }).date;
+				if (typeof date === 'string' && date.trim()) return date.trim();
+			}
 		}
 
 		return null;
@@ -158,12 +170,6 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 					</thead>
 					<tbody>
 						{sessions.map((session) => {
-							// Извлекаем дату сессии
-							const sessionDate =
-								typeof session.sessionDate === 'string'
-									? session.sessionDate
-									: getStringValue(session.sessionDate);
-
 							const sessionStart = getValue(session.sessionStart);
 							// sessionEnd может быть числом напрямую или объектом SessionEnd1
 							let sessionEnd: number | null = null;
@@ -182,6 +188,10 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 								playtime !== null && playtime > 0
 									? playtime
 									: calculateSessionDuration(sessionStart, sessionEnd);
+
+							// Извлекаем дату сессии - просто берем sessionDate, если есть
+							const sessionDate =
+								typeof session.sessionDate === 'string' ? session.sessionDate.trim() : null;
 
 							// Форматируем дату сессии
 							const dateDisplay = sessionDate
