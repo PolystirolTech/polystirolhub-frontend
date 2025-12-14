@@ -63,6 +63,7 @@ import {
  * @interface GameServerPublic
  */
 export interface GameServerPublic {
+	game_type(game_type: any): unknown;
     /**
      * 
      * @type {any}

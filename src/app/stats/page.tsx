@@ -38,8 +38,6 @@ export default function StatsPage() {
 				setServersError(null);
 				const data = await gameService.getGameServers();
 
-				console.log('[StatsPage] All servers from API:', data);
-
 				// Функция для извлечения имени типа игры
 				const getGameTypeName = (gameType: unknown): string | null => {
 					if (!gameType) return null;
@@ -77,11 +75,12 @@ export default function StatsPage() {
 
 				// Фильтруем только Minecraft серверы
 				const minecraftServers = data.filter((server) => {
-					const gameTypeName = getGameTypeName(server.gameType);
-					console.log('[StatsPage] Server:', server.name, 'GameType:', gameTypeName);
+					// Используем game_type (snake_case) вместо gameType
+					const serverObj = server as unknown as Record<string, unknown>;
+					const gameType = serverObj.game_type;
+					const gameTypeName = getGameTypeName(gameType);
 
 					if (!gameTypeName) {
-						console.log('[StatsPage] Skipping server - no gameType name');
 						return false;
 					}
 
@@ -94,7 +93,6 @@ export default function StatsPage() {
 						nameLower.includes('mincecraft') || // опечатка в данных
 						nameLower.includes('mc');
 
-					console.log('[StatsPage] Server:', server.name, 'isMinecraft:', isMinecraft);
 					return isMinecraft;
 				});
 

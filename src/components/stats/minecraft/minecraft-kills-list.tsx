@@ -13,7 +13,7 @@ interface MinecraftKillsListProps {
 	playerUuid: string;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 
 export function MinecraftKillsList({ playerUuid }: MinecraftKillsListProps) {
 	const [kills, setKills] = useState<MinecraftKillResponse[]>([]);
