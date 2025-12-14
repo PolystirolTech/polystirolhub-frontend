@@ -63,7 +63,7 @@ export function Header() {
 						className="text-base sm:text-lg font-bold tracking-tight text-white transition-opacity hover:opacity-80"
 					>
 						<span className="hidden sm:inline">polystirolhub</span>
-						<span className="sm:hidden">psh</span>
+						<span className="sm:hidden">plstrl</span>
 					</Link>
 				</div>
 
