@@ -17,7 +17,7 @@ function addTsNoCheck(dir) {
 			addTsNoCheck(fullPath);
 		} else if (file.name.endsWith('.ts')) {
 			const content = fs.readFileSync(fullPath, 'utf8');
-			
+
 			// Проверяем, есть ли уже @ts-nocheck
 			if (!content.includes('@ts-nocheck')) {
 				// Добавляем в самое начало файла
