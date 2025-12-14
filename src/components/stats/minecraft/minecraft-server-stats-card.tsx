@@ -37,26 +37,34 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 
 	const getValue = (obj: unknown): number | null => {
 		// Если это число, возвращаем его
-		if (typeof obj === 'number') return obj;
+		if (typeof obj === 'number') {
+			return isFinite(obj) && !isNaN(obj) ? obj : null;
+		}
+
+		// Если это null или undefined, возвращаем null
+		if (obj === null || obj === undefined) return null;
 
 		// Если это строка, которая может быть числом, пытаемся преобразовать
 		if (typeof obj === 'string') {
 			const num = Number(obj);
 			if (!isNaN(num) && isFinite(num)) return num;
+			return null;
 		}
 
-		// Если это объект с полем value
-		if (obj && typeof obj === 'object' && 'value' in obj) {
-			const value = (obj as { value: unknown }).value;
-			if (typeof value === 'number') return value;
-			if (typeof value === 'string') {
-				const num = Number(value);
-				if (!isNaN(num) && isFinite(num)) return num;
+		// Если это объект, пытаемся извлечь значение
+		if (typeof obj === 'object') {
+			// Проверяем поле value
+			if ('value' in obj) {
+				const value = (obj as { value: unknown }).value;
+				if (typeof value === 'number' && isFinite(value) && !isNaN(value)) return value;
+				if (typeof value === 'string') {
+					const num = Number(value);
+					if (!isNaN(num) && isFinite(num)) return num;
+				}
 			}
+			// Если объект пустой или не содержит value, возвращаем null
+			if (Object.keys(obj).length === 0) return null;
 		}
-
-		// Если это null или undefined, возвращаем null
-		if (obj === null || obj === undefined) return null;
 
 		return null;
 	};
@@ -138,7 +146,7 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 						<div className="text-2xl font-bold text-yellow-400">{currentPlayers}</div>
 					</div>
 				)}
-				{lastUpdate && (
+				{lastUpdate !== null && lastUpdate > 0 && (
 					<div className="rounded-xl border border-white/10 p-4 bg-black/20 sm:col-span-2">
 						<div className="text-xs font-medium uppercase tracking-wider text-white/60 mb-1">
 							Последнее обновление

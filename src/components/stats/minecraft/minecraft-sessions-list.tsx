@@ -45,26 +45,35 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 
 	const getValue = (obj: unknown): number | null => {
 		// Если это число, возвращаем его
-		if (typeof obj === 'number') return obj;
+		if (typeof obj === 'number') {
+			return isFinite(obj) && !isNaN(obj) ? obj : null;
+		}
+
+		// Если это null или undefined, возвращаем null
+		if (obj === null || obj === undefined) return null;
 
 		// Если это строка, которая может быть числом, пытаемся преобразовать
 		if (typeof obj === 'string') {
 			const num = Number(obj);
 			if (!isNaN(num) && isFinite(num)) return num;
+			return null;
 		}
 
-		// Если это объект с полем value
-		if (obj && typeof obj === 'object' && 'value' in obj) {
-			const value = (obj as { value: unknown }).value;
-			if (typeof value === 'number') return value;
-			if (typeof value === 'string') {
-				const num = Number(value);
-				if (!isNaN(num) && isFinite(num)) return num;
+		// Если это объект, пытаемся извлечь значение
+		if (typeof obj === 'object') {
+			// Проверяем поле value
+			if ('value' in obj) {
+				const value = (obj as { value: unknown }).value;
+				if (typeof value === 'number' && isFinite(value) && !isNaN(value)) return value;
+				if (typeof value === 'string') {
+					const num = Number(value);
+					if (!isNaN(num) && isFinite(num)) return num;
+				}
 			}
+			// Если объект пустой или не содержит value, возвращаем null
+			// SessionEnd1 может быть пустым объектом {}, что означает null
+			if (Object.keys(obj).length === 0) return null;
 		}
-
-		// Если это null или undefined, возвращаем null
-		if (obj === null || obj === undefined) return null;
 
 		return null;
 	};
@@ -143,9 +152,9 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 										{sessionEnd !== null && sessionEnd > 0 ? formatTimestamp(sessionEnd) : 'В игре'}
 									</td>
 									<td className="py-3 px-4 text-sm text-white">
-										{sessionDuration !== null
+										{sessionDuration !== null && sessionDuration > 0
 											? formatPlaytime(sessionDuration)
-											: sessionEnd === null
+											: sessionEnd === null || sessionEnd === 0
 												? 'В игре'
 												: 'Не завершена'}
 									</td>

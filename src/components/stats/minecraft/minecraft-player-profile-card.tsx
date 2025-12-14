@@ -50,15 +50,47 @@ export function MinecraftPlayerProfileCard({ playerUuid }: MinecraftPlayerProfil
 		return <StatsEmpty message="Профиль игрока не найден" />;
 	}
 
+	const getTimestampValue = (obj: unknown): number | null => {
+		// Если это число, возвращаем его
+		if (typeof obj === 'number') {
+			return isFinite(obj) && !isNaN(obj) && obj > 0 ? obj : null;
+		}
+
+		// Если это null или undefined, возвращаем null
+		if (obj === null || obj === undefined) return null;
+
+		// Если это строка, которая может быть числом, пытаемся преобразовать
+		if (typeof obj === 'string') {
+			const num = Number(obj);
+			if (!isNaN(num) && isFinite(num) && num > 0) return num;
+			return null;
+		}
+
+		// Если это объект, пытаемся извлечь значение
+		if (typeof obj === 'object') {
+			// Проверяем поле value
+			if ('value' in obj) {
+				const value = (obj as { value: unknown }).value;
+				if (typeof value === 'number' && isFinite(value) && !isNaN(value) && value > 0)
+					return value;
+				if (typeof value === 'string') {
+					const num = Number(value);
+					if (!isNaN(num) && isFinite(num) && num > 0) return num;
+				}
+			}
+			// Если объект пустой или не содержит value, возвращаем null
+			if (Object.keys(obj).length === 0) return null;
+		}
+
+		return null;
+	};
+
 	const playerName = typeof profile.name === 'string' ? profile.name : 'Неизвестно';
 	const totalPlaytime = typeof profile.totalPlaytime === 'number' ? profile.totalPlaytime : 0;
 	const totalKills = typeof profile.totalKills === 'number' ? profile.totalKills : 0;
 	const totalDeaths = typeof profile.totalDeaths === 'number' ? profile.totalDeaths : 0;
 	const registered = typeof profile.registered === 'number' ? profile.registered : null;
-	const lastSeen =
-		profile.lastSeen && typeof profile.lastSeen === 'object' && 'value' in profile.lastSeen
-			? (profile.lastSeen as { value: number }).value
-			: null;
+	const lastSeen = getTimestampValue(profile.lastSeen);
 	const platform =
 		profile.platform && typeof profile.platform === 'object' && 'value' in profile.platform
 			? (profile.platform as { value: number }).value
@@ -99,10 +131,11 @@ export function MinecraftPlayerProfileCard({ playerUuid }: MinecraftPlayerProfil
 					{registered && (
 						<p className="text-sm text-white/60">Зарегистрирован: {formatTimestamp(registered)}</p>
 					)}
-					{lastSeen && (
+					{lastSeen !== null && lastSeen > 0 ? (
 						<p className="text-sm text-white/60">Последний вход: {formatTimestamp(lastSeen)}</p>
+					) : (
+						<p className="text-sm text-white/60">Последний вход: Никогда</p>
 					)}
-					{!lastSeen && <p className="text-sm text-white/60">Последний вход: Никогда</p>}
 				</div>
 			</div>
 

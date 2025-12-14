@@ -145,6 +145,28 @@ export default function StatsPage() {
 					<p className="text-lg text-white/60">Ваша статистика и достижения</p>
 				</div>
 
+				{/* Update Notification */}
+				<div className="mb-6 rounded-lg border border-blue-500/30 bg-blue-500/10 p-4 backdrop-blur-sm">
+					<div className="flex items-center gap-2">
+						<svg
+							className="h-5 w-5 shrink-0 text-blue-400"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<p className="text-sm text-blue-300">
+							Данные статистики обновляются автоматически раз в 5 минут
+						</p>
+					</div>
+				</div>
+
 				{/* Game Tabs */}
 				{availableGames.length > 1 && (
 					<div className="mb-6 flex gap-2 border-b border-white/10">
