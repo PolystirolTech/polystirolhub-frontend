@@ -1,6 +1,7 @@
 // @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
+export * from './ActivityApi';
 export * from './AdminApi';
 export * from './AuthApi';
 export * from './BadgesApi';

@@ -1,3 +1,4 @@
+apis/ActivityApi.ts
 apis/AdminApi.ts
 apis/AuthApi.ts
 apis/BadgesApi.ts
@@ -9,6 +10,10 @@ apis/StatisticsApi.ts
 apis/UsersApi.ts
 apis/index.ts
 index.ts
+models/ActivityResponse.ts
+models/ActivityResponseServer.ts
+models/ActivityResponseUser.ts
+models/ActivityType.ts
 models/AdminResponse.ts
 models/AfkTime.ts
 models/AfkTime1.ts
@@ -124,6 +129,7 @@ models/RewardXp.ts
 models/RewardXp1.ts
 models/SelectedBadgeId.ts
 models/ServerIcon.ts
+models/ServerInfo.ts
 models/ServerStatus.ts
 models/ServerStatusResponse.ts
 models/Servers.ts
@@ -136,6 +142,7 @@ models/Tps.ts
 models/Tps1.ts
 models/UnicodeChar.ts
 models/UserBadgeWithBadge.ts
+models/UserBase.ts
 models/UserInfo.ts
 models/UserQuestWithQuest.ts
 models/UserResponse.ts
