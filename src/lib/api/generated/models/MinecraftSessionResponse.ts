@@ -71,6 +71,18 @@ export interface MinecraftSessionResponse {
     sessionStart: any | null;
     /**
      * 
+     * @type {any}
+     * @memberof MinecraftSessionResponse
+     */
+    sessionDate: any | null;
+    /**
+     * 
+     * @type {any}
+     * @memberof MinecraftSessionResponse
+     */
+    sessionDateEnd: any | null;
+    /**
+     * 
      * @type {SessionEnd1}
      * @memberof MinecraftSessionResponse
      */
@@ -109,6 +121,8 @@ export function instanceOfMinecraftSessionResponse(value: object): boolean {
     isInstance = isInstance && "id" in value;
     isInstance = isInstance && "serverId" in value;
     isInstance = isInstance && "sessionStart" in value;
+    isInstance = isInstance && "sessionDate" in value;
+    isInstance = isInstance && "sessionDateEnd" in value;
     isInstance = isInstance && "sessionEnd" in value;
     isInstance = isInstance && "mobKills" in value;
     isInstance = isInstance && "deaths" in value;
@@ -131,6 +145,8 @@ export function MinecraftSessionResponseFromJSONTyped(json: any, ignoreDiscrimin
         'id': json['id'],
         'serverId': json['server_id'],
         'sessionStart': json['session_start'],
+        'sessionDate': json['session_date'],
+        'sessionDateEnd': json['session_date_end'],
         'sessionEnd': SessionEnd1FromJSON(json['session_end']),
         'mobKills': MobKillsFromJSON(json['mob_kills']),
         'deaths': DeathsFromJSON(json['deaths']),
@@ -151,6 +167,8 @@ export function MinecraftSessionResponseToJSON(value?: MinecraftSessionResponse 
         'id': value.id,
         'server_id': value.serverId,
         'session_start': value.sessionStart,
+        'session_date': value.sessionDate,
+        'session_date_end': value.sessionDateEnd,
         'session_end': SessionEnd1ToJSON(value.sessionEnd),
         'mob_kills': MobKillsToJSON(value.mobKills),
         'deaths': DeathsToJSON(value.deaths),

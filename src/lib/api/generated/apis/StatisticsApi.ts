@@ -57,6 +57,7 @@ export interface GetServerStatsApiV1StatisticsMinecraftServersServerIdStatsGetRe
 
 export interface GetServerTopPlayersApiV1StatisticsMinecraftServersServerIdPlayersGetRequest {
     serverId: any;
+    offset?: any;
     limit?: any;
 }
 
@@ -231,6 +232,10 @@ export class StatisticsApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.offset !== undefined) {
+            queryParameters['offset'] = requestParameters.offset;
+        }
 
         if (requestParameters.limit !== undefined) {
             queryParameters['limit'] = requestParameters.limit;

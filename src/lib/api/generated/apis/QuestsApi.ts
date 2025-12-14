@@ -65,8 +65,23 @@ export interface DeleteQuestApiV1AdminQuestsQuestIdDeleteRequest {
     questId: any;
 }
 
+export interface GetMyQuestsApiV1QuestsMeGetRequest {
+    skip?: any;
+    limit?: any;
+}
+
 export interface GetQuestAdminApiV1AdminQuestsQuestIdGetRequest {
     questId: any;
+}
+
+export interface GetQuestsApiV1QuestsGetRequest {
+    skip?: any;
+    limit?: any;
+}
+
+export interface ListQuestsApiV1AdminQuestsGetRequest {
+    skip?: any;
+    limit?: any;
 }
 
 export interface UpdateQuestApiV1AdminQuestsQuestIdPutRequest {
@@ -227,8 +242,16 @@ export class QuestsApi extends runtime.BaseAPI {
      * Получить список моих квестов с прогрессом
      * Get My Quests
      */
-    async getMyQuestsApiV1QuestsMeGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async getMyQuestsApiV1QuestsMeGetRaw(requestParameters: GetMyQuestsApiV1QuestsMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -255,8 +278,8 @@ export class QuestsApi extends runtime.BaseAPI {
      * Получить список моих квестов с прогрессом
      * Get My Quests
      */
-    async getMyQuestsApiV1QuestsMeGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.getMyQuestsApiV1QuestsMeGetRaw(initOverrides);
+    async getMyQuestsApiV1QuestsMeGet(requestParameters: GetMyQuestsApiV1QuestsMeGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.getMyQuestsApiV1QuestsMeGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -301,8 +324,16 @@ export class QuestsApi extends runtime.BaseAPI {
      * Публичный список всех активных квестов
      * Get Quests
      */
-    async getQuestsApiV1QuestsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async getQuestsApiV1QuestsGetRaw(requestParameters: GetQuestsApiV1QuestsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -324,8 +355,8 @@ export class QuestsApi extends runtime.BaseAPI {
      * Публичный список всех активных квестов
      * Get Quests
      */
-    async getQuestsApiV1QuestsGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.getQuestsApiV1QuestsGetRaw(initOverrides);
+    async getQuestsApiV1QuestsGet(requestParameters: GetQuestsApiV1QuestsGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.getQuestsApiV1QuestsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -333,8 +364,16 @@ export class QuestsApi extends runtime.BaseAPI {
      * Список всех квестов (только для админов)
      * List Quests
      */
-    async listQuestsApiV1AdminQuestsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async listQuestsApiV1AdminQuestsGetRaw(requestParameters: ListQuestsApiV1AdminQuestsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -361,8 +400,8 @@ export class QuestsApi extends runtime.BaseAPI {
      * Список всех квестов (только для админов)
      * List Quests
      */
-    async listQuestsApiV1AdminQuestsGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.listQuestsApiV1AdminQuestsGetRaw(initOverrides);
+    async listQuestsApiV1AdminQuestsGet(requestParameters: ListQuestsApiV1AdminQuestsGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.listQuestsApiV1AdminQuestsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -107,8 +107,23 @@ export interface GetBadgeApiV1BadgesBadgeIdGetRequest {
     badgeId: any;
 }
 
+export interface GetBadgesApiV1BadgesGetRequest {
+    skip?: any;
+    limit?: any;
+}
+
 export interface GetMinecraftPlayerSelectedBadgeApiV1BadgesMinecraftPlayerUuidGetRequest {
     playerUuid: any;
+}
+
+export interface GetMyBadgesApiV1BadgesMeGetRequest {
+    skip?: any;
+    limit?: any;
+}
+
+export interface ListBadgesApiV1AdminBadgesGetRequest {
+    skip?: any;
+    limit?: any;
 }
 
 export interface RevokeBadgeApiV1AdminBadgesBadgeIdRevokeUserIdDeleteRequest {
@@ -556,8 +571,16 @@ export class BadgesApi extends runtime.BaseAPI {
      * Публичный список всех доступных бэджиков
      * Get Badges
      */
-    async getBadgesApiV1BadgesGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async getBadgesApiV1BadgesGetRaw(requestParameters: GetBadgesApiV1BadgesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -579,8 +602,8 @@ export class BadgesApi extends runtime.BaseAPI {
      * Публичный список всех доступных бэджиков
      * Get Badges
      */
-    async getBadgesApiV1BadgesGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.getBadgesApiV1BadgesGetRaw(initOverrides);
+    async getBadgesApiV1BadgesGet(requestParameters: GetBadgesApiV1BadgesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.getBadgesApiV1BadgesGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -620,8 +643,16 @@ export class BadgesApi extends runtime.BaseAPI {
      * Получить список моих бэджиков
      * Get My Badges
      */
-    async getMyBadgesApiV1BadgesMeGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async getMyBadgesApiV1BadgesMeGetRaw(requestParameters: GetMyBadgesApiV1BadgesMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -648,8 +679,8 @@ export class BadgesApi extends runtime.BaseAPI {
      * Получить список моих бэджиков
      * Get My Badges
      */
-    async getMyBadgesApiV1BadgesMeGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.getMyBadgesApiV1BadgesMeGetRaw(initOverrides);
+    async getMyBadgesApiV1BadgesMeGet(requestParameters: GetMyBadgesApiV1BadgesMeGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.getMyBadgesApiV1BadgesMeGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -657,8 +688,16 @@ export class BadgesApi extends runtime.BaseAPI {
      * Список всех бэджиков (только для админов)
      * List Badges
      */
-    async listBadgesApiV1AdminBadgesGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async listBadgesApiV1AdminBadgesGetRaw(requestParameters: ListBadgesApiV1AdminBadgesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -685,8 +724,8 @@ export class BadgesApi extends runtime.BaseAPI {
      * Список всех бэджиков (только для админов)
      * List Badges
      */
-    async listBadgesApiV1AdminBadgesGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.listBadgesApiV1AdminBadgesGetRaw(initOverrides);
+    async listBadgesApiV1AdminBadgesGet(requestParameters: ListBadgesApiV1AdminBadgesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.listBadgesApiV1AdminBadgesGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

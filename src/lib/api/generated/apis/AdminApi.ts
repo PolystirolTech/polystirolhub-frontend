@@ -37,6 +37,16 @@ export interface DemoteFromAdminApiV1AdminDemoteUserIdPostRequest {
     userId: any;
 }
 
+export interface GetAllUsersApiV1AdminUsersGetRequest {
+    skip?: any;
+    limit?: any;
+}
+
+export interface ListAdminsApiV1AdminListGetRequest {
+    skip?: any;
+    limit?: any;
+}
+
 export interface PromoteToAdminApiV1AdminPromoteUserIdPostRequest {
     userId: any;
 }
@@ -154,8 +164,16 @@ export class AdminApi extends runtime.BaseAPI {
      * Получить список всех пользователей. Доступно только для админов.
      * Get All Users
      */
-    async getAllUsersApiV1AdminUsersGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async getAllUsersApiV1AdminUsersGetRaw(requestParameters: GetAllUsersApiV1AdminUsersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -182,8 +200,8 @@ export class AdminApi extends runtime.BaseAPI {
      * Получить список всех пользователей. Доступно только для админов.
      * Get All Users
      */
-    async getAllUsersApiV1AdminUsersGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.getAllUsersApiV1AdminUsersGetRaw(initOverrides);
+    async getAllUsersApiV1AdminUsersGet(requestParameters: GetAllUsersApiV1AdminUsersGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.getAllUsersApiV1AdminUsersGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -191,8 +209,16 @@ export class AdminApi extends runtime.BaseAPI {
      * Список всех админов. Доступно только для админов.
      * List Admins
      */
-    async listAdminsApiV1AdminListGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+    async listAdminsApiV1AdminListGetRaw(requestParameters: ListAdminsApiV1AdminListGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
+
+        if (requestParameters.skip !== undefined) {
+            queryParameters['skip'] = requestParameters.skip;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -219,8 +245,8 @@ export class AdminApi extends runtime.BaseAPI {
      * Список всех админов. Доступно только для админов.
      * List Admins
      */
-    async listAdminsApiV1AdminListGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
-        const response = await this.listAdminsApiV1AdminListGetRaw(initOverrides);
+    async listAdminsApiV1AdminListGet(requestParameters: ListAdminsApiV1AdminListGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.listAdminsApiV1AdminListGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

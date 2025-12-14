@@ -78,6 +78,36 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 		return null;
 	};
 
+	const getStringValue = (obj: unknown): string | null => {
+		// Если это строка, возвращаем её
+		if (typeof obj === 'string' && obj.trim()) return obj.trim();
+
+		// Если это null или undefined, возвращаем null
+		if (obj === null || obj === undefined) return null;
+
+		// Если это объект с полем value
+		if (typeof obj === 'object' && 'value' in obj) {
+			const value = (obj as { value: unknown }).value;
+			if (typeof value === 'string' && value.trim()) return value.trim();
+		}
+
+		return null;
+	};
+
+	const formatDate = (dateStr: string | null): string => {
+		if (!dateStr) return 'Неизвестно';
+		try {
+			const date = new Date(dateStr + 'T00:00:00Z');
+			return date.toLocaleDateString('ru-RU', {
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+			});
+		} catch {
+			return dateStr;
+		}
+	};
+
 	// Вычисляет длительность сессии в миллисекундах
 	const calculateSessionDuration = (
 		sessionStart: number | null,
@@ -134,6 +164,8 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 							const playtime = getValue(session.playtime);
 							const mobKills = getValue(session.mobKills);
 							const deaths = getValue(session.deaths);
+							const sessionDate = getStringValue(session.sessionDate);
+							const sessionDateEnd = getStringValue(session.sessionDateEnd);
 
 							// Вычисляем длительность сессии: используем playtime если есть и больше 0, иначе вычисляем из timestamps
 							const sessionDuration =
@@ -141,16 +173,24 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 									? playtime
 									: calculateSessionDuration(sessionStart, sessionEnd);
 
+							// Форматируем дату начала: используем sessionDate если есть, иначе timestamp
+							const startDisplay = sessionDate
+								? formatDate(sessionDate)
+								: sessionStart !== null && sessionStart > 0
+									? formatTimestamp(sessionStart)
+									: 'Неизвестно';
+
+							// Форматируем дату конца: используем sessionDateEnd если есть, иначе timestamp
+							const endDisplay = sessionDateEnd
+								? formatDate(sessionDateEnd)
+								: sessionEnd !== null && sessionEnd > 0
+									? formatTimestamp(sessionEnd)
+									: 'В игре';
+
 							return (
 								<tr key={session.id} className="border-b border-white/5 hover:bg-white/5">
-									<td className="py-3 px-4 text-sm text-white">
-										{sessionStart !== null && sessionStart > 0
-											? formatTimestamp(sessionStart)
-											: 'Неизвестно'}
-									</td>
-									<td className="py-3 px-4 text-sm text-white">
-										{sessionEnd !== null && sessionEnd > 0 ? formatTimestamp(sessionEnd) : 'В игре'}
-									</td>
+									<td className="py-3 px-4 text-sm text-white">{startDisplay}</td>
+									<td className="py-3 px-4 text-sm text-white">{endDisplay}</td>
 									<td className="py-3 px-4 text-sm text-white">
 										{sessionDuration !== null && sessionDuration > 0
 											? formatPlaytime(sessionDuration)
