@@ -22,9 +22,21 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 				setLoading(true);
 				setError(null);
 				const data = await minecraftStatsService.getServerStats(serverId);
+				// Если data === null, значит статистики нет (404), это нормально
 				setStats(data);
 			} catch (err) {
-				setError(err instanceof Error ? err.message : 'Не удалось загрузить статистику сервера');
+				// Проверяем, это 404 или другая ошибка
+				if (
+					err instanceof Error &&
+					'status' in err &&
+					(err as { status?: number }).status === 404
+				) {
+					// 404 - статистики нет, это нормально, просто не показываем компонент
+					setStats(null);
+				} else {
+					// Другая ошибка - показываем её
+					setError(err instanceof Error ? err.message : 'Не удалось загрузить статистику сервера');
+				}
 			} finally {
 				setLoading(false);
 			}
@@ -95,16 +107,18 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 		);
 	}
 
+	// Если статистики нет (404), просто не показываем компонент
+	if (!stats) {
+		return null;
+	}
+
+	// Если произошла другая ошибка, показываем её
 	if (error) {
 		return (
 			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 mb-6">
 				<StatsError message={error} onRetry={() => window.location.reload()} />
 			</div>
 		);
-	}
-
-	if (!stats) {
-		return null;
 	}
 
 	const serverName = getStringValue(stats.name) || 'Неизвестный сервер';
