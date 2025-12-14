@@ -42,34 +42,31 @@ export default function StatsPage() {
 
 				// Функция для извлечения имени типа игры
 				const getGameTypeName = (gameType: unknown): string | null => {
-					if (!gameType || typeof gameType !== 'object') return null;
+					if (!gameType) return null;
 
-					const gameTypeObj = gameType as Record<string, unknown>;
+					// Если это строка напрямую
+					if (typeof gameType === 'string') {
+						return gameType.trim() || null;
+					}
 
-					// Проверяем поле name - должно быть строкой согласно GameTypeResponse
-					if (gameTypeObj.name) {
-						// Если это строка напрямую
-						if (typeof gameTypeObj.name === 'string') {
-							return gameTypeObj.name.trim() || null;
-						}
-						// Если это объект с полем value (fallback для совместимости)
-						if (
-							typeof gameTypeObj.name === 'object' &&
-							gameTypeObj.name !== null &&
-							'value' in gameTypeObj.name
-						) {
-							const value = (gameTypeObj.name as { value: unknown }).value;
-							if (typeof value === 'string') {
-								return value.trim() || null;
+					// Если это объект
+					if (typeof gameType === 'object') {
+						const gameTypeObj = gameType as Record<string, unknown>;
+
+						// Проверяем поле name напрямую
+						if (gameTypeObj.name) {
+							if (typeof gameTypeObj.name === 'string') {
+								return gameTypeObj.name.trim() || null;
 							}
-						}
-						// Если это объект, пытаемся найти строковое значение
-						if (typeof gameTypeObj.name === 'object' && gameTypeObj.name !== null) {
-							const nameObj = gameTypeObj.name as Record<string, unknown>;
-							for (const key in nameObj) {
-								const val = nameObj[key];
-								if (typeof val === 'string' && val.trim()) {
-									return val.trim();
+							// Если это объект с полем value
+							if (
+								typeof gameTypeObj.name === 'object' &&
+								gameTypeObj.name !== null &&
+								'value' in gameTypeObj.name
+							) {
+								const value = (gameTypeObj.name as { value: unknown }).value;
+								if (typeof value === 'string') {
+									return value.trim() || null;
 								}
 							}
 						}
@@ -91,8 +88,10 @@ export default function StatsPage() {
 					const nameLower = gameTypeName.toLowerCase().trim();
 					const isMinecraft =
 						nameLower === 'minecraft' ||
+						nameLower === 'mincecraft' || // опечатка в данных
 						nameLower === 'mc' ||
 						nameLower.includes('minecraft') ||
+						nameLower.includes('mincecraft') || // опечатка в данных
 						nameLower.includes('mc');
 
 					console.log('[StatsPage] Server:', server.name, 'isMinecraft:', isMinecraft);
