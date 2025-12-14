@@ -150,7 +150,9 @@ class MinecraftStatsService {
 
 			if (!response.ok) {
 				if (response.status === 404) {
-					return [];
+					const error = new Error('Статистика сервера не найдена');
+					(error as Error & { status?: number }).status = 404;
+					throw error;
 				}
 				const error = await response
 					.json()
@@ -161,13 +163,7 @@ class MinecraftStatsService {
 			const players = await response.json();
 			return Array.isArray(players) ? players : [];
 		} catch (error) {
-			if (
-				error instanceof Error &&
-				'status' in error &&
-				(error as { status?: number }).status === 404
-			) {
-				return [];
-			}
+			// Пробрасываем ошибку дальше, чтобы компонент мог её обработать
 			console.error('Failed to get server top players:', error);
 			throw error;
 		}

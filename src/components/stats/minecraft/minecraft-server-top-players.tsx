@@ -21,16 +21,32 @@ export function MinecraftServerTopPlayers({
 	const [players, setPlayers] = useState<MinecraftTopPlayer[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [notFound, setNotFound] = useState(false);
 
 	useEffect(() => {
 		async function loadTopPlayers() {
 			try {
 				setLoading(true);
 				setError(null);
+				setNotFound(false);
 				const data = await minecraftStatsService.getServerTopPlayers(serverId, limit, 0);
+				// Если массив пустой, возможно статистики нет (404)
+				// Но это может быть и нормальная ситуация, поэтому проверяем через ошибку
 				setPlayers(data);
 			} catch (err) {
-				setError(err instanceof Error ? err.message : 'Не удалось загрузить топ игроков');
+				// Проверяем, это 404 или другая ошибка
+				if (
+					err instanceof Error &&
+					'status' in err &&
+					(err as { status?: number }).status === 404
+				) {
+					// 404 - статистики нет, скрываем компонент
+					setNotFound(true);
+					setPlayers([]);
+				} else {
+					// Другая ошибка - показываем её
+					setError(err instanceof Error ? err.message : 'Не удалось загрузить топ игроков');
+				}
 			} finally {
 				setLoading(false);
 			}
@@ -54,6 +70,11 @@ export function MinecraftServerTopPlayers({
 		return null;
 	};
 
+	// Если статистики нет (404), не показываем компонент
+	if (notFound) {
+		return null;
+	}
+
 	if (loading) {
 		return (
 			<StatsSection title="Топ игроков">
@@ -62,6 +83,7 @@ export function MinecraftServerTopPlayers({
 		);
 	}
 
+	// Если произошла другая ошибка, показываем её
 	if (error) {
 		return (
 			<StatsSection title="Топ игроков">
@@ -70,6 +92,7 @@ export function MinecraftServerTopPlayers({
 		);
 	}
 
+	// Если игроков нет, но это не 404, показываем сообщение
 	if (players.length === 0) {
 		return (
 			<StatsSection title="Топ игроков">
