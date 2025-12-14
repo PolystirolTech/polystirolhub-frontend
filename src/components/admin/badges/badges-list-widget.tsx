@@ -13,6 +13,7 @@ import { BadgeTypeBadge } from '@/components/badges/badge-type-badge';
 import { BadgeCreateForm } from './badge-create-form';
 import { BadgeEditModal } from './badge-edit-modal';
 import { BadgeAwardModal } from './badge-award-modal';
+import { BadgeRevokeModal } from './badge-revoke-modal';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,6 +33,7 @@ export function BadgesListWidget() {
 	const [showCreateForm, setShowCreateForm] = useState(false);
 	const [editingBadge, setEditingBadge] = useState<Badge | null>(null);
 	const [awardingBadge, setAwardingBadge] = useState<Badge | null>(null);
+	const [revokingBadge, setRevokingBadge] = useState<Badge | null>(null);
 	const [deletingBadge, setDeletingBadge] = useState<Badge | null>(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(false);
@@ -219,24 +221,36 @@ export function BadgesListWidget() {
 										size="sm"
 										onClick={() => setEditingBadge(badge)}
 										className="flex-1"
+										title="Редактировать"
 									>
-										Редактировать
+										✏️
 									</Button>
 									<Button
 										variant="outline"
 										size="sm"
 										onClick={() => setAwardingBadge(badge)}
 										className="flex-1"
+										title="Выдать"
 									>
-										Выдать
+										➕
+									</Button>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setRevokingBadge(badge)}
+										className="flex-1"
+										title="Отозвать"
+									>
+										➖
 									</Button>
 									<Button
 										variant="destructive"
 										size="sm"
 										onClick={() => setDeletingBadge(badge)}
 										className="flex-1 text-red-500"
+										title="Удалить"
 									>
-										X
+										✕
 									</Button>
 								</div>
 							</div>
@@ -291,6 +305,17 @@ export function BadgesListWidget() {
 						setAwardingBadge(null);
 					}}
 					onCancel={() => setAwardingBadge(null)}
+				/>
+			)}
+
+			{/* Revoke Modal */}
+			{revokingBadge && (
+				<BadgeRevokeModal
+					badge={revokingBadge}
+					onSuccess={() => {
+						setRevokingBadge(null);
+					}}
+					onCancel={() => setRevokingBadge(null)}
 				/>
 			)}
 
