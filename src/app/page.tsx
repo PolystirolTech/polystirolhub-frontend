@@ -7,6 +7,7 @@ import { ActivityWidget } from '@/components/bento/widgets/activity-widget';
 import { TopUsersWidget } from '@/components/bento/widgets/top-users-widget';
 import { DailyQuestsWidget } from '@/components/bento/widgets/daily-quests-widget';
 import { AchievementsWidget } from '@/components/bento/widgets/achievements-widget';
+import { Footer } from '@/components/layout/footer';
 
 export default function Home() {
 	return (
@@ -39,6 +40,7 @@ export default function Home() {
 					</div>
 				</div>
 			</main>
+			<Footer />
 		</div>
 	);
 }

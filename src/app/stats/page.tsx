@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/lib/auth';
 import { gameService } from '@/lib/game/game-service';
 import type { GameServerPublic } from '@/lib/api/generated';
@@ -119,6 +120,7 @@ export default function StatsPage() {
 						<StatsLoading message="Загрузка..." />
 					</div>
 				</main>
+				<Footer />
 			</div>
 		);
 	}

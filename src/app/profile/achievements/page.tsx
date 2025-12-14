@@ -9,6 +9,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/lib/auth';
 import { questService } from '@/lib/quests';
 import type { UserQuestWithQuest } from '@/lib/quests';
@@ -147,6 +148,7 @@ export default function MyAchievementsPage() {
 						<div className="h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary"></div>
 					</div>
 				</main>
+				<Footer />
 			</div>
 		);
 	}

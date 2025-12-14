@@ -1,3 +1,4 @@
+import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 
 export default function ShopPage() {
@@ -17,6 +18,7 @@ export default function ShopPage() {
 					<p className="text-white/60">Страница в разработке</p>
 				</div>
 			</main>
+			<Footer />
 		</div>
 	);
 }

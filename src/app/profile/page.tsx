@@ -20,6 +20,7 @@ import type { ExternalLinkResponse } from '@/lib/api/generated';
 import Link from 'next/link';
 import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 import { BadgesPreview } from '@/components/badges/badges-preview';
+import { Footer } from '@/components/layout/footer';
 
 export default function ProfilePage() {
 	const { user, isAuthenticated, isLoading, refreshUser } = useAuth();
@@ -620,6 +621,8 @@ export default function ProfilePage() {
 					</div>
 				</div>
 			</main>
+
+			<Footer />
 
 			{/* Confirmation Modals */}
 			{unlinkModal.isOpen && (

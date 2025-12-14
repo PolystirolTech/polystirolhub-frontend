@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 import { badgeService } from '@/lib/badges/badge-service';
 import { BadgeImage } from '@/components/badges/badge-image';
 import { BadgeTypeBadge } from '@/components/badges/badge-type-badge';
@@ -106,6 +107,7 @@ export default function BadgesPage() {
 						<div className="h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary"></div>
 					</div>
 				</main>
+				<Footer />
 			</div>
 		);
 	}

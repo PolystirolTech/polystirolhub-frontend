@@ -9,6 +9,7 @@ import { GameTypesWidget } from '@/components/admin/game-types-widget';
 import { ServerCreateForm } from '@/components/admin/server-create-form';
 import { ServersListWidget } from '@/components/admin/servers-list-widget';
 import Link from 'next/link';
+import { Footer } from '@/components/layout/footer';
 
 export default function AdminPage() {
 	const { user, isAuthenticated, isLoading } = useAuth();
@@ -37,6 +38,7 @@ export default function AdminPage() {
 						<div className="h-16 w-16 animate-spin rounded-full border-4 border-primary/30 border-t-primary"></div>
 					</div>
 				</main>
+				<Footer />
 			</div>
 		);
 	}
