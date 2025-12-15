@@ -27,7 +27,7 @@ GET /health
 
 ```json
 {
-  "status": "healthy"
+	"status": "healthy"
 }
 ```
 
