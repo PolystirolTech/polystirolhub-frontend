@@ -59,7 +59,10 @@ class BadgeService {
 		}
 
 		const data = await response.json();
-		return Array.isArray(data) ? data : [];
+		if (!Array.isArray(data)) return [];
+
+		// Use generated mapper to convert snake_case to camelCase
+		return data.map((item: unknown) => BadgeFromJSON(item));
 	}
 
 	/**

@@ -19,6 +19,7 @@ interface BadgeCardProps {
 	receivedAt?: string;
 	expiresAt?: string | null;
 	isSelected?: boolean;
+	isLocked?: boolean;
 	onSelect?: () => void;
 	onDeselect?: () => void;
 	isSelecting?: boolean;
@@ -30,6 +31,7 @@ export function BadgeCard({
 	receivedAt,
 	expiresAt,
 	isSelected = false,
+	isLocked = false,
 	onSelect,
 	onDeselect,
 	isSelecting = false,
@@ -57,7 +59,7 @@ export function BadgeCard({
 					<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black/90"></div>
 				</div>
 			)}
-			<div className="flex items-start gap-4">
+			<div className={cn('flex items-start gap-4', isLocked && 'opacity-50')}>
 				{/* Badge Image */}
 				<BadgeImage src={badge.imageUrl || ''} alt={badge.name || ''} size="lg" />
 
@@ -88,7 +90,9 @@ export function BadgeCard({
 
 					{/* Actions */}
 					<div className="flex items-center gap-2">
-						{isSelected ? (
+						{isLocked ? (
+							<span className="text-xs text-white/40">Не получен</span>
+						) : isSelected ? (
 							<>
 								<span className="text-xs text-primary font-medium">Выбран</span>
 								{onDeselect && (
