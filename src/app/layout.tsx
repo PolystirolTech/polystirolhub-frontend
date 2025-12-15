@@ -3,6 +3,7 @@ import { Press_Start_2P } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth';
 import { LevelProvider } from '@/lib/level/level-context';
+import { MaintenanceGuard } from '@/components/maintenance/maintenance-guard';
 
 const pixelFont = Press_Start_2P({
 	variable: '--font-pixel',
@@ -25,7 +26,9 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${pixelFont.variable} antialiased font-pixel`}>
 				<AuthProvider>
-					<LevelProvider>{children}</LevelProvider>
+					<LevelProvider>
+						<MaintenanceGuard>{children}</MaintenanceGuard>
+					</LevelProvider>
 				</AuthProvider>
 			</body>
 		</html>
