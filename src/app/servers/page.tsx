@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { gameService } from '@/lib/game/game-service';
 import type { GameServerPublic, ServerStatusResponse, GameTypeResponse } from '@/lib/api/generated';
+import { calculateSeasonCountdown } from '@/lib/utils/season-countdown';
 
 interface ServerWithStatus extends GameServerPublic {
 	mcStatus?: ServerStatusResponse;
@@ -450,6 +451,10 @@ export default function ServersPage() {
 									const motdRaw =
 										typeof server.mcStatus?.motd === 'string' ? server.mcStatus.motd : '';
 									const motd = motdRaw ? cleanMotd(motdRaw) : '';
+									const seasonCountdown = calculateSeasonCountdown(
+										server.seasonStart,
+										server.seasonEnd
+									);
 
 									return (
 										<div
@@ -565,6 +570,24 @@ export default function ServersPage() {
 														<div className="flex items-center justify-between text-sm">
 															<span className="text-white/60">Версия:</span>
 															<span className="text-white font-medium">{version}</span>
+														</div>
+													)}
+
+													{/* Информация о сезоне */}
+													{seasonCountdown.text && (
+														<div className="flex items-center gap-2 text-xs">
+															<span className="text-white/60">📅</span>
+															<span
+																className={`font-medium ${
+																	seasonCountdown.type === 'during'
+																		? 'text-green-400'
+																		: seasonCountdown.type === 'after_end'
+																			? 'text-red-400'
+																			: 'text-white/80'
+																}`}
+															>
+																{seasonCountdown.text}
+															</span>
 														</div>
 													)}
 

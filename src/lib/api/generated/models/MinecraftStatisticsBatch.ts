@@ -14,6 +14,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { Counters } from './Counters';
+import {
+    CountersFromJSON,
+    CountersFromJSONTyped,
+    CountersToJSON,
+} from './Counters';
 import type { Geolocations } from './Geolocations';
 import {
     GeolocationsFromJSON,
@@ -195,6 +201,12 @@ export interface MinecraftStatisticsBatch {
      * @memberof MinecraftStatisticsBatch
      */
     geolocations?: Geolocations;
+    /**
+     * 
+     * @type {Counters}
+     * @memberof MinecraftStatisticsBatch
+     */
+    counters?: Counters;
 }
 
 /**
@@ -232,6 +244,7 @@ export function MinecraftStatisticsBatchFromJSONTyped(json: any, ignoreDiscrimin
         'worldTimes': !exists(json, 'world_times') ? undefined : WorldTimesFromJSON(json['world_times']),
         'versionProtocols': !exists(json, 'version_protocols') ? undefined : VersionProtocolsFromJSON(json['version_protocols']),
         'geolocations': !exists(json, 'geolocations') ? undefined : GeolocationsFromJSON(json['geolocations']),
+        'counters': !exists(json, 'counters') ? undefined : CountersFromJSON(json['counters']),
     };
 }
 
@@ -259,6 +272,7 @@ export function MinecraftStatisticsBatchToJSON(value?: MinecraftStatisticsBatch 
         'world_times': WorldTimesToJSON(value.worldTimes),
         'version_protocols': VersionProtocolsToJSON(value.versionProtocols),
         'geolocations': GeolocationsToJSON(value.geolocations),
+        'counters': CountersToJSON(value.counters),
     };
 }
 

@@ -23,6 +23,8 @@ import type {
   GameTypeUpdate,
   HTTPValidationError,
   Port,
+  SeasonEnd,
+  SeasonStart,
   ServerStatus,
   ServerStatusResponse,
 } from '../models/index';
@@ -41,6 +43,10 @@ import {
     HTTPValidationErrorToJSON,
     PortFromJSON,
     PortToJSON,
+    SeasonEndFromJSON,
+    SeasonEndToJSON,
+    SeasonStartFromJSON,
+    SeasonStartToJSON,
     ServerStatusFromJSON,
     ServerStatusToJSON,
     ServerStatusResponseFromJSON,
@@ -55,6 +61,8 @@ export interface CreateGameServerApiV1AdminGameServersPostRequest {
     mods?: any | null;
     port?: Port;
     serverStatus?: ServerStatus;
+    seasonStart?: SeasonStart;
+    seasonEnd?: SeasonEnd;
     banner?: any | null;
 }
 
@@ -91,6 +99,8 @@ export interface UpdateGameServerApiV1AdminGameServersServerIdPutRequest {
     ip?: any | null;
     port?: Port;
     serverStatus?: ServerStatus;
+    seasonStart?: SeasonStart;
+    seasonEnd?: SeasonEnd;
     banner?: any | null;
 }
 
@@ -170,6 +180,14 @@ export class GameServersApi extends runtime.BaseAPI {
 
         if (requestParameters.serverStatus !== undefined) {
             formParams.append('server_status', new Blob([JSON.stringify(ServerStatusToJSON(requestParameters.serverStatus))], { type: "application/json", }));
+                    }
+
+        if (requestParameters.seasonStart !== undefined) {
+            formParams.append('season_start', new Blob([JSON.stringify(SeasonStartToJSON(requestParameters.seasonStart))], { type: "application/json", }));
+                    }
+
+        if (requestParameters.seasonEnd !== undefined) {
+            formParams.append('season_end', new Blob([JSON.stringify(SeasonEndToJSON(requestParameters.seasonEnd))], { type: "application/json", }));
                     }
 
         if (requestParameters.banner !== undefined) {
@@ -615,6 +633,14 @@ export class GameServersApi extends runtime.BaseAPI {
 
         if (requestParameters.serverStatus !== undefined) {
             formParams.append('server_status', new Blob([JSON.stringify(ServerStatusToJSON(requestParameters.serverStatus))], { type: "application/json", }));
+                    }
+
+        if (requestParameters.seasonStart !== undefined) {
+            formParams.append('season_start', new Blob([JSON.stringify(SeasonStartToJSON(requestParameters.seasonStart))], { type: "application/json", }));
+                    }
+
+        if (requestParameters.seasonEnd !== undefined) {
+            formParams.append('season_end', new Blob([JSON.stringify(SeasonEndToJSON(requestParameters.seasonEnd))], { type: "application/json", }));
                     }
 
         if (requestParameters.banner !== undefined) {

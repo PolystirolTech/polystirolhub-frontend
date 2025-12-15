@@ -33,6 +33,7 @@ models/ChunksLoaded.ts
 models/ClaimedAt.ts
 models/CompletedAt.ts
 models/ConditionKey.ts
+models/Counters.ts
 models/CpuUsage.ts
 models/CreateSuperAdminRequest.ts
 models/CurrentNickname.ts
@@ -83,6 +84,7 @@ models/MinecraftKillResponse.ts
 models/MinecraftNicknameData.ts
 models/MinecraftPingData.ts
 models/MinecraftPlatformData.ts
+models/MinecraftPlayerCountersData.ts
 models/MinecraftPlayerProfile.ts
 models/MinecraftPluginVersionData.ts
 models/MinecraftServerData.ts
@@ -127,6 +129,10 @@ models/RewardBalance.ts
 models/RewardBalance1.ts
 models/RewardXp.ts
 models/RewardXp1.ts
+models/SeasonEnd.ts
+models/SeasonEnd1.ts
+models/SeasonStart.ts
+models/SeasonStart1.ts
 models/SelectedBadgeId.ts
 models/ServerIcon.ts
 models/ServerInfo.ts

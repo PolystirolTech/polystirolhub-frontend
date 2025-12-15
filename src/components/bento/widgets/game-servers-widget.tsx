@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { gameService } from '@/lib/game/game-service';
 import type { GameServerPublic, ServerStatusResponse } from '@/lib/api/generated';
+import { calculateSeasonCountdown } from '@/lib/utils/season-countdown';
 
 interface ServerWithStatus extends GameServerPublic {
 	mcStatus?: ServerStatusResponse;
@@ -216,6 +217,7 @@ export function GameServersWidget() {
 					const playersMax = server.mcStatus?.playersMax ?? 0;
 					const serverName = typeof server.name === 'string' ? server.name : 'Без названия';
 					const isActive = serverStatus === 'active';
+					const seasonCountdown = calculateSeasonCountdown(server.seasonStart, server.seasonEnd);
 
 					return (
 						<div
@@ -262,6 +264,22 @@ export function GameServersWidget() {
 											<span className="text-xs text-white/60">({statusDisplay.text})</span>
 										)}
 									</div>
+									{seasonCountdown.text && (
+										<div className="flex items-center gap-1 mt-0.5">
+											<span className="text-[10px]">📅</span>
+											<span
+												className={`text-[10px] ${
+													seasonCountdown.type === 'during'
+														? 'text-green-400'
+														: seasonCountdown.type === 'after_end'
+															? 'text-red-400'
+															: 'text-white/70'
+												}`}
+											>
+												{seasonCountdown.text}
+											</span>
+										</div>
+									)}
 								</div>
 							</div>
 

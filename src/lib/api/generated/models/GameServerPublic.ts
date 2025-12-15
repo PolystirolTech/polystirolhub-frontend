@@ -50,6 +50,18 @@ import {
     ResourcePackUrlFromJSONTyped,
     ResourcePackUrlToJSON,
 } from './ResourcePackUrl';
+import type { SeasonEnd1 } from './SeasonEnd1';
+import {
+    SeasonEnd1FromJSON,
+    SeasonEnd1FromJSONTyped,
+    SeasonEnd1ToJSON,
+} from './SeasonEnd1';
+import type { SeasonStart1 } from './SeasonStart1';
+import {
+    SeasonStart1FromJSON,
+    SeasonStart1FromJSONTyped,
+    SeasonStart1ToJSON,
+} from './SeasonStart1';
 import type { ServerStatus } from './ServerStatus';
 import {
     ServerStatusFromJSON,
@@ -63,7 +75,6 @@ import {
  * @interface GameServerPublic
  */
 export interface GameServerPublic {
-	game_type(game_type: any): unknown;
     /**
      * 
      * @type {any}
@@ -132,6 +143,18 @@ export interface GameServerPublic {
     status: ServerStatus;
     /**
      * 
+     * @type {SeasonStart1}
+     * @memberof GameServerPublic
+     */
+    seasonStart?: SeasonStart1;
+    /**
+     * 
+     * @type {SeasonEnd1}
+     * @memberof GameServerPublic
+     */
+    seasonEnd?: SeasonEnd1;
+    /**
+     * 
      * @type {any}
      * @memberof GameServerPublic
      */
@@ -182,6 +205,8 @@ export function GameServerPublicFromJSONTyped(json: any, ignoreDiscriminator: bo
         'resourcePackUrl': !exists(json, 'resource_pack_url') ? undefined : ResourcePackUrlFromJSON(json['resource_pack_url']),
         'resourcePackHash': !exists(json, 'resource_pack_hash') ? undefined : ResourcePackHashFromJSON(json['resource_pack_hash']),
         'status': ServerStatusFromJSON(json['status']),
+        'seasonStart': !exists(json, 'season_start') ? undefined : SeasonStart1FromJSON(json['season_start']),
+        'seasonEnd': !exists(json, 'season_end') ? undefined : SeasonEnd1FromJSON(json['season_end']),
         'createdAt': json['created_at'],
         'updatedAt': json['updated_at'],
     };
@@ -207,6 +232,8 @@ export function GameServerPublicToJSON(value?: GameServerPublic | null): any {
         'resource_pack_url': ResourcePackUrlToJSON(value.resourcePackUrl),
         'resource_pack_hash': ResourcePackHashToJSON(value.resourcePackHash),
         'status': ServerStatusToJSON(value.status),
+        'season_start': SeasonStart1ToJSON(value.seasonStart),
+        'season_end': SeasonEnd1ToJSON(value.seasonEnd),
         'created_at': value.createdAt,
         'updated_at': value.updatedAt,
     };

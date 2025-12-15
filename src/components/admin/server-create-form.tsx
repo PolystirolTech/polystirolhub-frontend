@@ -17,6 +17,8 @@ interface ServerFormData {
 	ip: string;
 	port?: string;
 	serverStatus: ServerStatus;
+	seasonStart?: string;
+	seasonEnd?: string;
 }
 
 export function ServerCreateForm() {
@@ -30,6 +32,8 @@ export function ServerCreateForm() {
 		ip: '',
 		port: '',
 		serverStatus: 'active' as ServerStatus,
+		seasonStart: '',
+		seasonEnd: '',
 	});
 	const [modName, setModName] = useState('');
 	const [modUrl, setModUrl] = useState('');
@@ -157,6 +161,8 @@ export function ServerCreateForm() {
 				port: formData.port?.trim() || undefined,
 				banner: formData.banner,
 				serverStatus: formData.serverStatus,
+				seasonStart: formData.seasonStart?.trim() || undefined,
+				seasonEnd: formData.seasonEnd?.trim() || undefined,
 			});
 			setMessage({ type: 'success', text: 'Сервер успешно создан!' });
 			// Отправляем событие для обновления списка серверов
@@ -171,6 +177,8 @@ export function ServerCreateForm() {
 				ip: '',
 				port: '',
 				serverStatus: 'active' as ServerStatus,
+				seasonStart: '',
+				seasonEnd: '',
 			});
 			setModName('');
 			setModUrl('');
@@ -398,6 +406,34 @@ export function ServerCreateForm() {
 						<option value="disabled">Выключен</option>
 						<option value="maintenance">На обслуживании</option>
 					</select>
+				</div>
+
+				{/* Начало сезона */}
+				<div className="space-y-1.5">
+					<label htmlFor="seasonStart" className="text-xs font-medium text-white">
+						Начало сезона
+					</label>
+					<Input
+						id="seasonStart"
+						type="date"
+						value={formData.seasonStart || ''}
+						onChange={(e) => setFormData((prev) => ({ ...prev, seasonStart: e.target.value }))}
+						className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
+					/>
+				</div>
+
+				{/* Конец сезона */}
+				<div className="space-y-1.5">
+					<label htmlFor="seasonEnd" className="text-xs font-medium text-white">
+						Конец сезона
+					</label>
+					<Input
+						id="seasonEnd"
+						type="date"
+						value={formData.seasonEnd || ''}
+						onChange={(e) => setFormData((prev) => ({ ...prev, seasonEnd: e.target.value }))}
+						className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
+					/>
 				</div>
 
 				{/* Сообщения */}

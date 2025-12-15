@@ -25,6 +25,8 @@ interface CreateGameServerData {
 	port?: string;
 	banner?: File | null;
 	serverStatus?: ServerStatus;
+	seasonStart?: string;
+	seasonEnd?: string;
 }
 
 interface UpdateGameServerData {
@@ -36,6 +38,8 @@ interface UpdateGameServerData {
 	port?: string;
 	banner?: File | null;
 	serverStatus?: ServerStatus;
+	seasonStart?: string;
+	seasonEnd?: string;
 }
 
 class GameService {
@@ -247,6 +251,12 @@ class GameService {
 			if (data.serverStatus) {
 				formData.append('server_status', data.serverStatus as string);
 			}
+			if (data.seasonStart) {
+				formData.append('season_start', data.seasonStart);
+			}
+			if (data.seasonEnd) {
+				formData.append('season_end', data.seasonEnd);
+			}
 			if (data.banner) {
 				formData.append('banner', data.banner);
 			}
@@ -307,6 +317,16 @@ class GameService {
 			}
 			if (data.serverStatus !== undefined) {
 				formData.append('server_status', data.serverStatus as string);
+			}
+			if (data.seasonStart !== undefined) {
+				if (data.seasonStart.trim()) {
+					formData.append('season_start', data.seasonStart.trim());
+				}
+			}
+			if (data.seasonEnd !== undefined) {
+				if (data.seasonEnd.trim()) {
+					formData.append('season_end', data.seasonEnd.trim());
+				}
 			}
 			if (data.banner) {
 				formData.append('banner', data.banner);

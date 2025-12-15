@@ -31,6 +31,8 @@ export function ServerEditModal({
 		ip: server.ip || '',
 		port: ('port' in server && typeof server.port === 'string' ? server.port : '') || '',
 		serverStatus: (server.status as ServerStatus) || ('active' as ServerStatus),
+		seasonStart: '',
+		seasonEnd: '',
 	});
 	const [modName, setModName] = useState('');
 	const [modUrl, setModUrl] = useState('');
@@ -78,6 +80,27 @@ export function ServerEditModal({
 				return null;
 			};
 
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const getSeasonDate = (seasonDate: any): string => {
+				if (!seasonDate) return '';
+				if (typeof seasonDate === 'string') {
+					// Если это строка в формате даты, возвращаем как есть
+					if (seasonDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+						return seasonDate;
+					}
+					// Если это ISO строка, извлекаем дату
+					try {
+						const date = new Date(seasonDate);
+						if (!isNaN(date.getTime())) {
+							return date.toISOString().split('T')[0];
+						}
+					} catch {
+						return '';
+					}
+				}
+				return '';
+			};
+
 			setFormData({
 				gameTypeId: server.gameTypeId || '',
 				name: server.name || '',
@@ -87,6 +110,8 @@ export function ServerEditModal({
 				ip: server.ip || '',
 				port: ('port' in server && typeof server.port === 'string' ? server.port : '') || '',
 				serverStatus: (server.status as ServerStatus) || ('active' as ServerStatus),
+				seasonStart: getSeasonDate(server.seasonStart),
+				seasonEnd: getSeasonDate(server.seasonEnd),
 			});
 			setModName('');
 			setModUrl('');
@@ -240,6 +265,8 @@ export function ServerEditModal({
 				port: formData.port?.trim() || undefined,
 				banner: formData.banner,
 				serverStatus: formData.serverStatus,
+				seasonStart: formData.seasonStart?.trim() || undefined,
+				seasonEnd: formData.seasonEnd?.trim() || undefined,
 			});
 			onServerUpdated(updatedServer);
 			setMessage({ type: 'success', text: 'Сервер успешно обновлен!' });
@@ -476,6 +503,34 @@ export function ServerEditModal({
 							<option value="disabled">Выключен</option>
 							<option value="maintenance">На обслуживании</option>
 						</select>
+					</div>
+
+					{/* Начало сезона */}
+					<div className="space-y-1.5">
+						<label htmlFor="edit-seasonStart" className="text-xs font-medium text-white">
+							Начало сезона
+						</label>
+						<Input
+							id="edit-seasonStart"
+							type="date"
+							value={formData.seasonStart || ''}
+							onChange={(e) => setFormData((prev) => ({ ...prev, seasonStart: e.target.value }))}
+							className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
+						/>
+					</div>
+
+					{/* Конец сезона */}
+					<div className="space-y-1.5">
+						<label htmlFor="edit-seasonEnd" className="text-xs font-medium text-white">
+							Конец сезона
+						</label>
+						<Input
+							id="edit-seasonEnd"
+							type="date"
+							value={formData.seasonEnd || ''}
+							onChange={(e) => setFormData((prev) => ({ ...prev, seasonEnd: e.target.value }))}
+							className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
+						/>
 					</div>
 
 					{/* Сообщения */}
