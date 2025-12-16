@@ -500,11 +500,6 @@ export default function ServersPage() {
 															<h3 className="text-lg font-bold text-white truncate">
 																{serverName}
 															</h3>
-															{statusDisplay.text && (
-																<span className="text-xs text-white/60">
-																	({statusDisplay.text})
-																</span>
-															)}
 														</div>
 														<p className="text-sm text-white/70">
 															{getGameTypeName(server.gameType)}
