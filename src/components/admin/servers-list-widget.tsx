@@ -270,11 +270,29 @@ export function ServersListWidget() {
 								return 'Неизвестный тип';
 							};
 
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							const getServerId = (id: any): string | null => {
+								if (!id) return null;
+								if (typeof id === 'string') return id;
+								if (typeof id === 'object' && id !== null) {
+									// eslint-disable-next-line @typescript-eslint/no-explicit-any
+									for (const key in id as any) {
+										// eslint-disable-next-line @typescript-eslint/no-explicit-any
+										const val = (id as any)[key];
+										if (typeof val === 'string' && val.trim()) {
+											return val;
+										}
+									}
+								}
+								return null;
+							};
+
 							const bannerUrl = getBannerUrl(server.bannerUrl);
 							const mods = getModsArray(server.mods);
 							const description = getDescription(server.description);
 							// Передаем и gameType, и gameTypeId для лучшей обработки
 							const gameTypeName = getGameTypeName(server.gameType, server.gameTypeId);
+							const serverId = getServerId(server.id);
 
 							return (
 								<div
@@ -306,6 +324,11 @@ export function ServersListWidget() {
 									{/* Описание */}
 									{description && (
 										<p className="text-[10px] text-white/50 mb-2 line-clamp-2">{description}</p>
+									)}
+
+									{/* ID */}
+									{serverId && (
+										<p className="text-[10px] text-white/40 mb-2 truncate">ID: {serverId}</p>
 									)}
 
 									{/* IP */}
