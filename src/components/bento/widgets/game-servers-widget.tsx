@@ -260,9 +260,6 @@ export function GameServersWidget() {
 											}`}
 										/>
 										<span className="text-sm font-medium text-white truncate">{serverName}</span>
-										{statusDisplay.text && (
-											<span className="text-xs text-white/60">({statusDisplay.text})</span>
-										)}
 									</div>
 									{seasonCountdown.text && (
 										<div className="flex items-center gap-1 mt-0.5">
