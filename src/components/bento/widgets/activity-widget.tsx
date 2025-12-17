@@ -38,11 +38,15 @@ export function ActivityWidget() {
 	const [activities, setActivities] = useState<ActivityResponse[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [isInitialLoad, setIsInitialLoad] = useState(true);
 
 	useEffect(() => {
 		const fetchActivities = async () => {
 			try {
-				setIsLoading(true);
+				// Показываем загрузку только при первой загрузке
+				if (isInitialLoad) {
+					setIsLoading(true);
+				}
 				setError(null);
 				const basePath =
 					apiConfig.basePath || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -73,6 +77,7 @@ export function ActivityWidget() {
 				);
 
 				setActivities(activitiesList);
+				setIsInitialLoad(false);
 			} catch (err) {
 				console.error('Failed to fetch activities:', err);
 				setError('Не удалось загрузить активность');
@@ -87,7 +92,7 @@ export function ActivityWidget() {
 		const interval = setInterval(fetchActivities, 60000);
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [isInitialLoad]);
 
 	if (isLoading) {
 		return (

@@ -60,10 +60,13 @@ export function Header() {
 				<div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 sm:px-6 shadow-lg transition-transform hover:scale-[1.02]">
 					<Link
 						href="/"
-						className="text-base sm:text-lg font-bold tracking-tight text-white transition-opacity hover:opacity-80"
+						className="relative inline-block text-base sm:text-lg font-bold tracking-tight text-white transition-opacity hover:opacity-80"
 					>
 						<span className="hidden sm:inline">polystirolhub</span>
 						<span className="sm:hidden">plstrl</span>
+						<span className="absolute -top-1 -left-1 flex items-center justify-center rounded border border-white/30 bg-white/10 px-1 text-[8px] font-bold leading-none text-white/90">
+							бета
+						</span>
 					</Link>
 				</div>
 
@@ -90,28 +93,30 @@ export function Header() {
 						</svg>
 						<span className="hidden lg:inline ml-2 text-sm font-medium text-white/90">Сервера</span>
 					</Link>
-					<Link
-						href="/stats"
-						className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02]"
-						title="Статистика"
-					>
-						<svg
-							className="h-5 w-5 text-white/90"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
+					{isAuthenticated && (
+						<Link
+							href="/stats"
+							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02]"
+							title="Статистика"
 						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-							/>
-						</svg>
-						<span className="hidden lg:inline ml-2 text-sm font-medium text-white/90">
-							Статистика
-						</span>
-					</Link>
+							<svg
+								className="h-5 w-5 text-white/90"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+								/>
+							</svg>
+							<span className="hidden lg:inline ml-2 text-sm font-medium text-white/90">
+								Статистика
+							</span>
+						</Link>
+					)}
 					<Link
 						href="/shop"
 						className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02]"
@@ -364,26 +369,28 @@ export function Header() {
 							</svg>
 							<span className="text-sm font-medium text-white/90">Сервера</span>
 						</Link>
-						<Link
-							href="/stats"
-							onClick={handleLinkClick}
-							className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors"
-						>
-							<svg
-								className="h-5 w-5 text-white/90"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
+						{isAuthenticated && (
+							<Link
+								href="/stats"
+								onClick={handleLinkClick}
+								className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors"
 							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-								/>
-							</svg>
-							<span className="text-sm font-medium text-white/90">Статистика</span>
-						</Link>
+								<svg
+									className="h-5 w-5 text-white/90"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+									/>
+								</svg>
+								<span className="text-sm font-medium text-white/90">Статистика</span>
+							</Link>
+						)}
 						<Link
 							href="/shop"
 							onClick={handleLinkClick}

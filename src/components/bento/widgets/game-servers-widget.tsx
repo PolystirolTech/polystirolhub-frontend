@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { gameService } from '@/lib/game/game-service';
 import type { GameServerPublic, ServerStatusResponse } from '@/lib/api/generated';
 import { calculateSeasonCountdown } from '@/lib/utils/season-countdown';
@@ -13,11 +14,15 @@ export function GameServersWidget() {
 	const [servers, setServers] = useState<ServerWithStatus[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [isInitialLoad, setIsInitialLoad] = useState(true);
 
 	useEffect(() => {
 		async function loadServers() {
 			try {
-				setIsLoading(true);
+				// Показываем загрузку только при первой загрузке
+				if (isInitialLoad) {
+					setIsLoading(true);
+				}
 				setError(null);
 
 				// Загружаем все серверы
@@ -87,6 +92,7 @@ export function GameServersWidget() {
 					.map((result) => result.value);
 
 				setServers(finalServers);
+				setIsInitialLoad(false);
 			} catch (err) {
 				console.error('Failed to load servers:', err);
 				setError(err instanceof Error ? err.message : 'Не удалось загрузить серверы');
@@ -96,7 +102,7 @@ export function GameServersWidget() {
 		}
 
 		loadServers();
-	}, []);
+	}, [isInitialLoad]);
 
 	// Функция для извлечения URL баннера
 	const getBannerUrl = (bannerUrl: unknown): string | null => {
@@ -220,9 +226,10 @@ export function GameServersWidget() {
 					const seasonCountdown = calculateSeasonCountdown(server.seasonStart, server.seasonEnd);
 
 					return (
-						<div
+						<Link
 							key={server.id}
-							className={`relative flex items-center justify-between rounded-lg overflow-hidden p-3 min-h-[60px] ${
+							href="/servers"
+							className={`relative flex items-center justify-between rounded-lg overflow-hidden p-3 min-h-[60px] cursor-pointer transition-opacity hover:opacity-90 ${
 								bannerUrl ? '' : 'bg-white/5'
 							}`}
 							style={
@@ -290,7 +297,7 @@ export function GameServersWidget() {
 									<span className="text-white/60">{statusDisplay.text}</span>
 								)}
 							</div>
-						</div>
+						</Link>
 					);
 				})}
 			</div>
