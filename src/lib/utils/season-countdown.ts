@@ -50,7 +50,7 @@ function calculateTimeDifference(targetDate: Date): {
 	const isPast = diff < 0;
 	const absDiff = Math.abs(diff);
 
-	const days = Math.floor(absDiff / (1000 * 60 * 60 * 24));
+	const days = Math.ceil(absDiff / (1000 * 60 * 60 * 24));
 	const hours = Math.floor((absDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 	const minutes = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
 
