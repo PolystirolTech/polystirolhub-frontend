@@ -8,11 +8,13 @@ import { TopUsersWidget } from '@/components/bento/widgets/top-users-widget';
 import { DailyQuestsWidget } from '@/components/bento/widgets/daily-quests-widget';
 import { AchievementsWidget } from '@/components/bento/widgets/achievements-widget';
 import { Footer } from '@/components/layout/footer';
+import { GazosvarkaEasterEgg } from '@/components/easter-egg/gazosvarka-easter-egg';
 
 export default function Home() {
 	return (
 		<div className="min-h-screen pb-20 pt-24">
 			<Header />
+			<GazosvarkaEasterEgg />
 
 			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
 				{/* Баннер сверху */}
