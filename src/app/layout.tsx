@@ -4,6 +4,8 @@ import './globals.css';
 import { AuthProvider } from '@/lib/auth';
 import { LevelProvider } from '@/lib/level/level-context';
 import { MaintenanceGuard } from '@/components/maintenance/maintenance-guard';
+import { ChristmasDecorations } from '@/components/decorations/christmas-decorations';
+import { ENABLE_CHRISTMAS_THEME } from '@/lib/theme/config';
 
 const pixelFont = Press_Start_2P({
 	variable: '--font-pixel',
@@ -23,8 +25,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="ru">
 			<body className={`${pixelFont.variable} antialiased font-pixel`}>
+				{ENABLE_CHRISTMAS_THEME && <ChristmasDecorations />}
 				<AuthProvider>
 					<LevelProvider>
 						<MaintenanceGuard>{children}</MaintenanceGuard>
