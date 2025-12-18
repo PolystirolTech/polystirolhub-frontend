@@ -34,9 +34,9 @@ export function GazosvarkaEasterEgg() {
 				if (clickTimerRef.current) {
 					clearTimeout(clickTimerRef.current);
 				}
-				
+
 				clickCountRef.current += 1;
-				
+
 				if (clickCountRef.current === 3) {
 					activate();
 					clickCountRef.current = 0;
@@ -75,4 +75,3 @@ export function GazosvarkaEasterEgg() {
 		</div>
 	);
 }
-
