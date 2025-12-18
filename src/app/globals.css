@@ -59,3 +59,33 @@ body {
 	-webkit-backdrop-filter: blur(16px);
 	border-radius: 1rem;
 }
+
+/* Christmas Decorations */
+@keyframes christmas-snowfall {
+	0% {
+		transform: translateY(-100vh) rotate(0deg);
+	}
+	100% {
+		transform: translateY(100vh) rotate(360deg);
+	}
+}
+
+@keyframes christmas-twinkle {
+	0%,
+	100% {
+		opacity: 0.4;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.15);
+	}
+}
+
+.christmas-snowflake {
+	animation: christmas-snowfall linear infinite;
+}
+
+.christmas-garland-bulb {
+	animation: christmas-twinkle 1.5s ease-in-out infinite;
+}
