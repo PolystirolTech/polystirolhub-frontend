@@ -6,7 +6,7 @@
  * Page for viewing user's achievements
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -36,6 +36,7 @@ export default function MyAchievementsPage() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 	const [sortBy, setSortBy] = useState<SortOption>('progress');
+	const isLoadingRef = useRef(false);
 
 	// Redirect to login if not authenticated
 	useEffect(() => {
@@ -47,24 +48,35 @@ export default function MyAchievementsPage() {
 	// Load achievements
 	useEffect(() => {
 		async function loadAchievements() {
-			if (!isAuthenticated) return;
+			if (!isAuthenticated || isLoadingRef.current) return;
 
 			try {
+				isLoadingRef.current = true;
 				setIsLoading(true);
 				setError(null);
 				const data = await questService.getMyQuests();
 				// Filter only achievement quests
-				const achievementQuests = data.filter(
-					(userQuest) =>
-						userQuest.quest.questType === 'achievement' ||
-						String(userQuest.quest.questType) === 'achievement'
-				);
-				setAchievements(achievementQuests);
+				const achievementQuests = data.filter((userQuest) => {
+					const questType = String(userQuest.quest.questType || '');
+					return questType === 'achievement';
+				});
+				// Deduplicate by quest.id to prevent duplicates (in case same quest appears multiple times)
+				const seenQuestIds = new Set<string>();
+				const uniqueAchievements = achievementQuests.filter((quest) => {
+					const questId = String(quest.quest.id);
+					if (seenQuestIds.has(questId)) {
+						return false;
+					}
+					seenQuestIds.add(questId);
+					return true;
+				});
+				setAchievements(uniqueAchievements);
 			} catch (err) {
 				console.error('Failed to load achievements:', err);
 				setError('Не удалось загрузить достижения');
 			} finally {
 				setIsLoading(false);
+				isLoadingRef.current = false;
 			}
 		}
 
