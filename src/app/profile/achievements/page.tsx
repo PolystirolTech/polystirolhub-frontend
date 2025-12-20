@@ -19,6 +19,7 @@ import {
 	formatQuestProgress,
 	isQuestCompleted,
 	getQuestRewardText,
+	getQuestDisplayData,
 } from '@/lib/utils/quest-formatters';
 import { Input } from '@/components/ui/input';
 import { formatDate } from '@/lib/utils';
@@ -109,12 +110,8 @@ export default function MyAchievementsPage() {
 			switch (sortBy) {
 				case 'progress': {
 					// Sort by progress percentage (nearest to completion first)
-					const progressA = a.progress ?? 0;
-					const targetA = a.quest.targetValue ?? 1;
-					const progressB = b.progress ?? 0;
-					const targetB = b.quest.targetValue ?? 1;
-					const percentA = targetA > 0 ? (progressA / targetA) * 100 : 0;
-					const percentB = targetB > 0 ? (progressB / targetB) * 100 : 0;
+					const { percent: percentA } = getQuestDisplayData(a);
+					const { percent: percentB } = getQuestDisplayData(b);
 					// Completed achievements go to the end
 					const completedA = isQuestCompleted(a.completedAt);
 					const completedB = isQuestCompleted(b.completedAt);
@@ -245,15 +242,16 @@ export default function MyAchievementsPage() {
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 						{filteredAchievements.map((userQuest) => {
 							const quest = userQuest.quest;
-							const progress = userQuest.progress ?? 0;
-							const targetValue = quest.targetValue ?? 1;
-							const progressPercent =
-								targetValue > 0 ? Math.min(100, (progress / targetValue) * 100) : 0;
+							const {
+								progress,
+								targetValue,
+								percent: progressPercent,
+								isCompleted: completed,
+							} = getQuestDisplayData(userQuest);
 							const questName = formatQuestName(quest.name);
 							const questDescription = formatQuestDescription(quest.description);
 							const progressText = formatQuestProgress(progress, targetValue);
 							const rewardText = getQuestRewardText(quest.rewardXp);
-							const completed = isQuestCompleted(userQuest.completedAt);
 							const completedAtDate = userQuest.completedAt
 								? new Date(String(userQuest.completedAt))
 								: null;
