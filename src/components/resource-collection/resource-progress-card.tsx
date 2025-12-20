@@ -25,9 +25,7 @@ export function ResourceProgressCard({ resources, serverName }: ResourceProgress
 	return (
 		<div className="pt-2 border-t border-white/10 mt-2">
 			<div className="mb-2">
-				<span className="text-xs text-white/60 block mb-1">
-					Сбор ресурсов{serverName ? ` (${serverName})` : ''}:
-				</span>
+				<span className="text-xs text-white/60 block mb-1">Сбор ресурсов (/collect):</span>
 			</div>
 			<div className="space-y-2">
 				{displayResources.map((resource, index) => (
