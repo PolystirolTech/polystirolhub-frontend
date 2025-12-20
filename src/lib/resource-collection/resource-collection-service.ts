@@ -14,6 +14,46 @@ class ResourceCollectionService {
 	}
 
 	/**
+	 * Normalize goal data from snake_case to camelCase
+	 */
+	private normalizeGoal(goal: unknown): ResourceGoal {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const g = goal as any;
+
+		// Если данные приходят в snake_case, преобразуем все поля
+		if (
+			g.server_id !== undefined ||
+			g.resource_type !== undefined ||
+			g.target_amount !== undefined
+		) {
+			return {
+				id: g.id || '',
+				serverId: g.server_id || g.serverId || '',
+				name: g.name || '',
+				resourceType: g.resource_type || g.resourceType || '',
+				targetAmount:
+					typeof (g.target_amount ?? g.targetAmount) === 'number'
+						? (g.target_amount ?? g.targetAmount)
+						: Number(g.target_amount ?? g.targetAmount) || 0,
+				isActive:
+					g.is_active !== undefined ? g.is_active : g.isActive !== undefined ? g.isActive : true,
+				createdAt: g.created_at || g.createdAt || '',
+				updatedAt: g.updated_at || g.updatedAt || '',
+			} as ResourceGoal;
+		}
+
+		// Если данные уже в camelCase, убеждаемся что targetAmount это число
+		if (g.targetAmount !== undefined && typeof g.targetAmount !== 'number') {
+			return {
+				...g,
+				targetAmount: Number(g.targetAmount) || 0,
+			} as ResourceGoal;
+		}
+
+		return g as ResourceGoal;
+	}
+
+	/**
 	 * Get server progress (public endpoint)
 	 */
 	async getServerProgress(serverId: string): Promise<ServerProgressResponse> {
@@ -74,27 +114,8 @@ class ResourceCollectionService {
 		const data = await response.json();
 		if (!Array.isArray(data)) return [];
 
-		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
-		return data.map((goal: unknown) => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const g = goal as any;
-			// Если данные приходят в snake_case, преобразуем их
-			if (g.target_amount !== undefined && g.targetAmount === undefined) {
-				return {
-					...g,
-					targetAmount:
-						typeof g.target_amount === 'number' ? g.target_amount : Number(g.target_amount) || 0,
-				};
-			}
-			// Убеждаемся, что targetAmount это число
-			if (g.targetAmount !== undefined && typeof g.targetAmount !== 'number') {
-				return {
-					...g,
-					targetAmount: Number(g.targetAmount) || 0,
-				};
-			}
-			return g;
-		});
+		// Нормализуем данные: преобразуем snake_case в camelCase
+		return data.map((goal: unknown) => this.normalizeGoal(goal));
 	}
 
 	/**
@@ -121,26 +142,7 @@ class ResourceCollectionService {
 		}
 
 		const data = await response.json();
-		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const goal = data as any;
-		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
-			return {
-				...goal,
-				targetAmount:
-					typeof goal.target_amount === 'number'
-						? goal.target_amount
-						: Number(goal.target_amount) || 0,
-			} as ResourceGoal;
-		}
-		// Убеждаемся, что targetAmount это число
-		if (goal.targetAmount !== undefined && typeof goal.targetAmount !== 'number') {
-			return {
-				...goal,
-				targetAmount: Number(goal.targetAmount) || 0,
-			} as ResourceGoal;
-		}
-		return goal as ResourceGoal;
+		return this.normalizeGoal(data);
 	}
 
 	/**
@@ -181,26 +183,7 @@ class ResourceCollectionService {
 		}
 
 		const responseData = await response.json();
-		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const goal = responseData as any;
-		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
-			return {
-				...goal,
-				targetAmount:
-					typeof goal.target_amount === 'number'
-						? goal.target_amount
-						: Number(goal.target_amount) || 0,
-			} as ResourceGoal;
-		}
-		// Убеждаемся, что targetAmount это число
-		if (goal.targetAmount !== undefined && typeof goal.targetAmount !== 'number') {
-			return {
-				...goal,
-				targetAmount: Number(goal.targetAmount) || 0,
-			} as ResourceGoal;
-		}
-		return goal as ResourceGoal;
+		return this.normalizeGoal(responseData);
 	}
 
 	/**
@@ -252,26 +235,7 @@ class ResourceCollectionService {
 		}
 
 		const responseData = await response.json();
-		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const goal = responseData as any;
-		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
-			return {
-				...goal,
-				targetAmount:
-					typeof goal.target_amount === 'number'
-						? goal.target_amount
-						: Number(goal.target_amount) || 0,
-			} as ResourceGoal;
-		}
-		// Убеждаемся, что targetAmount это число
-		if (goal.targetAmount !== undefined && typeof goal.targetAmount !== 'number') {
-			return {
-				...goal,
-				targetAmount: Number(goal.targetAmount) || 0,
-			} as ResourceGoal;
-		}
-		return goal as ResourceGoal;
+		return this.normalizeGoal(responseData);
 	}
 
 	/**
