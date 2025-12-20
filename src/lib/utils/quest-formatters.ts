@@ -18,11 +18,9 @@ export function getQuestDisplayData(userQuest: UserQuestWithQuest) {
 
 	// If completed but progress is less than target (e.g. 0), show target value
 	// If progress is greater than target (over-completion), show actual progress
-	const displayProgress =
-		isCompleted && rawProgress < targetValue ? targetValue : rawProgress;
+	const displayProgress = isCompleted && rawProgress < targetValue ? targetValue : rawProgress;
 
-	const percent =
-		targetValue > 0 ? Math.min(100, (displayProgress / targetValue) * 100) : 0;
+	const percent = targetValue > 0 ? Math.min(100, (displayProgress / targetValue) * 100) : 0;
 
 	return {
 		progress: displayProgress,
