@@ -40,7 +40,7 @@ export function ResourceItem({ resource }: ResourceItemProps) {
 				)}
 			</div>
 
-			{hasGoal ? (
+			{hasGoal && resource.targetAmount !== undefined && resource.targetAmount !== null ? (
 				<>
 					<div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10 mb-1">
 						<div
@@ -52,7 +52,7 @@ export function ResourceItem({ resource }: ResourceItemProps) {
 					</div>
 					<p className="text-xs text-white/40">
 						{resource.currentAmount.toLocaleString('ru-RU')} /{' '}
-						{resource.targetAmount?.toLocaleString('ru-RU')}
+						{resource.targetAmount.toLocaleString('ru-RU')}
 					</p>
 					{progressPercent >= 100 && (
 						<p className="mt-1 text-xs text-green-400 font-medium">✓ Цель достигнута</p>
