@@ -180,10 +180,10 @@ class ResourceCollectionService {
 			throw new Error(error.message || error.detail || 'Ошибка при создании цели');
 		}
 
-		const data = await response.json();
+		const responseData = await response.json();
 		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const goal = data as any;
+		const goal = responseData as any;
 		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
 			return {
 				...goal,
@@ -251,10 +251,10 @@ class ResourceCollectionService {
 			throw new Error(error.message || error.detail || 'Ошибка при обновлении цели');
 		}
 
-		const data = await response.json();
+		const responseData = await response.json();
 		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const goal = data as any;
+		const goal = responseData as any;
 		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
 			return {
 				...goal,
