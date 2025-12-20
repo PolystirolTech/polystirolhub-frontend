@@ -54,6 +54,65 @@ class ResourceCollectionService {
 	}
 
 	/**
+	 * Normalize resource progress data from snake_case to camelCase
+	 */
+	private normalizeResourceProgress(resource: unknown): import('./types').ResourceProgress {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const r = resource as any;
+
+		// Если данные приходят в snake_case, преобразуем все поля
+		if (
+			r.resource_type !== undefined ||
+			r.current_amount !== undefined ||
+			r.target_amount !== undefined ||
+			r.goal_id !== undefined
+		) {
+			return {
+				resourceType: r.resource_type || r.resourceType || '',
+				name: r.name,
+				currentAmount:
+					typeof (r.current_amount ?? r.currentAmount) === 'number'
+						? (r.current_amount ?? r.currentAmount)
+						: Number(r.current_amount ?? r.currentAmount) || 0,
+				targetAmount:
+					r.target_amount !== undefined || r.targetAmount !== undefined
+						? typeof (r.target_amount ?? r.targetAmount) === 'number'
+							? (r.target_amount ?? r.targetAmount)
+							: Number(r.target_amount ?? r.targetAmount) || 0
+						: undefined,
+				goalId: r.goal_id || r.goalId,
+				isActive: r.is_active !== undefined ? r.is_active : r.isActive,
+				progressPercentage:
+					r.progress_percentage !== undefined || r.progressPercentage !== undefined
+						? typeof (r.progress_percentage ?? r.progressPercentage) === 'number'
+							? (r.progress_percentage ?? r.progressPercentage)
+							: Number(r.progress_percentage ?? r.progressPercentage) || 0
+						: undefined,
+				updatedAt: r.updated_at || r.updatedAt || '',
+			};
+		}
+
+		// Если данные уже в camelCase, убеждаемся что числовые поля это числа
+		return {
+			...r,
+			currentAmount:
+				typeof r.currentAmount === 'number' ? r.currentAmount : Number(r.currentAmount) || 0,
+			targetAmount:
+				r.targetAmount !== undefined
+					? typeof r.targetAmount === 'number'
+						? r.targetAmount
+						: Number(r.targetAmount) || 0
+					: undefined,
+			progressPercentage:
+				r.progressPercentage !== undefined
+					? typeof r.progressPercentage === 'number'
+						? r.progressPercentage
+						: Number(r.progressPercentage) || 0
+					: undefined,
+		};
+	}
+
+	/**
 	 * Get server progress (public endpoint)
 	 */
 	async getServerProgress(serverId: string): Promise<ServerProgressResponse> {
@@ -78,7 +137,18 @@ class ResourceCollectionService {
 			throw new Error(error.message || error.detail || 'Ошибка при получении прогресса');
 		}
 
-		return await response.json();
+		const data = await response.json();
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const d = data as any;
+
+		// Нормализуем данные: преобразуем snake_case в camelCase
+		return {
+			serverId: d.server_id || d.serverId || '',
+			serverName: d.server_name || d.serverName || '',
+			resources: Array.isArray(d.resources)
+				? d.resources.map((resource: unknown) => this.normalizeResourceProgress(resource))
+				: [],
+		};
 	}
 
 	/**
