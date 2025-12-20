@@ -72,7 +72,29 @@ class ResourceCollectionService {
 		}
 
 		const data = await response.json();
-		return Array.isArray(data) ? data : [];
+		if (!Array.isArray(data)) return [];
+
+		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
+		return data.map((goal: unknown) => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const g = goal as any;
+			// Если данные приходят в snake_case, преобразуем их
+			if (g.target_amount !== undefined && g.targetAmount === undefined) {
+				return {
+					...g,
+					targetAmount:
+						typeof g.target_amount === 'number' ? g.target_amount : Number(g.target_amount) || 0,
+				};
+			}
+			// Убеждаемся, что targetAmount это число
+			if (g.targetAmount !== undefined && typeof g.targetAmount !== 'number') {
+				return {
+					...g,
+					targetAmount: Number(g.targetAmount) || 0,
+				};
+			}
+			return g;
+		});
 	}
 
 	/**
@@ -98,7 +120,27 @@ class ResourceCollectionService {
 			throw new Error(error.message || error.detail || 'Ошибка при получении цели');
 		}
 
-		return await response.json();
+		const data = await response.json();
+		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const goal = data as any;
+		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
+			return {
+				...goal,
+				targetAmount:
+					typeof goal.target_amount === 'number'
+						? goal.target_amount
+						: Number(goal.target_amount) || 0,
+			} as ResourceGoal;
+		}
+		// Убеждаемся, что targetAmount это число
+		if (goal.targetAmount !== undefined && typeof goal.targetAmount !== 'number') {
+			return {
+				...goal,
+				targetAmount: Number(goal.targetAmount) || 0,
+			} as ResourceGoal;
+		}
+		return goal as ResourceGoal;
 	}
 
 	/**
@@ -138,7 +180,27 @@ class ResourceCollectionService {
 			throw new Error(error.message || error.detail || 'Ошибка при создании цели');
 		}
 
-		return await response.json();
+		const data = await response.json();
+		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const goal = data as any;
+		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
+			return {
+				...goal,
+				targetAmount:
+					typeof goal.target_amount === 'number'
+						? goal.target_amount
+						: Number(goal.target_amount) || 0,
+			} as ResourceGoal;
+		}
+		// Убеждаемся, что targetAmount это число
+		if (goal.targetAmount !== undefined && typeof goal.targetAmount !== 'number') {
+			return {
+				...goal,
+				targetAmount: Number(goal.targetAmount) || 0,
+			} as ResourceGoal;
+		}
+		return goal as ResourceGoal;
 	}
 
 	/**
@@ -189,7 +251,27 @@ class ResourceCollectionService {
 			throw new Error(error.message || error.detail || 'Ошибка при обновлении цели');
 		}
 
-		return await response.json();
+		const data = await response.json();
+		// Нормализуем данные: преобразуем snake_case в camelCase если нужно
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const goal = data as any;
+		if (goal.target_amount !== undefined && goal.targetAmount === undefined) {
+			return {
+				...goal,
+				targetAmount:
+					typeof goal.target_amount === 'number'
+						? goal.target_amount
+						: Number(goal.target_amount) || 0,
+			} as ResourceGoal;
+		}
+		// Убеждаемся, что targetAmount это число
+		if (goal.targetAmount !== undefined && typeof goal.targetAmount !== 'number') {
+			return {
+				...goal,
+				targetAmount: Number(goal.targetAmount) || 0,
+			} as ResourceGoal;
+		}
+		return goal as ResourceGoal;
 	}
 
 	/**

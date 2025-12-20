@@ -225,7 +225,9 @@ export function GoalsListWidget() {
 											<div>
 												Целевое количество:{' '}
 												<span className="text-white/80">
-													{goal.targetAmount.toLocaleString('ru-RU')}
+													{typeof goal.targetAmount === 'number'
+														? goal.targetAmount.toLocaleString('ru-RU')
+														: '—'}
 												</span>
 											</div>
 										</div>
