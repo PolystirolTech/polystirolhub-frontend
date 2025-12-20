@@ -9,5 +9,6 @@ export * from './DefaultApi';
 export * from './GameServersApi';
 export * from './NotificationsApi';
 export * from './QuestsApi';
+export * from './ResourceCollectionApi';
 export * from './StatisticsApi';
 export * from './UsersApi';
