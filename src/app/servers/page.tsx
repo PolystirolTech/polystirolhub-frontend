@@ -1,13 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Header } from '@/components/layout/header';
 import { gameService } from '@/lib/game/game-service';
 import type { GameServerPublic, ServerStatusResponse, GameTypeResponse } from '@/lib/api/generated';
 import { calculateSeasonCountdown } from '@/lib/utils/season-countdown';
+import { resourceCollectionService } from '@/lib/resource-collection';
+import type { ServerProgressResponse } from '@/lib/resource-collection';
+import { ResourceProgressCard } from '@/components/resource-collection/resource-progress-card';
 
 interface ServerWithStatus extends GameServerPublic {
 	mcStatus?: ServerStatusResponse;
+	resourceProgress?: ServerProgressResponse;
 }
 
 export default function ServersPage() {
@@ -261,6 +265,51 @@ export default function ServersPage() {
 		return '';
 	};
 
+	// Загрузка прогресса ресурсов для серверов
+	const loadResourceProgress = useCallback(async (serverList?: ServerWithStatus[]) => {
+		setServers((prevServers) => {
+			const serversToLoad = serverList || prevServers;
+			if (serversToLoad.length === 0) return prevServers;
+
+			// Загружаем прогресс асинхронно
+			Promise.allSettled(
+				serversToLoad.map(async (server) => {
+					if (!server.id) return { serverId: null, progress: null };
+
+					try {
+						const progress = await resourceCollectionService.getServerProgress(String(server.id));
+						return { serverId: String(server.id), progress };
+					} catch {
+						// Игнорируем ошибки 404 и другие - просто не показываем прогресс
+						return { serverId: String(server.id), progress: null };
+					}
+				})
+			).then((progressResults) => {
+				// Обновляем серверы с прогрессом
+				setServers((currentServers) => {
+					return currentServers.map((server) => {
+						if (!server.id) return server;
+
+						const result = progressResults.find(
+							(r) =>
+								r.status === 'fulfilled' &&
+								r.value.serverId === String(server.id) &&
+								r.value.progress !== null
+						);
+
+						if (result && result.status === 'fulfilled' && result.value.progress) {
+							return { ...server, resourceProgress: result.value.progress };
+						}
+
+						return server;
+					});
+				});
+			});
+
+			return prevServers;
+		});
+	}, []);
+
 	// Загрузка данных
 	useEffect(() => {
 		async function loadData() {
@@ -326,6 +375,9 @@ export default function ServersPage() {
 					.map((result) => result.value);
 
 				setServers(finalServers);
+
+				// Загружаем прогресс ресурсов
+				await loadResourceProgress(finalServers);
 			} catch (err) {
 				console.error('Failed to load servers:', err);
 				setError(err instanceof Error ? err.message : 'Не удалось загрузить серверы');
@@ -336,6 +388,17 @@ export default function ServersPage() {
 
 		loadData();
 	}, []);
+
+	// Polling для обновления прогресса каждые 30 секунд
+	useEffect(() => {
+		if (servers.length === 0) return;
+
+		const interval = setInterval(() => {
+			loadResourceProgress(); // Используем текущее состояние servers
+		}, 30000); // 30 секунд
+
+		return () => clearInterval(interval);
+	}, [servers.length, loadResourceProgress]); // Пересоздаем интервал только при изменении количества серверов
 
 	// Фильтрация серверов
 	const filteredServers = selectedTypeId
@@ -619,6 +682,14 @@ export default function ServersPage() {
 														<div className="pt-2 border-t border-white/10">
 															<p className="text-xs text-white/80 line-clamp-2">{motd}</p>
 														</div>
+													)}
+
+													{/* Прогресс сбора ресурсов */}
+													{server.resourceProgress && (
+														<ResourceProgressCard
+															resources={server.resourceProgress.resources}
+															serverName={server.resourceProgress.serverName}
+														/>
 													)}
 												</div>
 											</div>

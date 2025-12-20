@@ -9,6 +9,7 @@ import {
 	formatQuestName,
 	isQuestCompleted,
 	formatQuestProgress,
+	getQuestDisplayData,
 } from '@/lib/utils/quest-formatters';
 
 export function AchievementsWidget() {
@@ -89,12 +90,8 @@ export function AchievementsWidget() {
 	const uncompletedAchievements = achievements
 		.filter((a) => !isQuestCompleted(a.completedAt))
 		.sort((a, b) => {
-			const progressA = a.progress ?? 0;
-			const targetA = a.quest.targetValue ?? 1;
-			const progressB = b.progress ?? 0;
-			const targetB = b.quest.targetValue ?? 1;
-			const percentA = targetA > 0 ? (progressA / targetA) * 100 : 0;
-			const percentB = targetB > 0 ? (progressB / targetB) * 100 : 0;
+			const { percent: percentA } = getQuestDisplayData(a);
+			const { percent: percentB } = getQuestDisplayData(b);
 			return percentB - percentA;
 		})
 		.slice(0, 3);
@@ -124,10 +121,11 @@ export function AchievementsWidget() {
 			<div className="space-y-2 mb-3">
 				{uncompletedAchievements.map((userQuest) => {
 					const quest = userQuest.quest;
-					const progress = userQuest.progress ?? 0;
-					const targetValue = quest.targetValue ?? 1;
-					const progressPercent =
-						targetValue > 0 ? Math.min(100, (progress / targetValue) * 100) : 0;
+					const {
+						progress,
+						targetValue,
+						percent: progressPercent,
+					} = getQuestDisplayData(userQuest);
 					const questName = formatQuestName(quest.name);
 					const progressText = formatQuestProgress(progress, targetValue);
 

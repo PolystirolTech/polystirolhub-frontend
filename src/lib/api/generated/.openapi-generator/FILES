@@ -6,6 +6,7 @@ apis/DefaultApi.ts
 apis/GameServersApi.ts
 apis/NotificationsApi.ts
 apis/QuestsApi.ts
+apis/ResourceCollectionApi.ts
 apis/StatisticsApi.ts
 apis/UsersApi.ts
 apis/index.ts
@@ -54,6 +55,7 @@ models/GameTypeResponse.ts
 models/GameTypeUpdate.ts
 models/Geolocation.ts
 models/Geolocations.ts
+models/GoalId.ts
 models/HTTPValidationError.ts
 models/Image.ts
 models/IsActive.ts
@@ -116,14 +118,23 @@ models/PlayersOnline.ts
 models/Playtime.ts
 models/PluginVersions.ts
 models/Port.ts
+models/ProgressPercentage.ts
 models/ProviderAvatar.ts
 models/ProviderUsername.ts
 models/Quest.ts
 models/QuestDate.ts
 models/QuestType.ts
 models/RamUsage.ts
+models/ResourceCollectionRequest.ts
+models/ResourceCollectionResponse.ts
+models/ResourceGoalCreate.ts
+models/ResourceGoalResponse.ts
+models/ResourceGoalUpdate.ts
 models/ResourcePackHash.ts
 models/ResourcePackUrl.ts
+models/ResourceProgressDetail.ts
+models/ResourceProgressResponse.ts
+models/ResourceType.ts
 models/ResponseGetMinecraftPlayerSelectedBadgeApiV1BadgesMinecraftPlayerUuidGet.ts
 models/RewardBalance.ts
 models/RewardBalance1.ts
@@ -135,6 +146,8 @@ models/SeasonStart.ts
 models/SeasonStart1.ts
 models/SelectedBadgeId.ts
 models/ServerIcon.ts
+models/ServerId.ts
+models/ServerId1.ts
 models/ServerInfo.ts
 models/ServerStatus.ts
 models/ServerStatusResponse.ts
@@ -143,6 +156,8 @@ models/SessionEnd.ts
 models/SessionEnd1.ts
 models/SessionId.ts
 models/Sessions.ts
+models/TargetAmount.ts
+models/TargetAmount1.ts
 models/TargetValue.ts
 models/Tps.ts
 models/Tps1.ts

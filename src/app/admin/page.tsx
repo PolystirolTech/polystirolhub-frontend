@@ -101,6 +101,12 @@ export default function AdminPage() {
 						>
 							Управление квестами →
 						</Link>
+						<Link
+							href="/admin/resource-collection"
+							className="text-xs text-primary hover:text-primary/80 transition-colors underline"
+						>
+							Управление целями сбора ресурсов →
+						</Link>
 					</div>
 				</div>
 

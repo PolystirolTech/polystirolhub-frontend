@@ -8,7 +8,7 @@ import {
 	formatQuestName,
 	getQuestRewardText,
 	formatPlaytimeSeconds,
-	isQuestCompleted,
+	getQuestDisplayData,
 } from '@/lib/utils/quest-formatters';
 
 export function DailyQuestsWidget() {
@@ -99,11 +99,12 @@ export function DailyQuestsWidget() {
 			<div className="space-y-3">
 				{quests.map((userQuest) => {
 					const quest = userQuest.quest;
-					const progress = userQuest.progress ?? 0;
-					const targetValue = quest.targetValue ?? 1;
-					const isCompleted = isQuestCompleted(userQuest.completedAt);
-					const progressPercent =
-						targetValue > 0 ? Math.min(100, (progress / targetValue) * 100) : 0;
+					const {
+						progress,
+						targetValue,
+						percent: progressPercent,
+						isCompleted,
+					} = getQuestDisplayData(userQuest);
 					const questName = formatQuestName(quest.name);
 					const rewardText = getQuestRewardText(quest.rewardXp);
 

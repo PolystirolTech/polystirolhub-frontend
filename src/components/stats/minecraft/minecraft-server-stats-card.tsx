@@ -144,14 +144,6 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 					</div>
 					<div className="text-2xl font-bold text-blue-400">{totalSessions}</div>
 				</div>
-				{averageTps !== null && (
-					<div className="rounded-xl border border-white/10 p-4 bg-black/20">
-						<div className="text-xs font-medium uppercase tracking-wider text-white/60 mb-1">
-							Средний TPS
-						</div>
-						<div className="text-2xl font-bold text-green-400">{averageTps.toFixed(2)}</div>
-					</div>
-				)}
 				{currentPlayers !== null && (
 					<div className="rounded-xl border border-white/10 p-4 bg-black/20">
 						<div className="text-xs font-medium uppercase tracking-wider text-white/60 mb-1">
