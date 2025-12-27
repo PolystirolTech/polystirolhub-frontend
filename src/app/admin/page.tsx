@@ -107,6 +107,12 @@ export default function AdminPage() {
 						>
 							Управление целями сбора ресурсов →
 						</Link>
+						<Link
+							href="/admin/files"
+							className="text-xs text-primary hover:text-primary/80 transition-colors underline"
+						>
+							Файловый менеджер →
+						</Link>
 					</div>
 				</div>
 
