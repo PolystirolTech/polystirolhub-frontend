@@ -61,12 +61,51 @@ body {
 }
 
 /* Christmas Decorations */
-@keyframes christmas-snowfall {
+@keyframes christmas-snowfall-sway-1 {
 	0% {
-		transform: translateY(-100vh) rotate(0deg);
+		transform: translateY(-10vh) translateX(-2vw);
+		opacity: 0;
 	}
+
+	10% {
+		opacity: 0.8;
+	}
+
 	100% {
-		transform: translateY(100vh) rotate(360deg);
+		transform: translateY(110vh) translateX(2vw);
+		opacity: 0.4;
+	}
+}
+
+@keyframes christmas-snowfall-sway-2 {
+	0% {
+		transform: translateY(-10vh) translateX(3vw);
+		opacity: 0;
+	}
+
+	10% {
+		opacity: 0.8;
+	}
+
+	100% {
+		transform: translateY(110vh) translateX(-3vw);
+		opacity: 0.4;
+	}
+}
+
+@keyframes christmas-snowfall-sway-3 {
+	0% {
+		transform: translateY(-10vh) translateX(0);
+		opacity: 0;
+	}
+
+	10% {
+		opacity: 0.8;
+	}
+
+	100% {
+		transform: translateY(110vh) translateX(0);
+		opacity: 0.4;
 	}
 }
 
@@ -76,14 +115,11 @@ body {
 		opacity: 0.4;
 		transform: scale(1);
 	}
+
 	50% {
 		opacity: 1;
 		transform: scale(1.15);
 	}
-}
-
-.christmas-snowflake {
-	animation: christmas-snowfall linear infinite;
 }
 
 .christmas-garland-bulb {
