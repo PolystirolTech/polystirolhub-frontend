@@ -15,10 +15,19 @@ import { useEffect, useState } from 'react';
  */
 export function ChristmasDecorations() {
 	const [snowflakes, setSnowflakes] = useState<
-		{ left: number; animationName: string; delay: number; duration: number; opacity: number; size: number }[]
+		{
+			left: number;
+			animationName: string;
+			delay: number;
+			duration: number;
+			opacity: number;
+			size: number;
+		}[]
 	>([]);
 
-	const [garlandBulbs, setGarlandBulbs] = useState<{ x: number; y: number; color: string; delay: number }[]>([]);
+	const [garlandBulbs, setGarlandBulbs] = useState<
+		{ x: number; y: number; color: string; delay: number }[]
+	>([]);
 
 	useEffect(() => {
 		// Use setTimeout to avoid 'setState directly in effect' lint warning
