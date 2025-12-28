@@ -205,11 +205,6 @@ export default function ServersPage() {
 		return [];
 	};
 
-	const cleanMotd = (motd: string): string => {
-		// Убираем цветовые коды Minecraft (§ + символ)
-		return motd.replace(/§[0-9a-fk-or]/gi, '');
-	};
-
 	const formatIpPort = (ip: unknown, port: unknown): string => {
 		const ipStr = typeof ip === 'string' ? ip : '';
 		const portStr = typeof port === 'string' ? port : '';
@@ -372,7 +367,20 @@ export default function ServersPage() {
 						(result): result is PromiseFulfilledResult<ServerWithStatus> =>
 							result.status === 'fulfilled'
 					)
-					.map((result) => result.value);
+					.map((result) => result.value)
+					.sort((a, b) => {
+						const aStatus = typeof a.status === 'string' ? a.status : '';
+						const bStatus = typeof b.status === 'string' ? b.status : '';
+
+						// Сервера на обслуживании всегда в конце
+						if (aStatus === 'maintenance' && bStatus !== 'maintenance') return 1;
+						if (aStatus !== 'maintenance' && bStatus === 'maintenance') return -1;
+
+						// Сортировка по онлайну (от большего к меньшему)
+						const aOnline = a.mcStatus?.playersOnline ?? 0;
+						const bOnline = b.mcStatus?.playersOnline ?? 0;
+						return bOnline - aOnline;
+					});
 
 				setServers(finalServers);
 
@@ -507,13 +515,7 @@ export default function ServersPage() {
 									const mods = getModsArray(server.mods);
 									const version =
 										typeof server.mcStatus?.version === 'string' ? server.mcStatus.version : '';
-									const ping =
-										typeof server.mcStatus?.ping === 'number'
-											? Math.trunc(server.mcStatus.ping)
-											: null;
-									const motdRaw =
-										typeof server.mcStatus?.motd === 'string' ? server.mcStatus.motd : '';
-									const motd = motdRaw ? cleanMotd(motdRaw) : '';
+
 									const seasonCountdown = calculateSeasonCountdown(
 										server.seasonStart,
 										server.seasonEnd
@@ -560,7 +562,7 @@ export default function ServersPage() {
 																		: statusDisplay.indicatorColor
 																}`}
 															/>
-															<h3 className="text-lg font-bold text-white truncate">
+															<h3 className="text-lg font-bold text-white break-words">
 																{serverName}
 															</h3>
 														</div>
@@ -615,14 +617,6 @@ export default function ServersPage() {
 														</div>
 													)}
 
-													{/* Ping */}
-													{isActive && ping !== null && (
-														<div className="flex items-center justify-between text-sm">
-															<span className="text-white/60">Ping:</span>
-															<span className="text-white font-medium">{ping}ms</span>
-														</div>
-													)}
-
 													{/* Версия */}
 													{isActive && version && (
 														<div className="flex items-center justify-between text-sm">
@@ -674,13 +668,6 @@ export default function ServersPage() {
 																	</span>
 																)}
 															</div>
-														</div>
-													)}
-
-													{/* MOTD */}
-													{isActive && motd && (
-														<div className="pt-2 border-t border-white/10">
-															<p className="text-xs text-white/80 line-clamp-2">{motd}</p>
 														</div>
 													)}
 
