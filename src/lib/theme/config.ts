@@ -3,4 +3,4 @@
  *
  * Enable/disable Christmas theme decorations
  */
-export const ENABLE_CHRISTMAS_THEME = true;
+export const ENABLE_CHRISTMAS_THEME = false;
