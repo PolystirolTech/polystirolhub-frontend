@@ -6,13 +6,13 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/auth';
 import { useLevel } from '@/lib/level/level-context';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
-import { useApiStatus } from '@/hooks/use-api-status';
+
 import { useBalance } from '@/hooks/use-balance';
 import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 
 export function Header() {
 	const { user, isAuthenticated, logout, isLoading } = useAuth();
-	const { status: apiStatus } = useApiStatus();
+
 	const { level, currentXp, nextLevelXp } = useLevel();
 	const { balance, isLoading: isBalanceLoading } = useBalance();
 	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -55,7 +55,7 @@ export function Header() {
 
 	return (
 		<header className="fixed top-0 left-0 right-0 z-50 p-3 sm:p-6">
-			<div className="mx-auto flex max-w-5xl items-center justify-between md:justify-center gap-2">
+			<div className="mx-auto flex max-w-7xl items-center justify-between md:justify-center gap-2">
 				{/* Block 1: Logo / Project Name */}
 				<div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 sm:px-6 shadow-lg transition-transform hover:scale-[1.02]">
 					<Link
@@ -75,7 +75,7 @@ export function Header() {
 					{/* Navigation Links */}
 					<Link
 						href="/servers"
-						className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02]"
+						className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 xl:px-4 shadow-lg transition-all hover:scale-[1.02]"
 						title="Сервера"
 					>
 						<svg
@@ -91,12 +91,12 @@ export function Header() {
 								d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
 							/>
 						</svg>
-						<span className="hidden lg:inline ml-2 text-sm font-medium text-white/90">Сервера</span>
+						<span className="hidden xl:inline ml-2 text-sm font-medium text-white/90">Сервера</span>
 					</Link>
 					{isAuthenticated && (
 						<Link
 							href="/stats"
-							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02]"
+							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 xl:px-4 shadow-lg transition-all hover:scale-[1.02]"
 							title="Статистика"
 						>
 							<svg
@@ -112,14 +112,14 @@ export function Header() {
 									d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
 								/>
 							</svg>
-							<span className="hidden lg:inline ml-2 text-sm font-medium text-white/90">
+							<span className="hidden xl:inline ml-2 text-sm font-medium text-white/90">
 								Статистика
 							</span>
 						</Link>
 					)}
 					<Link
 						href="/shop"
-						className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02]"
+						className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 xl:px-4 shadow-lg transition-all hover:scale-[1.02]"
 						title="Магазин"
 					>
 						<svg
@@ -135,14 +135,14 @@ export function Header() {
 								d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
 							/>
 						</svg>
-						<span className="hidden lg:inline ml-2 text-sm font-medium text-white/90">Магазин</span>
+						<span className="hidden xl:inline ml-2 text-sm font-medium text-white/90">Магазин</span>
 					</Link>
 
 					{/* Admin Link - Only for admins */}
 					{user && (user.is_admin || user.is_super_admin) && (
 						<Link
 							href="/admin"
-							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02]"
+							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center rounded-2xl px-3 xl:px-4 shadow-lg transition-all hover:scale-[1.02]"
 							title="Админ"
 						>
 							<svg
@@ -158,7 +158,7 @@ export function Header() {
 									d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
 								/>
 							</svg>
-							<span className="hidden lg:inline ml-2 text-sm font-medium text-white/90">Админ</span>
+							<span className="hidden xl:inline ml-2 text-sm font-medium text-white/90">Админ</span>
 						</Link>
 					)}
 				</div>
@@ -169,7 +169,7 @@ export function Header() {
 					{user && (
 						<>
 							{/* Block: Balance */}
-							<div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 lg:gap-3 rounded-2xl px-3 lg:px-4 shadow-lg transition-transform w-auto min-w-fit flex-shrink-0">
+							<div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 xl:gap-3 rounded-2xl px-3 xl:px-4 shadow-lg transition-transform w-auto min-w-fit flex-shrink-0">
 								<Image
 									src="/coin.png"
 									alt="Баланс"
@@ -189,7 +189,7 @@ export function Header() {
 							{/* Block 2: Profile */}
 							<Link
 								href="/profile"
-								className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 lg:gap-3 rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02] relative group/profile"
+								className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 xl:gap-3 rounded-2xl px-3 xl:px-4 shadow-lg transition-all hover:scale-[1.02] relative group/profile"
 								style={
 									{
 										'--progress-percent': `${(currentXp / nextLevelXp) * 100}%`,
@@ -215,7 +215,7 @@ export function Header() {
 								</div>
 
 								{/* Username - скрыт на md, виден на lg+ */}
-								<span className="hidden lg:inline text-sm font-medium text-white/90">
+								<span className="hidden xl:inline text-sm font-medium text-white/90">
 									{user.username}
 								</span>
 								{/* Level Badge in Header */}
@@ -240,11 +240,11 @@ export function Header() {
 							{/* Block 3: Logout */}
 							<button
 								onClick={() => setShowLogoutConfirm(true)}
-								className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 rounded-2xl px-3 lg:px-4 shadow-lg transition-all hover:scale-[1.02] hover:bg-red-500/80 hover:cursor-pointer"
+								className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 rounded-2xl px-3 xl:px-4 shadow-lg transition-all hover:scale-[1.02] hover:bg-red-500/80 hover:cursor-pointer"
 								title="Выйти"
 							>
 								<svg
-									className="h-5 w-5 lg:h-7 lg:w-7 text-white/80"
+									className="h-5 w-5 xl:h-7 xl:w-7 text-white/80"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -265,32 +265,13 @@ export function Header() {
 					{!isAuthenticated && !isLoading && (
 						<Link
 							href="/login"
-							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 rounded-2xl px-4 lg:px-6 shadow-lg transition-all hover:scale-[1.02] hover:bg-primary/20"
+							className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center gap-2 rounded-2xl px-4 xl:px-6 shadow-lg transition-all hover:scale-[1.02] hover:bg-primary/20"
 						>
 							<span className="text-sm font-medium text-white/90">Вход</span>
 						</Link>
 					)}
 
-					{/* Block 4: API Status Indicator */}
-					<div className="glass bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 flex h-12 items-center justify-center rounded-2xl px-3 lg:px-6 shadow-lg transition-transform">
-						<span className="relative flex h-2.5 w-2.5">
-							{apiStatus === 'online' && (
-								<>
-									<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-									<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
-								</>
-							)}
-							{apiStatus === 'checking' && (
-								<>
-									<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
-									<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
-								</>
-							)}
-							{apiStatus === 'offline' && (
-								<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
-							)}
-						</span>
-					</div>
+
 				</div>
 
 				{/* Mobile Menu Button - видна только на мобильных */}
@@ -553,34 +534,7 @@ export function Header() {
 							</button>
 						)}
 
-						{/* API Status */}
-						<div className="flex items-center gap-3 px-4 py-3 rounded-xl">
-							<span className="relative flex h-2.5 w-2.5">
-								{apiStatus === 'online' && (
-									<>
-										<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-										<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
-									</>
-								)}
-								{apiStatus === 'checking' && (
-									<>
-										<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
-										<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
-									</>
-								)}
-								{apiStatus === 'offline' && (
-									<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
-								)}
-							</span>
-							<span className="text-xs text-white/60">
-								API:{' '}
-								{apiStatus === 'online'
-									? 'Онлайн'
-									: apiStatus === 'checking'
-										? 'Проверка...'
-										: 'Офлайн'}
-							</span>
-						</div>
+
 					</div>
 				</div>
 			)}
