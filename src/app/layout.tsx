@@ -5,6 +5,7 @@ import { AuthProvider } from '@/lib/auth';
 import { LevelProvider } from '@/lib/level/level-context';
 import { MaintenanceGuard } from '@/components/maintenance/maintenance-guard';
 import { ChristmasDecorations } from '@/components/decorations/christmas-decorations';
+import { Analytics } from '@/components/analytics/analytics';
 import { ENABLE_CHRISTMAS_THEME } from '@/lib/theme/config';
 
 const pixelFont = Press_Start_2P({
@@ -28,6 +29,7 @@ export default function RootLayout({
 		<html lang="ru">
 			<body className={`${pixelFont.variable} antialiased font-pixel`}>
 				{ENABLE_CHRISTMAS_THEME && <ChristmasDecorations />}
+				<Analytics />
 				<AuthProvider>
 					<LevelProvider>
 						<MaintenanceGuard>{children}</MaintenanceGuard>
