@@ -138,7 +138,7 @@ export default function StatsPage() {
 
 			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="mb-8">
-					<h1 className="mb-2 text-4xl font-bold tracking-tighter text-white sm:text-6xl">
+					<h1 className="mb-2 text-3xl sm:text-4xl font-bold tracking-tighter text-white md:text-6xl">
 						Статистика
 					</h1>
 					<p className="text-lg text-white/60">Ваша статистика и достижения</p>
@@ -173,11 +173,10 @@ export default function StatsPage() {
 							<button
 								key={game}
 								onClick={() => setSelectedGame(game)}
-								className={`px-6 py-3 font-medium transition-colors border-b-2 ${
-									selectedGame === game
-										? 'border-primary text-primary'
-										: 'border-transparent text-white/60 hover:text-white'
-								}`}
+								className={`px-6 py-3 font-medium transition-colors border-b-2 ${selectedGame === game
+									? 'border-primary text-primary'
+									: 'border-transparent text-white/60 hover:text-white'
+									}`}
 							>
 								{game === 'minecraft' ? 'Minecraft' : String(game).toUpperCase()}
 							</button>
@@ -222,6 +221,7 @@ export default function StatsPage() {
 					)}
 				</div>
 			</main>
+			<Footer />
 		</div>
 	);
 }

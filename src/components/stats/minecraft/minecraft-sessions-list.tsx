@@ -207,10 +207,10 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 								? formatDate(sessionDate)
 								: sessionStart !== null && sessionStart > 0
 									? new Date(sessionStart).toLocaleDateString('ru-RU', {
-											year: 'numeric',
-											month: 'long',
-											day: 'numeric',
-										})
+										year: 'numeric',
+										month: 'long',
+										day: 'numeric',
+									})
 									: 'Неизвестно';
 
 							return (
@@ -237,7 +237,7 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 				<button
 					onClick={() => setPage((p) => Math.max(1, p - 1))}
 					disabled={page === 1}
-					className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+					className="px-3 py-2 text-sm sm:px-4 sm:text-base rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					Назад
 				</button>
@@ -245,7 +245,7 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 				<button
 					onClick={() => setPage((p) => p + 1)}
 					disabled={!hasMore}
-					className="px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+					className="px-3 py-2 text-sm sm:px-4 sm:text-base rounded-lg bg-white/10 text-white border border-white/20 font-medium transition-all hover:bg-white/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					Вперед
 				</button>

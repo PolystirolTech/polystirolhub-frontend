@@ -270,8 +270,6 @@ export function Header() {
 							<span className="text-sm font-medium text-white/90">Вход</span>
 						</Link>
 					)}
-
-
 				</div>
 
 				{/* Mobile Menu Button - видна только на мобильных */}
@@ -533,8 +531,6 @@ export function Header() {
 								<span className="text-sm font-medium text-red-400">Выйти</span>
 							</button>
 						)}
-
-
 					</div>
 				</div>
 			)}

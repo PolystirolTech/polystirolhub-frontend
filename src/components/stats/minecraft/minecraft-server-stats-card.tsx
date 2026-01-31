@@ -155,7 +155,8 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 				{lastUpdate !== null && lastUpdate > 0 && (
 					<div className="rounded-xl border border-white/10 p-4 bg-black/20 sm:col-span-2">
 						<div className="text-xs font-medium uppercase tracking-wider text-white/60 mb-1">
-							Последнее обновление
+							<span className="sm:hidden">Обновлено</span>
+							<span className="hidden sm:inline">Последнее обновление</span>
 						</div>
 						<div className="text-sm font-medium text-white">{formatTimestamp(lastUpdate)}</div>
 					</div>

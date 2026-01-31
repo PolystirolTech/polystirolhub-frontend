@@ -97,10 +97,11 @@ export function ConfirmationModal({
 				)}
 
 				{/* Actions */}
-				<div className="flex gap-3 justify-end">
+
+				<div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
 					<button
 						onClick={onClose}
-						className="px-4 py-2 rounded-lg bg-white/10 text-white font-medium transition-all hover:bg-white/20 hover:scale-105 hover:cursor-pointer"
+						className="px-4 py-2 rounded-lg bg-white/10 text-white font-medium transition-all hover:bg-white/20 hover:scale-105 hover:cursor-pointer w-full sm:w-auto order-2 sm:order-1"
 					>
 						{cancelText}
 					</button>
@@ -112,17 +113,15 @@ export function ConfirmationModal({
 							}
 						}}
 						disabled={isConfirmDisabled}
-						className={`px-4 py-2 rounded-lg font-medium transition-all ${
-							isConfirmDisabled
-								? 'bg-gray-500/50 text-gray-400 cursor-not-allowed'
-								: 'hover:scale-105 hover:cursor-pointer'
-						} ${
-							!isConfirmDisabled && isDangerous
+						className={`px-4 py-2 rounded-lg font-medium transition-all w-full sm:w-auto order-1 sm:order-2 ${isConfirmDisabled
+							? 'bg-gray-500/50 text-gray-400 cursor-not-allowed'
+							: 'hover:scale-105 hover:cursor-pointer'
+							} ${!isConfirmDisabled && isDangerous
 								? 'bg-red-500 text-white hover:bg-red-600'
 								: !isConfirmDisabled
 									? 'bg-primary text-white hover:bg-primary/90'
 									: ''
-						}`}
+							}`}
 					>
 						{confirmText}
 					</button>

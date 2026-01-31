@@ -101,7 +101,7 @@ export function MinecraftPlayerProfileCard({ playerUuid }: MinecraftPlayerProfil
 
 	return (
 		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 mb-6">
-			<div className="flex items-center gap-6 mb-6">
+			<div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6">
 				{/* Avatar */}
 				<div className="h-24 w-24 overflow-hidden rounded-2xl shrink-0">
 					{avatarUrl ? (
@@ -121,7 +121,7 @@ export function MinecraftPlayerProfileCard({ playerUuid }: MinecraftPlayerProfil
 				</div>
 
 				{/* Player Details */}
-				<div className="flex-1">
+				<div className="flex-1 w-full text-center sm:text-left">
 					<h2 className="text-3xl font-bold text-white mb-2">{playerName}</h2>
 					{platform !== null && (
 						<div className="mb-2 inline-flex items-center gap-2 rounded-lg bg-white/20 px-3 py-1">

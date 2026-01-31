@@ -63,8 +63,8 @@ export default function AdminPage() {
 
 			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
 				<div className="mb-6">
-					<h1 className="mb-2 text-4xl font-bold tracking-tighter text-white sm:text-6xl">
-						Панель администратора
+					<h1 className="mb-2 text-3xl sm:text-4xl font-bold tracking-tighter text-white md:text-6xl">
+						Админ панель
 					</h1>
 					<p className="text-lg text-white/60">Управление системой</p>
 				</div>

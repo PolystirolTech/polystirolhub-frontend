@@ -270,9 +270,9 @@ export default function ProfilePage() {
 
 					{/* User Info Card */}
 					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
-						<div className="flex items-center gap-6 mb-6">
+						<div className="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
 							{/* Avatar */}
-							<div className="h-24 w-24 overflow-hidden rounded-2xl shrink-0">
+							<div className="h-24 w-24 overflow-hidden rounded-2xl shrink-0 shadow-lg shadow-black/20">
 								{user.avatar ? (
 									<Image
 										src={user.avatar}
@@ -283,16 +283,16 @@ export default function ProfilePage() {
 										unoptimized
 									/>
 								) : (
-									<div className="flex h-full w-full items-center justify-center text-3xl font-bold text-white">
+									<div className="flex h-full w-full items-center justify-center text-3xl font-bold text-white bg-gradient-to-br from-primary to-secondary">
 										{user.username.substring(0, 2).toUpperCase()}
 									</div>
 								)}
 							</div>
 
 							{/* User Details */}
-							<div className="flex-1">
-								<div className="flex items-start justify-between">
-									<div>
+							<div className="flex-1 w-full">
+								<div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+									<div className="flex flex-col items-center md:items-start text-center md:text-left">
 										<div className="flex items-center gap-2 mb-2">
 											<h2 className="text-3xl font-bold text-white">{user.username}</h2>
 											{user.selected_badge_id && (
@@ -300,24 +300,30 @@ export default function ProfilePage() {
 											)}
 										</div>
 										<p className="text-muted">{maskEmail(user.email) || 'Email не указан'}</p>
-										<div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-green-500/20 px-3 py-1">
-											<span className="h-2 w-2 rounded-full bg-green-500"></span>
-											<span className="text-sm text-green-400">
-												{user.is_active ? 'Активен' : 'Неактивен'}
-											</span>
-										</div>
-										<div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-white/20 px-3 py-1 ml-2">
-											<span className="h-2 w-2 rounded-full bg-white"></span>
-											<span className="text-sm text-white">{user.id}</span>
+										<div className="flex flex-wrap justify-center md:justify-start items-center gap-2 mt-3">
+											<div className="inline-flex items-center gap-2 rounded-lg bg-green-500/20 px-3 py-1">
+												<span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+												<span className="text-sm font-medium text-green-400">
+													{user.is_active ? 'Активен' : 'Неактивен'}
+												</span>
+											</div>
+											{isDebugMode && (
+												<div className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-1 border border-white/5">
+													<span className="h-2 w-2 rounded-full bg-yellow-500/50"></span>
+													<span className="text-sm font-mono text-white/60">ID: {user.id}</span>
+												</div>
+											)}
 										</div>
 									</div>
 
 									{/* Level Badge */}
-									<div className="flex flex-col items-center justify-center rounded-xl border-2 border-primary/30 px-6 py-3 backdrop-blur-sm">
-										<span className="text-xs font-medium uppercase tracking-wider text-muted">
+									<div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-sm min-w-[100px]">
+										<span className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">
 											Уровень
 										</span>
-										<span className="text-3xl font-bold text-primary">{level}</span>
+										<span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary to-white drop-shadow-sm">
+											{level}
+										</span>
 									</div>
 								</div>
 							</div>
@@ -385,7 +391,7 @@ export default function ProfilePage() {
 
 					{/* Badges Preview */}
 					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
-						<div className="flex items-center justify-between mb-4">
+						<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
 							<div>
 								<h3 className="text-xl font-bold text-white mb-2">Мои бэджики</h3>
 								<p className="text-muted">Последние награды</p>
@@ -420,7 +426,7 @@ export default function ProfilePage() {
 												key={`${connection.provider}-${connection.provider_username}`}
 												className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 group relative"
 											>
-												<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 text-2xl overflow-hidden">
+												<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white/5 text-2xl overflow-hidden">
 													{connection.provider_avatar ? (
 														<Image
 															src={connection.provider_avatar}
@@ -540,7 +546,7 @@ export default function ProfilePage() {
 
 										return (
 											<div className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 group relative">
-												<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 overflow-hidden">
+												<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white/5 overflow-hidden">
 													{headImageUrl ? (
 														<Image
 															src={headImageUrl}
@@ -571,7 +577,7 @@ export default function ProfilePage() {
 										onClick={() => setMinecraftLinkModal(true)}
 										className="flex items-center gap-4 rounded-xl bg-black/20 p-4 border border-white/5 hover:bg-black/30 transition-colors text-left w-full cursor-pointer"
 									>
-										<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 text-2xl">
+										<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white/5 text-2xl">
 											<span className="text-white/60">⛏️</span>
 										</div>
 										<div>
