@@ -93,14 +93,14 @@ export function ProfileUpdateForm() {
 	};
 
 	return (
-		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
+		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 sm:p-8 mb-6">
 			<h3 className="text-xl font-bold text-white mb-6">Настройки профиля</h3>
 
 			<form onSubmit={handleSubmit} className="space-y-6">
 				{/* Avatar Upload */}
-				<div className="flex items-center gap-6">
+				<div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
 					<div className="relative group">
-						<div className="h-24 w-24 overflow-hidden rounded-2xl shrink-0 border-2 border-primary/50">
+						<div className="h-24 w-24 overflow-hidden rounded-2xl shrink-0 border-2 border-primary/50 shadow-lg shadow-black/20">
 							{avatarPreview ? (
 								<Image
 									src={avatarPreview}
@@ -125,7 +125,7 @@ export function ProfileUpdateForm() {
 						</div>
 					</div>
 
-					<div className="flex-1">
+					<div className="flex-1 w-full text-center sm:text-left">
 						<h4 className="text-sm font-medium text-white mb-1">Фото профиля</h4>
 						<p className="text-xs text-muted mb-3">
 							Нажмите на фото, чтобы изменить его. Форматы: JPG, PNG.
@@ -135,7 +135,7 @@ export function ProfileUpdateForm() {
 							variant="secondary"
 							size="sm"
 							onClick={() => fileInputRef.current?.click()}
-							className="bg-white/10 hover:bg-white/20 text-white border-0"
+							className="bg-white/10 hover:bg-white/20 text-white border-0 w-full sm:w-auto"
 						>
 							Загрузить новое
 						</Button>
@@ -193,13 +193,20 @@ export function ProfileUpdateForm() {
 					</div>
 				)}
 
-				<div className="flex justify-end">
+				<div className="flex justify-end pt-2">
 					<Button
 						type="submit"
 						disabled={isSubmitting}
-						className="bg-primary hover:bg-primary/90 text-white font-medium px-8"
+						className="bg-primary hover:bg-primary/90 text-white font-medium px-4 sm:px-8 w-full sm:w-auto"
 					>
-						{isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
+						{isSubmitting ? (
+							'Сохранение...'
+						) : (
+							<>
+								<span className="sm:hidden">Сохранить</span>
+								<span className="hidden sm:inline">Сохранить изменения</span>
+							</>
+						)}
 					</Button>
 				</div>
 			</form>

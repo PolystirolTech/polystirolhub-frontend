@@ -79,13 +79,13 @@ export default function LoginPage() {
 						</p>
 					</div>
 					<div className="text-sm text-muted/60">
-						By logging in, you agree to our{' '}
+						Входя в систему, вы соглашаетесь с нашими{' '}
 						<Link href="/legal/terms" className="text-primary hover:underline">
-							Terms of Service
+							Условиями использования
 						</Link>{' '}
-						and{' '}
+						и{' '}
 						<Link href="/legal/privacy" className="text-primary hover:underline">
-							Privacy Policy
+							Политикой конфиденциальности
 						</Link>
 						.
 					</div>

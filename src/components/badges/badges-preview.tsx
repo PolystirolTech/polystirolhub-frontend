@@ -56,7 +56,7 @@ export function BadgesPreview() {
 	}
 
 	return (
-		<div className="grid grid-cols-10 gap-3">
+		<div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-10 gap-3">
 			{badges.map((item) => {
 				const description =
 					typeof item.badge.description === 'string'

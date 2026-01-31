@@ -8,11 +8,11 @@ export function Footer() {
 					<div className="flex flex-col sm:flex-row items-center justify-between gap-3">
 						<div className="text-center sm:text-left">
 							<p className="text-xs text-white/80">© {currentYear} PolystirolHub</p>
-							<div className="flex items-center gap-3 mt-1 text-xs text-white/40">
+							<div className="flex flex-wrap justify-center sm:justify-start items-center gap-3 mt-1 text-xs text-white/40">
 								<a href="/legal/terms" className="hover:text-white/60 transition-colors">
 									Условия
 								</a>
-								<span>•</span>
+								<span className="hidden sm:inline">•</span>
 								<a href="/legal/privacy" className="hover:text-white/60 transition-colors">
 									Конфиденциальность
 								</a>
@@ -44,7 +44,7 @@ export function Footer() {
 							</svg>
 							GitHub
 						</a>
-						<span className="text-xs text-white/40">•</span>
+						<span className="hidden sm:inline text-xs text-white/40">•</span>
 						<div className="text-xs text-white/70">
 							Вопросы/баги/предложения:{' '}
 							<a

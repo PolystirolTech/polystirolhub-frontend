@@ -8,6 +8,8 @@ import { ChristmasDecorations } from '@/components/decorations/christmas-decorat
 import { Analytics } from '@/components/analytics/analytics';
 import { ENABLE_CHRISTMAS_THEME } from '@/lib/theme/config';
 
+import { CookieConsent } from '@/components/layout/cookie-consent';
+
 const pixelFont = Press_Start_2P({
 	variable: '--font-pixel',
 	subsets: ['latin', 'cyrillic'],
@@ -33,6 +35,7 @@ export default function RootLayout({
 				<AuthProvider>
 					<LevelProvider>
 						<MaintenanceGuard>{children}</MaintenanceGuard>
+						<CookieConsent />
 					</LevelProvider>
 				</AuthProvider>
 			</body>
