@@ -173,10 +173,11 @@ export default function StatsPage() {
 							<button
 								key={game}
 								onClick={() => setSelectedGame(game)}
-								className={`px-6 py-3 font-medium transition-colors border-b-2 ${selectedGame === game
-									? 'border-primary text-primary'
-									: 'border-transparent text-white/60 hover:text-white'
-									}`}
+								className={`px-6 py-3 font-medium transition-colors border-b-2 ${
+									selectedGame === game
+										? 'border-primary text-primary'
+										: 'border-transparent text-white/60 hover:text-white'
+								}`}
 							>
 								{game === 'minecraft' ? 'Minecraft' : String(game).toUpperCase()}
 							</button>

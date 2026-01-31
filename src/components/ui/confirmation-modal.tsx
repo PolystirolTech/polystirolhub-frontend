@@ -113,15 +113,17 @@ export function ConfirmationModal({
 							}
 						}}
 						disabled={isConfirmDisabled}
-						className={`px-4 py-2 rounded-lg font-medium transition-all w-full sm:w-auto order-1 sm:order-2 ${isConfirmDisabled
-							? 'bg-gray-500/50 text-gray-400 cursor-not-allowed'
-							: 'hover:scale-105 hover:cursor-pointer'
-							} ${!isConfirmDisabled && isDangerous
+						className={`px-4 py-2 rounded-lg font-medium transition-all w-full sm:w-auto order-1 sm:order-2 ${
+							isConfirmDisabled
+								? 'bg-gray-500/50 text-gray-400 cursor-not-allowed'
+								: 'hover:scale-105 hover:cursor-pointer'
+						} ${
+							!isConfirmDisabled && isDangerous
 								? 'bg-red-500 text-white hover:bg-red-600'
 								: !isConfirmDisabled
 									? 'bg-primary text-white hover:bg-primary/90'
 									: ''
-							}`}
+						}`}
 					>
 						{confirmText}
 					</button>

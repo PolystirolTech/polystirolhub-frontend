@@ -207,10 +207,10 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 								? formatDate(sessionDate)
 								: sessionStart !== null && sessionStart > 0
 									? new Date(sessionStart).toLocaleDateString('ru-RU', {
-										year: 'numeric',
-										month: 'long',
-										day: 'numeric',
-									})
+											year: 'numeric',
+											month: 'long',
+											day: 'numeric',
+										})
 									: 'Неизвестно';
 
 							return (
