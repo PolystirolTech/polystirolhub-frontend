@@ -8,7 +8,16 @@ export function Footer() {
 					<div className="flex flex-col sm:flex-row items-center justify-between gap-3">
 						<div className="text-center sm:text-left">
 							<p className="text-xs text-white/80">© {currentYear} PolystirolHub</p>
-							<p className="text-xs text-white/60 mt-0.5">Разработано PolystirolTech</p>
+							<div className="flex items-center gap-3 mt-1 text-xs text-white/40">
+								<a href="/legal/terms" className="hover:text-white/60 transition-colors">
+									Условия
+								</a>
+								<span>•</span>
+								<a href="/legal/privacy" className="hover:text-white/60 transition-colors">
+									Конфиденциальность
+								</a>
+							</div>
+							<p className="text-xs text-white/60 mt-2">Разработано PolystirolTech</p>
 						</div>
 						<a
 							href="https://boosty.to/sluicee/donate"

@@ -79,7 +79,15 @@ export default function LoginPage() {
 						</p>
 					</div>
 					<div className="text-sm text-muted/60">
-						By logging in, you agree to our Terms of Service and Privacy Policy.
+						By logging in, you agree to our{' '}
+						<Link href="/legal/terms" className="text-primary hover:underline">
+							Terms of Service
+						</Link>{' '}
+						and{' '}
+						<Link href="/legal/privacy" className="text-primary hover:underline">
+							Privacy Policy
+						</Link>
+						.
 					</div>
 				</div>
 
