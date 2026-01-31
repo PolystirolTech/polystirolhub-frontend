@@ -15,31 +15,31 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * Timestamp в миллисекундах
+ * 
  * @export
- * @interface SessionEnd1
+ * @interface Users1
  */
-export interface SessionEnd1 {
+export interface Users1 {
 }
 
 /**
- * Check if a given object implements the SessionEnd1 interface.
+ * Check if a given object implements the Users1 interface.
  */
-export function instanceOfSessionEnd1(value: object): boolean {
+export function instanceOfUsers1(value: object): boolean {
     let isInstance = true;
 
     return isInstance;
 }
 
-export function SessionEnd1FromJSON(json: any): SessionEnd1 {
-    return SessionEnd1FromJSONTyped(json, false);
+export function Users1FromJSON(json: any): Users1 {
+    return Users1FromJSONTyped(json, false);
 }
 
-export function SessionEnd1FromJSONTyped(json: any, ignoreDiscriminator: boolean): SessionEnd1 {
+export function Users1FromJSONTyped(json: any, ignoreDiscriminator: boolean): Users1 {
     return json;
 }
 
-export function SessionEnd1ToJSON(value?: SessionEnd1 | null): any {
+export function Users1ToJSON(value?: Users1 | null): any {
     return value;
 }
 

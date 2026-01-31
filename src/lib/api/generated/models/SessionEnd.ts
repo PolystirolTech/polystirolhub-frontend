@@ -15,7 +15,7 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * Timestamp в миллисекундах
+ * Timestamp in ms
  * @export
  * @interface SessionEnd
  */

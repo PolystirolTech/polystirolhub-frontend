@@ -20,12 +20,12 @@ import {
     SessionIdFromJSONTyped,
     SessionIdToJSON,
 } from './SessionId';
-import type { Weapon } from './Weapon';
+import type { Weapon1 } from './Weapon1';
 import {
-    WeaponFromJSON,
-    WeaponFromJSONTyped,
-    WeaponToJSON,
-} from './Weapon';
+    Weapon1FromJSON,
+    Weapon1FromJSONTyped,
+    Weapon1ToJSON,
+} from './Weapon1';
 
 /**
  * Данные убийства
@@ -53,10 +53,10 @@ export interface MinecraftKillData {
     serverUuid: any | null;
     /**
      * 
-     * @type {Weapon}
+     * @type {Weapon1}
      * @memberof MinecraftKillData
      */
-    weapon?: Weapon;
+    weapon?: Weapon1;
     /**
      * Timestamp в миллисекундах
      * @type {any}
@@ -97,7 +97,7 @@ export function MinecraftKillDataFromJSONTyped(json: any, ignoreDiscriminator: b
         'killerUuid': json['killer_uuid'],
         'victimUuid': json['victim_uuid'],
         'serverUuid': json['server_uuid'],
-        'weapon': !exists(json, 'weapon') ? undefined : WeaponFromJSON(json['weapon']),
+        'weapon': !exists(json, 'weapon') ? undefined : Weapon1FromJSON(json['weapon']),
         'date': json['date'],
         'sessionId': !exists(json, 'session_id') ? undefined : SessionIdFromJSON(json['session_id']),
     };
@@ -115,7 +115,7 @@ export function MinecraftKillDataToJSON(value?: MinecraftKillData | null): any {
         'killer_uuid': value.killerUuid,
         'victim_uuid': value.victimUuid,
         'server_uuid': value.serverUuid,
-        'weapon': WeaponToJSON(value.weapon),
+        'weapon': Weapon1ToJSON(value.weapon),
         'date': value.date,
         'session_id': SessionIdToJSON(value.sessionId),
     };

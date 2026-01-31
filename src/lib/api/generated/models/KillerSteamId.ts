@@ -15,31 +15,31 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * Timestamp в миллисекундах
+ * 
  * @export
- * @interface SessionEnd1
+ * @interface KillerSteamId
  */
-export interface SessionEnd1 {
+export interface KillerSteamId {
 }
 
 /**
- * Check if a given object implements the SessionEnd1 interface.
+ * Check if a given object implements the KillerSteamId interface.
  */
-export function instanceOfSessionEnd1(value: object): boolean {
+export function instanceOfKillerSteamId(value: object): boolean {
     let isInstance = true;
 
     return isInstance;
 }
 
-export function SessionEnd1FromJSON(json: any): SessionEnd1 {
-    return SessionEnd1FromJSONTyped(json, false);
+export function KillerSteamIdFromJSON(json: any): KillerSteamId {
+    return KillerSteamIdFromJSONTyped(json, false);
 }
 
-export function SessionEnd1FromJSONTyped(json: any, ignoreDiscriminator: boolean): SessionEnd1 {
+export function KillerSteamIdFromJSONTyped(json: any, ignoreDiscriminator: boolean): KillerSteamId {
     return json;
 }
 
-export function SessionEnd1ToJSON(value?: SessionEnd1 | null): any {
+export function KillerSteamIdToJSON(value?: KillerSteamId | null): any {
     return value;
 }
 

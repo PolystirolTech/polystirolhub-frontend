@@ -26,12 +26,12 @@ import {
     VictimNameFromJSONTyped,
     VictimNameToJSON,
 } from './VictimName';
-import type { Weapon1 } from './Weapon1';
+import type { Weapon2 } from './Weapon2';
 import {
-    Weapon1FromJSON,
-    Weapon1FromJSONTyped,
-    Weapon1ToJSON,
-} from './Weapon1';
+    Weapon2FromJSON,
+    Weapon2FromJSONTyped,
+    Weapon2ToJSON,
+} from './Weapon2';
 
 /**
  * Информация об убийстве
@@ -71,10 +71,10 @@ export interface MinecraftKillResponse {
     victimName?: VictimName;
     /**
      * 
-     * @type {Weapon1}
+     * @type {Weapon2}
      * @memberof MinecraftKillResponse
      */
-    weapon: Weapon1;
+    weapon: Weapon2;
     /**
      * 
      * @type {any}
@@ -112,7 +112,7 @@ export function MinecraftKillResponseFromJSONTyped(json: any, ignoreDiscriminato
         'victimUuid': json['victim_uuid'],
         'killerName': !exists(json, 'killer_name') ? undefined : KillerNameFromJSON(json['killer_name']),
         'victimName': !exists(json, 'victim_name') ? undefined : VictimNameFromJSON(json['victim_name']),
-        'weapon': Weapon1FromJSON(json['weapon']),
+        'weapon': Weapon2FromJSON(json['weapon']),
         'date': json['date'],
     };
 }
@@ -131,7 +131,7 @@ export function MinecraftKillResponseToJSON(value?: MinecraftKillResponse | null
         'victim_uuid': value.victimUuid,
         'killer_name': KillerNameToJSON(value.killerName),
         'victim_name': VictimNameToJSON(value.victimName),
-        'weapon': Weapon1ToJSON(value.weapon),
+        'weapon': Weapon2ToJSON(value.weapon),
         'date': value.date,
     };
 }
