@@ -16,11 +16,11 @@
 
 import * as runtime from '../runtime';
 import type {
-  AppSchemasGoldsourceStatisticsBatchResponse,
-  GoldSourcePlayerProfile,
-  GoldSourceServerStats,
-  GoldSourceStatisticsBatch,
-  HTTPValidationError,
+    AppSchemasGoldsourceStatisticsBatchResponse,
+    GoldSourcePlayerProfile,
+    GoldSourceServerStats,
+    GoldSourceStatisticsBatch,
+    HTTPValidationError,
 } from '../models/index';
 import {
     AppSchemasGoldsourceStatisticsBatchResponseFromJSON,
@@ -37,6 +37,7 @@ import {
 
 export interface GetPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGetRequest {
     steamId: any;
+    server_id?: any;
 }
 
 export interface GetServerStatsApiV1StatisticsGoldsourceServersServerIdStatsGetRequest {
@@ -64,10 +65,14 @@ export class GoldsourceStatisticsApi extends runtime.BaseAPI {
      */
     async getPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGetRaw(requestParameters: GetPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoldSourcePlayerProfile>> {
         if (requestParameters.steamId === null || requestParameters.steamId === undefined) {
-            throw new runtime.RequiredError('steamId','Required parameter requestParameters.steamId was null or undefined when calling getPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGet.');
+            throw new runtime.RequiredError('steamId', 'Required parameter requestParameters.steamId was null or undefined when calling getPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGet.');
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.server_id !== undefined) {
+            queryParameters['server_id'] = requestParameters.server_id;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -96,7 +101,7 @@ export class GoldsourceStatisticsApi extends runtime.BaseAPI {
      */
     async getServerStatsApiV1StatisticsGoldsourceServersServerIdStatsGetRaw(requestParameters: GetServerStatsApiV1StatisticsGoldsourceServersServerIdStatsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoldSourceServerStats>> {
         if (requestParameters.serverId === null || requestParameters.serverId === undefined) {
-            throw new runtime.RequiredError('serverId','Required parameter requestParameters.serverId was null or undefined when calling getServerStatsApiV1StatisticsGoldsourceServersServerIdStatsGet.');
+            throw new runtime.RequiredError('serverId', 'Required parameter requestParameters.serverId was null or undefined when calling getServerStatsApiV1StatisticsGoldsourceServersServerIdStatsGet.');
         }
 
         const queryParameters: any = {};
@@ -128,7 +133,7 @@ export class GoldsourceStatisticsApi extends runtime.BaseAPI {
      */
     async getServerTopPlayersApiV1StatisticsGoldsourceServersServerIdPlayersGetRaw(requestParameters: GetServerTopPlayersApiV1StatisticsGoldsourceServersServerIdPlayersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         if (requestParameters.serverId === null || requestParameters.serverId === undefined) {
-            throw new runtime.RequiredError('serverId','Required parameter requestParameters.serverId was null or undefined when calling getServerTopPlayersApiV1StatisticsGoldsourceServersServerIdPlayersGet.');
+            throw new runtime.RequiredError('serverId', 'Required parameter requestParameters.serverId was null or undefined when calling getServerTopPlayersApiV1StatisticsGoldsourceServersServerIdPlayersGet.');
         }
 
         const queryParameters: any = {};
@@ -172,7 +177,7 @@ export class GoldsourceStatisticsApi extends runtime.BaseAPI {
      */
     async receiveGoldsourceStatisticsBatchApiV1StatisticsGoldsourceBatchPostRaw(requestParameters: ReceiveGoldsourceStatisticsBatchApiV1StatisticsGoldsourceBatchPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppSchemasGoldsourceStatisticsBatchResponse>> {
         if (requestParameters.goldSourceStatisticsBatch === null || requestParameters.goldSourceStatisticsBatch === undefined) {
-            throw new runtime.RequiredError('goldSourceStatisticsBatch','Required parameter requestParameters.goldSourceStatisticsBatch was null or undefined when calling receiveGoldsourceStatisticsBatchApiV1StatisticsGoldsourceBatchPost.');
+            throw new runtime.RequiredError('goldSourceStatisticsBatch', 'Required parameter requestParameters.goldSourceStatisticsBatch was null or undefined when calling receiveGoldsourceStatisticsBatchApiV1StatisticsGoldsourceBatchPost.');
         }
 
         const queryParameters: any = {};

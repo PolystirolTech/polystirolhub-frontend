@@ -6,6 +6,9 @@ import type { MinecraftServerStats } from '@/lib/api/generated/models';
 import { formatTimestamp } from '@/lib/utils/stats-formatters';
 import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
+import { StatsEmpty } from '@/components/stats/common/stats-empty';
+
+import { ResponseError } from '@/lib/api/generated/runtime';
 
 interface MinecraftServerStatsCardProps {
 	serverId: string | number;
@@ -22,16 +25,16 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 				setLoading(true);
 				setError(null);
 				const data = await minecraftStatsService.getServerStats(serverId);
-				// Если data === null, значит статистики нет (404), это нормально
 				setStats(data);
 			} catch (err) {
-				// Проверяем, это 404 или другая ошибка
-				if (
+				if (err instanceof ResponseError && err.response.status === 404) {
+					// 404 - статистики нет, это нормально
+					setStats(null);
+				} else if (
 					err instanceof Error &&
-					'status' in err &&
-					(err as { status?: number }).status === 404
+					'message' in err &&
+					(err.message.includes('404') || err.message.includes('not found'))
 				) {
-					// 404 - статистики нет, это нормально, просто не показываем компонент
 					setStats(null);
 				} else {
 					// Другая ошибка - показываем её
@@ -48,24 +51,16 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 	}, [serverId]);
 
 	const getValue = (obj: unknown): number | null => {
-		// Если это число, возвращаем его
 		if (typeof obj === 'number') {
 			return isFinite(obj) && !isNaN(obj) ? obj : null;
 		}
-
-		// Если это null или undefined, возвращаем null
 		if (obj === null || obj === undefined) return null;
-
-		// Если это строка, которая может быть числом, пытаемся преобразовать
 		if (typeof obj === 'string') {
 			const num = Number(obj);
 			if (!isNaN(num) && isFinite(num)) return num;
 			return null;
 		}
-
-		// Если это объект, пытаемся извлечь значение
 		if (typeof obj === 'object') {
-			// Проверяем поле value
 			if ('value' in obj) {
 				const value = (obj as { value: unknown }).value;
 				if (typeof value === 'number' && isFinite(value) && !isNaN(value)) return value;
@@ -74,28 +69,19 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 					if (!isNaN(num) && isFinite(num)) return num;
 				}
 			}
-			// Если объект пустой или не содержит value, возвращаем null
 			if (Object.keys(obj).length === 0) return null;
 		}
-
 		return null;
 	};
 
 	const getStringValue = (obj: unknown): string | null => {
-		// Если это строка, возвращаем её
 		if (typeof obj === 'string') return obj;
-
-		// Если это объект с полем value
 		if (obj && typeof obj === 'object' && 'value' in obj) {
 			const value = (obj as { value: unknown }).value;
 			if (typeof value === 'string') return value;
-			// Преобразуем в строку, если это не null/undefined
 			if (value !== null && value !== undefined) return String(value);
 		}
-
-		// Если это null или undefined, возвращаем null
 		if (obj === null || obj === undefined) return null;
-
 		return null;
 	};
 
@@ -107,12 +93,17 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 		);
 	}
 
-	// Если статистики нет (404), просто не показываем компонент
-	if (!stats) {
-		return null;
+	if (!stats && !error) {
+		return (
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 mb-6">
+				<StatsEmpty
+					message="Статистика не найдена"
+					description="Для этого сервера статистика пока не собрана."
+				/>
+			</div>
+		);
 	}
 
-	// Если произошла другая ошибка, показываем её
 	if (error) {
 		return (
 			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 mb-6">
@@ -121,12 +112,11 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 		);
 	}
 
-	const serverName = getStringValue(stats.name) || 'Неизвестный сервер';
-	const totalPlayers = getValue(stats.totalPlayers) ?? 0;
-	const totalSessions = getValue(stats.totalSessions) ?? 0;
-	const averageTps = getValue(stats.averageTps);
-	const currentPlayers = getValue(stats.currentPlayers);
-	const lastUpdate = getValue(stats.lastUpdate);
+	const serverName = getStringValue(stats!.name) || 'Неизвестный сервер';
+	const totalPlayers = getValue(stats!.totalPlayers) ?? 0;
+	const totalSessions = getValue(stats!.totalSessions) ?? 0;
+	const currentPlayers = getValue(stats!.currentPlayers);
+	const lastUpdate = getValue(stats!.lastUpdate);
 
 	return (
 		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 mb-6">

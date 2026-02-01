@@ -9,6 +9,7 @@ import {
 	type GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest,
 	type GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest,
 } from '@/lib/api/generated/apis/StatisticsApi';
+import { ResponseError } from '@/lib/api/generated/runtime';
 import { apiConfig } from '@/lib/api/config';
 import type {
 	MinecraftPlayerProfile,
@@ -36,14 +37,17 @@ class MinecraftStatsService {
 			// В сгенерированном API может не быть serverId в параметрах,
 			// поэтому используем ручной запрос если нужно, или проверяем типы
 			const requestParams: GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest & {
-				serverId?: string;
+				server_id?: string;
 			} = { playerUuid };
-			if (serverId) requestParams.serverId = String(serverId);
+			if (serverId) requestParams.server_id = String(serverId);
 
 			const profile =
 				await this.api.getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGet(requestParams);
 			return profile;
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return null;
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
@@ -67,13 +71,13 @@ class MinecraftStatsService {
 	): Promise<MinecraftSessionResponse[]> {
 		try {
 			const requestParams: GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest & {
-				serverId?: string;
+				server_id?: string;
 			} = {
 				playerUuid,
 				limit,
 				offset,
 			};
-			if (serverId) requestParams.serverId = String(serverId);
+			if (serverId) requestParams.server_id = String(serverId);
 
 			const sessions =
 				await this.api.getPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGet(
@@ -85,6 +89,9 @@ class MinecraftStatsService {
 			}
 			return [];
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return [];
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
@@ -108,13 +115,13 @@ class MinecraftStatsService {
 	): Promise<MinecraftKillResponse[]> {
 		try {
 			const requestParams: GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest & {
-				serverId?: string;
+				server_id?: string;
 			} = {
 				playerUuid,
 				limit,
 				offset,
 			};
-			if (serverId) requestParams.serverId = String(serverId);
+			if (serverId) requestParams.server_id = String(serverId);
 
 			const kills =
 				await this.api.getPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGet(
@@ -122,6 +129,9 @@ class MinecraftStatsService {
 				);
 			return Array.isArray(kills) ? kills : [];
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return [];
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
@@ -144,6 +154,9 @@ class MinecraftStatsService {
 			});
 			return stats;
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return null;
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&

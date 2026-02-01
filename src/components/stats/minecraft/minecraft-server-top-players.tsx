@@ -9,6 +9,8 @@ import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 import { StatsSection } from '@/components/stats/common/stats-section';
 
+import { ResponseError } from '@/lib/api/generated/runtime';
+
 interface MinecraftServerTopPlayersProps {
 	serverId: string | number;
 	limit?: number;
@@ -30,17 +32,21 @@ export function MinecraftServerTopPlayers({
 				setError(null);
 				setNotFound(false);
 				const data = await minecraftStatsService.getServerTopPlayers(serverId, limit, 0);
-				// Если массив пустой, возможно статистики нет (404)
-				// Но это может быть и нормальная ситуация, поэтому проверяем через ошибку
 				setPlayers(data);
 			} catch (err) {
-				// Проверяем, это 404 или другая ошибка
-				if (
+				if (err instanceof ResponseError && err.response.status === 404) {
+					// 404 - статистики нет, показываем сообщение
+					setNotFound(true);
+					setPlayers([]);
+				} else if (
 					err instanceof Error &&
-					'status' in err &&
-					(err as { status?: number }).status === 404
+					('status' in err || 'message' in err) &&
+					((err as any).status === 404 ||
+						err.message.includes('404') ||
+						err.message.includes('not found') ||
+						err.message.includes('не найдена'))
 				) {
-					// 404 - статистики нет, скрываем компонент
+					// 404 - статистики нет, показываем сообщение
 					setNotFound(true);
 					setPlayers([]);
 				} else {
@@ -70,9 +76,16 @@ export function MinecraftServerTopPlayers({
 		return null;
 	};
 
-	// Если статистики нет (404), не показываем компонент
+	// Если статистики нет (404), показываем пустое состояние
 	if (notFound) {
-		return null;
+		return (
+			<StatsSection title="Топ игроков">
+				<StatsEmpty
+					message="Нет данных о топе игроков"
+					description="Для этого сервера статистика пока не собрана."
+				/>
+			</StatsSection>
+		);
 	}
 
 	if (loading) {
