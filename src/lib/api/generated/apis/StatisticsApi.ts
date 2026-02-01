@@ -16,15 +16,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  BatchResponse,
+  AppSchemasStatisticsBatchResponse,
   HTTPValidationError,
   MinecraftPlayerProfile,
   MinecraftServerStats,
   MinecraftStatisticsBatch,
 } from '../models/index';
 import {
-    BatchResponseFromJSON,
-    BatchResponseToJSON,
+    AppSchemasStatisticsBatchResponseFromJSON,
+    AppSchemasStatisticsBatchResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     MinecraftPlayerProfileFromJSON,
@@ -270,7 +270,7 @@ export class StatisticsApi extends runtime.BaseAPI {
      * Принимает batch статистики от игрового сервера. Идентификация сервера по server_uuid (UUID из game_servers).
      * Receive Statistics Batch
      */
-    async receiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRaw(requestParameters: ReceiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BatchResponse>> {
+    async receiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRaw(requestParameters: ReceiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppSchemasStatisticsBatchResponse>> {
         if (requestParameters.minecraftStatisticsBatch === null || requestParameters.minecraftStatisticsBatch === undefined) {
             throw new runtime.RequiredError('minecraftStatisticsBatch','Required parameter requestParameters.minecraftStatisticsBatch was null or undefined when calling receiveStatisticsBatchApiV1StatisticsMinecraftBatchPost.');
         }
@@ -289,14 +289,14 @@ export class StatisticsApi extends runtime.BaseAPI {
             body: MinecraftStatisticsBatchToJSON(requestParameters.minecraftStatisticsBatch),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => BatchResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AppSchemasStatisticsBatchResponseFromJSON(jsonValue));
     }
 
     /**
      * Принимает batch статистики от игрового сервера. Идентификация сервера по server_uuid (UUID из game_servers).
      * Receive Statistics Batch
      */
-    async receiveStatisticsBatchApiV1StatisticsMinecraftBatchPost(requestParameters: ReceiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BatchResponse> {
+    async receiveStatisticsBatchApiV1StatisticsMinecraftBatchPost(requestParameters: ReceiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AppSchemasStatisticsBatchResponse> {
         const response = await this.receiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

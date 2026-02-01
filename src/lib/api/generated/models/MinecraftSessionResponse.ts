@@ -38,12 +38,12 @@ import {
     PlaytimeFromJSONTyped,
     PlaytimeToJSON,
 } from './Playtime';
-import type { SessionEnd1 } from './SessionEnd1';
+import type { SessionEnd2 } from './SessionEnd2';
 import {
-    SessionEnd1FromJSON,
-    SessionEnd1FromJSONTyped,
-    SessionEnd1ToJSON,
-} from './SessionEnd1';
+    SessionEnd2FromJSON,
+    SessionEnd2FromJSONTyped,
+    SessionEnd2ToJSON,
+} from './SessionEnd2';
 
 /**
  * Информация о сессии
@@ -83,10 +83,10 @@ export interface MinecraftSessionResponse {
     sessionDateEnd: any | null;
     /**
      * 
-     * @type {SessionEnd1}
+     * @type {SessionEnd2}
      * @memberof MinecraftSessionResponse
      */
-    sessionEnd: SessionEnd1;
+    sessionEnd: SessionEnd2;
     /**
      * 
      * @type {MobKills}
@@ -147,7 +147,7 @@ export function MinecraftSessionResponseFromJSONTyped(json: any, ignoreDiscrimin
         'sessionStart': json['session_start'],
         'sessionDate': json['session_date'],
         'sessionDateEnd': json['session_date_end'],
-        'sessionEnd': SessionEnd1FromJSON(json['session_end']),
+        'sessionEnd': SessionEnd2FromJSON(json['session_end']),
         'mobKills': MobKillsFromJSON(json['mob_kills']),
         'deaths': DeathsFromJSON(json['deaths']),
         'afkTime': AfkTime1FromJSON(json['afk_time']),
@@ -169,7 +169,7 @@ export function MinecraftSessionResponseToJSON(value?: MinecraftSessionResponse 
         'session_start': value.sessionStart,
         'session_date': value.sessionDate,
         'session_date_end': value.sessionDateEnd,
-        'session_end': SessionEnd1ToJSON(value.sessionEnd),
+        'session_end': SessionEnd2ToJSON(value.sessionEnd),
         'mob_kills': MobKillsToJSON(value.mobKills),
         'deaths': DeathsToJSON(value.deaths),
         'afk_time': AfkTime1ToJSON(value.afkTime),

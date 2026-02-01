@@ -3,7 +3,12 @@
  * Обертка над StatisticsApi из generated API
  */
 
-import { StatisticsApi } from '@/lib/api/generated/apis/StatisticsApi';
+import {
+	StatisticsApi,
+	type GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest,
+	type GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest,
+	type GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest,
+} from '@/lib/api/generated/apis/StatisticsApi';
 import { apiConfig } from '@/lib/api/config';
 import type {
 	MinecraftPlayerProfile,
@@ -23,11 +28,20 @@ class MinecraftStatsService {
 	/**
 	 * Получает профиль игрока по UUID
 	 */
-	async getPlayerProfile(playerUuid: string): Promise<MinecraftPlayerProfile | null> {
+	async getPlayerProfile(
+		playerUuid: string,
+		serverId?: string | number
+	): Promise<MinecraftPlayerProfile | null> {
 		try {
-			const profile = await this.api.getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGet({
-				playerUuid,
-			});
+			// В сгенерированном API может не быть serverId в параметрах,
+			// поэтому используем ручной запрос если нужно, или проверяем типы
+			const requestParams: GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest & {
+				serverId?: string;
+			} = { playerUuid };
+			if (serverId) requestParams.serverId = String(serverId);
+
+			const profile =
+				await this.api.getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGet(requestParams);
 			return profile;
 		} catch (error) {
 			if (
@@ -48,15 +62,23 @@ class MinecraftStatsService {
 	async getPlayerSessions(
 		playerUuid: string,
 		limit: number = 20,
-		offset: number = 0
+		offset: number = 0,
+		serverId?: string | number
 	): Promise<MinecraftSessionResponse[]> {
 		try {
+			const requestParams: GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest & {
+				serverId?: string;
+			} = {
+				playerUuid,
+				limit,
+				offset,
+			};
+			if (serverId) requestParams.serverId = String(serverId);
+
 			const sessions =
-				await this.api.getPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGet({
-					playerUuid,
-					limit,
-					offset,
-				});
+				await this.api.getPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGet(
+					requestParams
+				);
 			// API возвращает any, поэтому нужно проверить тип
 			if (Array.isArray(sessions)) {
 				return sessions as MinecraftSessionResponse[];
@@ -81,14 +103,23 @@ class MinecraftStatsService {
 	async getPlayerKills(
 		playerUuid: string,
 		limit: number = 20,
-		offset: number = 0
+		offset: number = 0,
+		serverId?: string | number
 	): Promise<MinecraftKillResponse[]> {
 		try {
-			const kills = await this.api.getPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGet({
+			const requestParams: GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest & {
+				serverId?: string;
+			} = {
 				playerUuid,
 				limit,
 				offset,
-			});
+			};
+			if (serverId) requestParams.serverId = String(serverId);
+
+			const kills =
+				await this.api.getPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGet(
+					requestParams
+				);
 			return Array.isArray(kills) ? kills : [];
 		} catch (error) {
 			if (

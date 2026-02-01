@@ -38,12 +38,12 @@ import {
     MobKillsFromJSONTyped,
     MobKillsToJSON,
 } from './MobKills';
-import type { SessionEnd } from './SessionEnd';
+import type { SessionEnd1 } from './SessionEnd1';
 import {
-    SessionEndFromJSON,
-    SessionEndFromJSONTyped,
-    SessionEndToJSON,
-} from './SessionEnd';
+    SessionEnd1FromJSON,
+    SessionEnd1FromJSONTyped,
+    SessionEnd1ToJSON,
+} from './SessionEnd1';
 
 /**
  * Данные игровой сессии
@@ -71,10 +71,10 @@ export interface MinecraftSessionData {
     sessionStart: any | null;
     /**
      * 
-     * @type {SessionEnd}
+     * @type {SessionEnd1}
      * @memberof MinecraftSessionData
      */
-    sessionEnd?: SessionEnd;
+    sessionEnd?: SessionEnd1;
     /**
      * 
      * @type {MobKills}
@@ -126,7 +126,7 @@ export function MinecraftSessionDataFromJSONTyped(json: any, ignoreDiscriminator
         'uuid': json['uuid'],
         'serverUuid': json['server_uuid'],
         'sessionStart': json['session_start'],
-        'sessionEnd': !exists(json, 'session_end') ? undefined : SessionEndFromJSON(json['session_end']),
+        'sessionEnd': !exists(json, 'session_end') ? undefined : SessionEnd1FromJSON(json['session_end']),
         'mobKills': !exists(json, 'mob_kills') ? undefined : MobKillsFromJSON(json['mob_kills']),
         'deaths': !exists(json, 'deaths') ? undefined : DeathsFromJSON(json['deaths']),
         'afkTime': !exists(json, 'afk_time') ? undefined : AfkTimeFromJSON(json['afk_time']),
@@ -146,7 +146,7 @@ export function MinecraftSessionDataToJSON(value?: MinecraftSessionData | null):
         'uuid': value.uuid,
         'server_uuid': value.serverUuid,
         'session_start': value.sessionStart,
-        'session_end': SessionEndToJSON(value.sessionEnd),
+        'session_end': SessionEnd1ToJSON(value.sessionEnd),
         'mob_kills': MobKillsToJSON(value.mobKills),
         'deaths': DeathsToJSON(value.deaths),
         'afk_time': AfkTimeToJSON(value.afkTime),

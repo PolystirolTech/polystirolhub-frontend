@@ -11,11 +11,12 @@ import { StatsSection } from '@/components/stats/common/stats-section';
 
 interface MinecraftKillsListProps {
 	playerUuid: string;
+	serverId?: string | number;
 }
 
 const PAGE_SIZE = 5;
 
-export function MinecraftKillsList({ playerUuid }: MinecraftKillsListProps) {
+export function MinecraftKillsList({ playerUuid, serverId }: MinecraftKillsListProps) {
 	const [kills, setKills] = useState<MinecraftKillResponse[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -30,7 +31,12 @@ export function MinecraftKillsList({ playerUuid }: MinecraftKillsListProps) {
 				setLoading(true);
 				setError(null);
 				const offset = (page - 1) * PAGE_SIZE;
-				const data = await minecraftStatsService.getPlayerKills(playerUuid, PAGE_SIZE, offset);
+				const data = await minecraftStatsService.getPlayerKills(
+					playerUuid,
+					PAGE_SIZE,
+					offset,
+					serverId
+				);
 				setKills(data);
 				setHasMore(data.length === PAGE_SIZE);
 			} catch (err) {
@@ -43,7 +49,7 @@ export function MinecraftKillsList({ playerUuid }: MinecraftKillsListProps) {
 		if (playerUuid) {
 			loadKills();
 		}
-	}, [playerUuid, page]);
+	}, [playerUuid, page, serverId]);
 
 	// Загрузка профилей для жертв без имени
 	useEffect(() => {

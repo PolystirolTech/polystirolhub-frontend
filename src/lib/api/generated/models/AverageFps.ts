@@ -15,31 +15,31 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * Timestamp в миллисекундах
+ * 
  * @export
- * @interface SessionEnd1
+ * @interface AverageFps
  */
-export interface SessionEnd1 {
+export interface AverageFps {
 }
 
 /**
- * Check if a given object implements the SessionEnd1 interface.
+ * Check if a given object implements the AverageFps interface.
  */
-export function instanceOfSessionEnd1(value: object): boolean {
+export function instanceOfAverageFps(value: object): boolean {
     let isInstance = true;
 
     return isInstance;
 }
 
-export function SessionEnd1FromJSON(json: any): SessionEnd1 {
-    return SessionEnd1FromJSONTyped(json, false);
+export function AverageFpsFromJSON(json: any): AverageFps {
+    return AverageFpsFromJSONTyped(json, false);
 }
 
-export function SessionEnd1FromJSONTyped(json: any, ignoreDiscriminator: boolean): SessionEnd1 {
+export function AverageFpsFromJSONTyped(json: any, ignoreDiscriminator: boolean): AverageFps {
     return json;
 }
 
-export function SessionEnd1ToJSON(value?: SessionEnd1 | null): any {
+export function AverageFpsToJSON(value?: AverageFps | null): any {
     return value;
 }
 

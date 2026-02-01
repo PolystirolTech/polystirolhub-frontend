@@ -14,24 +14,24 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Counters } from './Counters';
+import type { Counters1 } from './Counters1';
 import {
-    CountersFromJSON,
-    CountersFromJSONTyped,
-    CountersToJSON,
-} from './Counters';
+    Counters1FromJSON,
+    Counters1FromJSONTyped,
+    Counters1ToJSON,
+} from './Counters1';
 import type { Geolocations } from './Geolocations';
 import {
     GeolocationsFromJSON,
     GeolocationsFromJSONTyped,
     GeolocationsToJSON,
 } from './Geolocations';
-import type { Kills } from './Kills';
+import type { Kills1 } from './Kills1';
 import {
-    KillsFromJSON,
-    KillsFromJSONTyped,
-    KillsToJSON,
-} from './Kills';
+    Kills1FromJSON,
+    Kills1FromJSONTyped,
+    Kills1ToJSON,
+} from './Kills1';
 import type { Nicknames } from './Nicknames';
 import {
     NicknamesFromJSON,
@@ -56,18 +56,18 @@ import {
     PluginVersionsFromJSONTyped,
     PluginVersionsToJSON,
 } from './PluginVersions';
-import type { Servers } from './Servers';
+import type { Servers1 } from './Servers1';
 import {
-    ServersFromJSON,
-    ServersFromJSONTyped,
-    ServersToJSON,
-} from './Servers';
-import type { Sessions } from './Sessions';
+    Servers1FromJSON,
+    Servers1FromJSONTyped,
+    Servers1ToJSON,
+} from './Servers1';
+import type { Sessions1 } from './Sessions1';
 import {
-    SessionsFromJSON,
-    SessionsFromJSONTyped,
-    SessionsToJSON,
-} from './Sessions';
+    Sessions1FromJSON,
+    Sessions1FromJSONTyped,
+    Sessions1ToJSON,
+} from './Sessions1';
 import type { Tps } from './Tps';
 import {
     TpsFromJSON,
@@ -80,12 +80,12 @@ import {
     UserInfoFromJSONTyped,
     UserInfoToJSON,
 } from './UserInfo';
-import type { Users } from './Users';
+import type { Users1 } from './Users1';
 import {
-    UsersFromJSON,
-    UsersFromJSONTyped,
-    UsersToJSON,
-} from './Users';
+    Users1FromJSON,
+    Users1FromJSONTyped,
+    Users1ToJSON,
+} from './Users1';
 import type { VersionProtocols } from './VersionProtocols';
 import {
     VersionProtocolsFromJSON,
@@ -119,16 +119,16 @@ export interface MinecraftStatisticsBatch {
     serverUuid: any | null;
     /**
      * 
-     * @type {Servers}
+     * @type {Servers1}
      * @memberof MinecraftStatisticsBatch
      */
-    servers?: Servers;
+    servers?: Servers1;
     /**
      * 
-     * @type {Users}
+     * @type {Users1}
      * @memberof MinecraftStatisticsBatch
      */
-    users?: Users;
+    users?: Users1;
     /**
      * 
      * @type {UserInfo}
@@ -137,10 +137,10 @@ export interface MinecraftStatisticsBatch {
     userInfo?: UserInfo;
     /**
      * 
-     * @type {Sessions}
+     * @type {Sessions1}
      * @memberof MinecraftStatisticsBatch
      */
-    sessions?: Sessions;
+    sessions?: Sessions1;
     /**
      * 
      * @type {Nicknames}
@@ -149,10 +149,10 @@ export interface MinecraftStatisticsBatch {
     nicknames?: Nicknames;
     /**
      * 
-     * @type {Kills}
+     * @type {Kills1}
      * @memberof MinecraftStatisticsBatch
      */
-    kills?: Kills;
+    kills?: Kills1;
     /**
      * 
      * @type {Pings}
@@ -203,10 +203,10 @@ export interface MinecraftStatisticsBatch {
     geolocations?: Geolocations;
     /**
      * 
-     * @type {Counters}
+     * @type {Counters1}
      * @memberof MinecraftStatisticsBatch
      */
-    counters?: Counters;
+    counters?: Counters1;
 }
 
 /**
@@ -230,12 +230,12 @@ export function MinecraftStatisticsBatchFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'serverUuid': json['server_uuid'],
-        'servers': !exists(json, 'servers') ? undefined : ServersFromJSON(json['servers']),
-        'users': !exists(json, 'users') ? undefined : UsersFromJSON(json['users']),
+        'servers': !exists(json, 'servers') ? undefined : Servers1FromJSON(json['servers']),
+        'users': !exists(json, 'users') ? undefined : Users1FromJSON(json['users']),
         'userInfo': !exists(json, 'user_info') ? undefined : UserInfoFromJSON(json['user_info']),
-        'sessions': !exists(json, 'sessions') ? undefined : SessionsFromJSON(json['sessions']),
+        'sessions': !exists(json, 'sessions') ? undefined : Sessions1FromJSON(json['sessions']),
         'nicknames': !exists(json, 'nicknames') ? undefined : NicknamesFromJSON(json['nicknames']),
-        'kills': !exists(json, 'kills') ? undefined : KillsFromJSON(json['kills']),
+        'kills': !exists(json, 'kills') ? undefined : Kills1FromJSON(json['kills']),
         'pings': !exists(json, 'pings') ? undefined : PingsFromJSON(json['pings']),
         'platforms': !exists(json, 'platforms') ? undefined : PlatformsFromJSON(json['platforms']),
         'pluginVersions': !exists(json, 'plugin_versions') ? undefined : PluginVersionsFromJSON(json['plugin_versions']),
@@ -244,7 +244,7 @@ export function MinecraftStatisticsBatchFromJSONTyped(json: any, ignoreDiscrimin
         'worldTimes': !exists(json, 'world_times') ? undefined : WorldTimesFromJSON(json['world_times']),
         'versionProtocols': !exists(json, 'version_protocols') ? undefined : VersionProtocolsFromJSON(json['version_protocols']),
         'geolocations': !exists(json, 'geolocations') ? undefined : GeolocationsFromJSON(json['geolocations']),
-        'counters': !exists(json, 'counters') ? undefined : CountersFromJSON(json['counters']),
+        'counters': !exists(json, 'counters') ? undefined : Counters1FromJSON(json['counters']),
     };
 }
 
@@ -258,12 +258,12 @@ export function MinecraftStatisticsBatchToJSON(value?: MinecraftStatisticsBatch 
     return {
         
         'server_uuid': value.serverUuid,
-        'servers': ServersToJSON(value.servers),
-        'users': UsersToJSON(value.users),
+        'servers': Servers1ToJSON(value.servers),
+        'users': Users1ToJSON(value.users),
         'user_info': UserInfoToJSON(value.userInfo),
-        'sessions': SessionsToJSON(value.sessions),
+        'sessions': Sessions1ToJSON(value.sessions),
         'nicknames': NicknamesToJSON(value.nicknames),
-        'kills': KillsToJSON(value.kills),
+        'kills': Kills1ToJSON(value.kills),
         'pings': PingsToJSON(value.pings),
         'platforms': PlatformsToJSON(value.platforms),
         'plugin_versions': PluginVersionsToJSON(value.pluginVersions),
@@ -272,7 +272,7 @@ export function MinecraftStatisticsBatchToJSON(value?: MinecraftStatisticsBatch 
         'world_times': WorldTimesToJSON(value.worldTimes),
         'version_protocols': VersionProtocolsToJSON(value.versionProtocols),
         'geolocations': GeolocationsToJSON(value.geolocations),
-        'counters': CountersToJSON(value.counters),
+        'counters': Counters1ToJSON(value.counters),
     };
 }
 

@@ -10,17 +10,25 @@ import type { GameServerPublic } from '@/lib/api/generated';
 import { MinecraftStats } from '@/components/stats/minecraft/minecraft-stats';
 import { MinecraftServerStatsCard } from '@/components/stats/minecraft/minecraft-server-stats-card';
 import { MinecraftServerTopPlayers } from '@/components/stats/minecraft/minecraft-server-top-players';
+import { GoldSourceStats } from '@/components/stats/goldsource/goldsource-stats';
+import { GoldSourceServerStatsCard } from '@/components/stats/goldsource/goldsource-server-stats-card';
+import { GoldSourceServerTopPlayers } from '@/components/stats/goldsource/goldsource-server-top-players';
 import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
+import { isMinecraftGame, isGoldSourceGame } from '@/lib/utils/game-type-utils';
 
-type GameType = 'minecraft';
+interface ServerWithType extends GameServerPublic {
+	serverType: 'minecraft' | 'goldsource';
+	gameTypeName: string;
+	serverName: string;
+}
 
 export default function StatsPage() {
 	const { user, isAuthenticated, isLoading } = useAuth();
 	const router = useRouter();
-	const [selectedGame, setSelectedGame] = useState<GameType>('minecraft');
-	const [servers, setServers] = useState<GameServerPublic[]>([]);
+	const [servers, setServers] = useState<ServerWithType[]>([]);
+	const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
 	const [loadingServers, setLoadingServers] = useState(true);
 	const [serversError, setServersError] = useState<string | null>(null);
 
@@ -31,6 +39,48 @@ export default function StatsPage() {
 		}
 	}, [isAuthenticated, isLoading, router]);
 
+	// Helper functions
+	const getGameTypeName = (gameType: unknown): string | null => {
+		if (!gameType) return null;
+
+		if (typeof gameType === 'string') {
+			return gameType.trim() || null;
+		}
+
+		if (typeof gameType === 'object') {
+			const gameTypeObj = gameType as Record<string, unknown>;
+
+			if (gameTypeObj.name) {
+				if (typeof gameTypeObj.name === 'string') {
+					return gameTypeObj.name.trim() || null;
+				}
+				if (
+					typeof gameTypeObj.name === 'object' &&
+					gameTypeObj.name !== null &&
+					'value' in gameTypeObj.name
+				) {
+					const value = (gameTypeObj.name as { value: unknown }).value;
+					if (typeof value === 'string') {
+						return value.trim() || null;
+					}
+				}
+			}
+		}
+
+		return null;
+	};
+
+	const getServerName = (name: unknown): string => {
+		if (typeof name === 'string' && name.trim()) return name;
+		return 'Без названия';
+	};
+
+	const getServerId = (id: unknown): string | null => {
+		if (typeof id === 'string') return id;
+		if (typeof id === 'number') return String(id);
+		return null;
+	};
+
 	// Load servers
 	useEffect(() => {
 		async function loadServers() {
@@ -39,66 +89,41 @@ export default function StatsPage() {
 				setServersError(null);
 				const data = await gameService.getGameServers();
 
-				// Функция для извлечения имени типа игры
-				const getGameTypeName = (gameType: unknown): string | null => {
-					if (!gameType) return null;
+				const allServers: ServerWithType[] = [];
 
-					// Если это строка напрямую
-					if (typeof gameType === 'string') {
-						return gameType.trim() || null;
-					}
-
-					// Если это объект
-					if (typeof gameType === 'object') {
-						const gameTypeObj = gameType as Record<string, unknown>;
-
-						// Проверяем поле name напрямую
-						if (gameTypeObj.name) {
-							if (typeof gameTypeObj.name === 'string') {
-								return gameTypeObj.name.trim() || null;
-							}
-							// Если это объект с полем value
-							if (
-								typeof gameTypeObj.name === 'object' &&
-								gameTypeObj.name !== null &&
-								'value' in gameTypeObj.name
-							) {
-								const value = (gameTypeObj.name as { value: unknown }).value;
-								if (typeof value === 'string') {
-									return value.trim() || null;
-								}
-							}
-						}
-					}
-
-					return null;
-				};
-
-				// Фильтруем только Minecraft серверы
-				const minecraftServers = data.filter((server) => {
-					// Используем game_type (snake_case) вместо gameType
+				for (const server of data) {
 					const serverObj = server as unknown as Record<string, unknown>;
 					const gameType = serverObj.game_type;
 					const gameTypeName = getGameTypeName(gameType);
+					const serverName = getServerName(server.name);
+					const serverId = getServerId(server.id);
 
-					if (!gameTypeName) {
-						return false;
+					if (!gameTypeName || !serverId) continue;
+
+					if (isMinecraftGame(gameTypeName)) {
+						allServers.push({
+							...server,
+							serverType: 'minecraft',
+							gameTypeName: 'Minecraft',
+							serverName,
+						});
+					} else if (isGoldSourceGame(gameTypeName)) {
+						allServers.push({
+							...server,
+							serverType: 'goldsource',
+							gameTypeName,
+							serverName,
+						});
 					}
+				}
 
-					const nameLower = gameTypeName.toLowerCase().trim();
-					const isMinecraft =
-						nameLower === 'minecraft' ||
-						nameLower === 'mincecraft' || // опечатка в данных
-						nameLower === 'mc' ||
-						nameLower.includes('minecraft') ||
-						nameLower.includes('mincecraft') || // опечатка в данных
-						nameLower.includes('mc');
+				console.log('[StatsPage] All servers:', allServers);
+				setServers(allServers);
 
-					return isMinecraft;
-				});
-
-				console.log('[StatsPage] Filtered Minecraft servers:', minecraftServers);
-				setServers(minecraftServers);
+				// Select first server by default
+				if (allServers.length > 0 && allServers[0].id) {
+					setSelectedServerId(String(allServers[0].id));
+				}
 			} catch (err) {
 				setServersError(err instanceof Error ? err.message : 'Не удалось загрузить серверы');
 			} finally {
@@ -129,8 +154,7 @@ export default function StatsPage() {
 		return null; // Will redirect to login
 	}
 
-	const availableGames: GameType[] = ['minecraft'];
-	// В будущем можно добавить: ['minecraft', 'cs2', 'dota2']
+	const selectedServer = servers.find((s) => String(s.id) === selectedServerId);
 
 	return (
 		<div className="min-h-screen pb-20 pt-24">
@@ -166,61 +190,80 @@ export default function StatsPage() {
 					</div>
 				</div>
 
-				{/* Game Tabs */}
-				{availableGames.length > 1 && (
-					<div className="mb-6 flex gap-2 border-b border-white/10">
-						{availableGames.map((game) => (
-							<button
-								key={game}
-								onClick={() => setSelectedGame(game)}
-								className={`px-6 py-3 font-medium transition-colors border-b-2 ${
-									selectedGame === game
-										? 'border-primary text-primary'
-										: 'border-transparent text-white/60 hover:text-white'
-								}`}
-							>
-								{game === 'minecraft' ? 'Minecraft' : String(game).toUpperCase()}
-							</button>
-						))}
+				{/* Server Tabs */}
+				{loadingServers ? (
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
+						<StatsLoading message="Загрузка серверов..." />
 					</div>
+				) : serversError ? (
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
+						<StatsError message={serversError} onRetry={() => window.location.reload()} />
+					</div>
+				) : servers.length === 0 ? (
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
+						<StatsEmpty message="Нет доступных серверов" />
+					</div>
+				) : (
+					<>
+						{/* Tabs for server selection */}
+						<div className="mb-6">
+							<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4">
+								<div className="flex flex-wrap items-center gap-3">
+									<span className="text-sm font-medium text-white/80">Сервер:</span>
+									{servers.map((server) => {
+										const serverId = String(server.id);
+										return (
+											<button
+												key={serverId}
+												onClick={() => setSelectedServerId(serverId)}
+												className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+													selectedServerId === serverId
+														? 'bg-primary text-white'
+														: 'bg-white/10 text-white/70 hover:bg-white/20'
+												}`}
+											>
+												{server.gameTypeName} - {server.serverName}
+											</button>
+										);
+									})}
+								</div>
+							</div>
+						</div>
+
+						{/* Selected Server Content */}
+						{selectedServer && selectedServer.id && (
+							<div>
+								{/* Player Stats Section */}
+								<div className="mb-6">
+									<h2 className="text-2xl font-bold text-white mb-4">Моя статистика</h2>
+									{selectedServer.serverType === 'minecraft' ? (
+										<MinecraftStats serverId={selectedServer.id} />
+									) : (
+										<GoldSourceStats serverId={selectedServer.id} />
+									)}
+								</div>
+
+								{/* Server Stats Card */}
+								<div className="mb-4">
+									{selectedServer.serverType === 'minecraft' ? (
+										<MinecraftServerStatsCard serverId={selectedServer.id} />
+									) : (
+										<GoldSourceServerStatsCard serverId={selectedServer.id} />
+									)}
+								</div>
+
+								{/* Top Players */}
+								<div>
+									{selectedServer.serverType === 'minecraft' ? (
+										<MinecraftServerTopPlayers serverId={selectedServer.id} limit={10} />
+									) : (
+										<GoldSourceServerTopPlayers serverId={selectedServer.id} limit={10} />
+									)}
+								</div>
+							</div>
+						)}
+					</>
 				)}
-
-				{/* Player Stats Section */}
-				<div className="mb-8">
-					<h2 className="text-2xl font-bold text-white mb-4">Моя статистика</h2>
-					{selectedGame === 'minecraft' && <MinecraftStats />}
-					{/* В будущем: selectedGame === 'cs2' && <CS2Stats /> */}
-				</div>
-
-				{/* Server Stats Section */}
-				<div className="mb-8">
-					<h2 className="text-2xl font-bold text-white mb-4">Статистика серверов</h2>
-					{loadingServers ? (
-						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
-							<StatsLoading message="Загрузка серверов..." />
-						</div>
-					) : serversError ? (
-						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
-							<StatsError message={serversError} onRetry={() => window.location.reload()} />
-						</div>
-					) : servers.length === 0 ? (
-						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
-							<StatsEmpty message="Нет доступных серверов" />
-						</div>
-					) : (
-						<div>
-							{servers.map((server) => {
-								if (!server.id) return null;
-								return (
-									<div key={server.id}>
-										<MinecraftServerStatsCard serverId={server.id} />
-										<MinecraftServerTopPlayers serverId={server.id} limit={10} />
-									</div>
-								);
-							})}
-						</div>
-					)}
-				</div>
 			</main>
 			<Footer />
 		</div>

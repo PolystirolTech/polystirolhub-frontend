@@ -11,11 +11,12 @@ import { StatsSection } from '@/components/stats/common/stats-section';
 
 interface MinecraftSessionsListProps {
 	playerUuid: string;
+	serverId?: string | number;
 }
 
 const PAGE_SIZE = 10;
 
-export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps) {
+export function MinecraftSessionsList({ playerUuid, serverId }: MinecraftSessionsListProps) {
 	const [sessions, setSessions] = useState<MinecraftSessionResponse[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -28,7 +29,12 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 				setLoading(true);
 				setError(null);
 				const offset = (page - 1) * PAGE_SIZE;
-				const data = await minecraftStatsService.getPlayerSessions(playerUuid, PAGE_SIZE, offset);
+				const data = await minecraftStatsService.getPlayerSessions(
+					playerUuid,
+					PAGE_SIZE,
+					offset,
+					serverId
+				);
 				setSessions(data);
 				setHasMore(data.length === PAGE_SIZE);
 			} catch (err) {
@@ -41,7 +47,7 @@ export function MinecraftSessionsList({ playerUuid }: MinecraftSessionsListProps
 		if (playerUuid) {
 			loadSessions();
 		}
-	}, [playerUuid, page]);
+	}, [playerUuid, page, serverId]);
 
 	const getValue = (obj: unknown): number | null => {
 		// Если это число, возвращаем его

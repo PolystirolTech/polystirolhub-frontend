@@ -10,7 +10,11 @@ import { MinecraftKillsList } from './minecraft-kills-list';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 import { StatsLoading } from '@/components/stats/common/stats-loading';
 
-export function MinecraftStats() {
+interface MinecraftStatsProps {
+	serverId?: string | number;
+}
+
+export function MinecraftStats({ serverId }: MinecraftStatsProps) {
 	const { user } = useAuth();
 	const [minecraftLink, setMinecraftLink] = useState<ExternalLinkResponse | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -111,9 +115,9 @@ export function MinecraftStats() {
 
 	return (
 		<div>
-			<MinecraftPlayerProfileCard playerUuid={playerUuid} />
-			<MinecraftSessionsList playerUuid={playerUuid} />
-			<MinecraftKillsList playerUuid={playerUuid} />
+			<MinecraftPlayerProfileCard playerUuid={playerUuid} serverId={serverId} />
+			<MinecraftSessionsList playerUuid={playerUuid} serverId={serverId} />
+			<MinecraftKillsList playerUuid={playerUuid} serverId={serverId} />
 		</div>
 	);
 }
