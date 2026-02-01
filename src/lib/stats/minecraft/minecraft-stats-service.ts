@@ -3,7 +3,12 @@
  * Обертка над StatisticsApi из generated API
  */
 
-import { StatisticsApi } from '@/lib/api/generated/apis/StatisticsApi';
+import {
+	StatisticsApi,
+	type GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest,
+	type GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest,
+	type GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest,
+} from '@/lib/api/generated/apis/StatisticsApi';
 import { apiConfig } from '@/lib/api/config';
 import type {
 	MinecraftPlayerProfile,
@@ -30,7 +35,9 @@ class MinecraftStatsService {
 		try {
 			// В сгенерированном API может не быть serverId в параметрах,
 			// поэтому используем ручной запрос если нужно, или проверяем типы
-			const requestParams: any = { playerUuid };
+			const requestParams: GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest & {
+				serverId?: string;
+			} = { playerUuid };
 			if (serverId) requestParams.serverId = String(serverId);
 
 			const profile =
@@ -59,7 +66,9 @@ class MinecraftStatsService {
 		serverId?: string | number
 	): Promise<MinecraftSessionResponse[]> {
 		try {
-			const requestParams: any = {
+			const requestParams: GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest & {
+				serverId?: string;
+			} = {
 				playerUuid,
 				limit,
 				offset,
@@ -98,7 +107,9 @@ class MinecraftStatsService {
 		serverId?: string | number
 	): Promise<MinecraftKillResponse[]> {
 		try {
-			const requestParams: any = {
+			const requestParams: GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest & {
+				serverId?: string;
+			} = {
 				playerUuid,
 				limit,
 				offset,

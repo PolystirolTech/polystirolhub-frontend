@@ -3,7 +3,10 @@
  * Обертка над GoldsourceStatisticsApi из generated API
  */
 
-import { GoldsourceStatisticsApi } from '@/lib/api/generated/apis/GoldsourceStatisticsApi';
+import {
+	GoldsourceStatisticsApi,
+	type GetPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGetRequest,
+} from '@/lib/api/generated/apis/GoldsourceStatisticsApi';
 import { apiConfig } from '@/lib/api/config';
 import type {
 	GoldSourcePlayerProfile,
@@ -26,7 +29,9 @@ class GoldSourceStatsService {
 		serverId?: string | number
 	): Promise<GoldSourcePlayerProfile | null> {
 		try {
-			const requestParams: any = { steamId };
+			const requestParams: GetPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGetRequest & {
+				serverId?: string;
+			} = { steamId };
 			if (serverId) requestParams.serverId = String(serverId);
 
 			const profile =
