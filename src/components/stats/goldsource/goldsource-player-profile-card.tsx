@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useAuth } from '@/lib/auth';
 import { goldSourceStatsService } from '@/lib/stats/goldsource/goldsource-stats-service';
 import type { GoldSourcePlayerProfile } from '@/lib/api/generated/models';
 import { formatPlaytime, formatTimestamp, calculateKDRatio } from '@/lib/utils/stats-formatters';
@@ -13,6 +15,7 @@ interface GoldSourcePlayerProfileCardProps {
 }
 
 export function GoldSourcePlayerProfileCard({ steamId }: GoldSourcePlayerProfileCardProps) {
+	const { user } = useAuth();
 	const [profile, setProfile] = useState<GoldSourcePlayerProfile | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -54,7 +57,6 @@ export function GoldSourcePlayerProfileCard({ steamId }: GoldSourcePlayerProfile
 	const totalDeaths = typeof profile.totalDeaths === 'number' ? profile.totalDeaths : 0;
 	const totalHeadshots = typeof profile.totalHeadshots === 'number' ? profile.totalHeadshots : 0;
 	const registered = typeof profile.registered === 'number' ? profile.registered : null;
-	const serversPlayed = Array.isArray(profile.serversPlayed) ? profile.serversPlayed : [];
 
 	const kdRatio = calculateKDRatio(totalKills, totalDeaths);
 
@@ -63,17 +65,26 @@ export function GoldSourcePlayerProfileCard({ steamId }: GoldSourcePlayerProfile
 			{/* Profile Header Card */}
 			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
 				<div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6">
-					{/* Avatar Placeholder */}
+					{/* Avatar */}
 					<div className="h-24 w-24 overflow-hidden rounded-2xl shrink-0 bg-white/10 flex items-center justify-center text-4xl">
-						🎮
+						{user?.avatar ? (
+							<Image
+								src={user.avatar}
+								alt={playerName}
+								className="h-full w-full object-cover"
+								width={96}
+								height={96}
+							/>
+						) : (
+							<span role="img" aria-label="player">
+								👤
+							</span>
+						)}
 					</div>
 
 					{/* Player Details */}
 					<div className="flex-1 w-full text-center sm:text-left">
 						<h2 className="text-3xl font-bold text-white mb-2">{playerName}</h2>
-						<div className="mb-2 inline-flex items-center gap-2 rounded-lg bg-blue-500/20 px-3 py-1">
-							<span className="text-sm text-blue-300 font-mono">Steam ID: {steamId}</span>
-						</div>
 						{registered && (
 							<p className="text-sm text-white/60">
 								Зарегистрирован: {formatTimestamp(registered)}
@@ -116,25 +127,6 @@ export function GoldSourcePlayerProfileCard({ steamId }: GoldSourcePlayerProfile
 					</div>
 				</div>
 			</div>
-
-			{/* Servers Played Card */}
-			{serversPlayed.length > 0 && (
-				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
-					<h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-						<span>📡</span> Серверы
-					</h3>
-					<div className="flex flex-wrap gap-2">
-						{serversPlayed.map((serverId, index) => (
-							<div
-								key={index}
-								className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/80 text-sm font-mono"
-							>
-								{serverId}
-							</div>
-						))}
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }
