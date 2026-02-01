@@ -76,7 +76,7 @@ export function BadgeImage({ src, alt, size = 'md', className, lazy = true }: Ba
 					height={imageSize}
 					className={cn('object-cover', isLoading && 'opacity-0')}
 					loading={lazy ? 'lazy' : 'eager'}
-					unoptimized={src?.startsWith('http://localhost') || src?.startsWith('https://')}
+					unoptimized={src?.startsWith('http')}
 					onLoad={() => setIsLoading(false)}
 					onError={() => {
 						setHasError(true);
