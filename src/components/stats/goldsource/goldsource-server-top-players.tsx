@@ -9,6 +9,8 @@ import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 import { StatsSection } from '@/components/stats/common/stats-section';
 
+import { ResponseError } from '@/lib/api/generated/runtime';
+
 interface GoldSourceServerTopPlayersProps {
 	serverId: string | number;
 	limit?: number;
@@ -32,7 +34,10 @@ export function GoldSourceServerTopPlayers({
 				const data = await goldSourceStatsService.getServerTopPlayers(serverId, limit, 0);
 				setPlayers(data);
 			} catch (err) {
-				if (
+				if (err instanceof ResponseError && err.response.status === 404) {
+					setNotFound(true);
+					setPlayers([]);
+				} else if (
 					err instanceof Error &&
 					'message' in err &&
 					(err.message.includes('404') || err.message.includes('not found'))

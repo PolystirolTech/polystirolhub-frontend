@@ -8,6 +8,8 @@ import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 
+import { ResponseError } from '@/lib/api/generated/runtime';
+
 interface GoldSourceServerStatsCardProps {
 	serverId: string | number;
 }
@@ -25,7 +27,9 @@ export function GoldSourceServerStatsCard({ serverId }: GoldSourceServerStatsCar
 				const data = await goldSourceStatsService.getServerStats(serverId);
 				setStats(data);
 			} catch (err) {
-				if (
+				if (err instanceof ResponseError && err.response.status === 404) {
+					setStats(null);
+				} else if (
 					err instanceof Error &&
 					'message' in err &&
 					(err.message.includes('404') || err.message.includes('not found'))

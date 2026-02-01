@@ -9,6 +9,7 @@ import {
 	type GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest,
 	type GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest,
 } from '@/lib/api/generated/apis/StatisticsApi';
+import { ResponseError } from '@/lib/api/generated/runtime';
 import { apiConfig } from '@/lib/api/config';
 import type {
 	MinecraftPlayerProfile,
@@ -44,6 +45,9 @@ class MinecraftStatsService {
 				await this.api.getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGet(requestParams);
 			return profile;
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return null;
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
@@ -85,6 +89,9 @@ class MinecraftStatsService {
 			}
 			return [];
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return [];
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
@@ -122,6 +129,9 @@ class MinecraftStatsService {
 				);
 			return Array.isArray(kills) ? kills : [];
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return [];
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
@@ -144,6 +154,9 @@ class MinecraftStatsService {
 			});
 			return stats;
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return null;
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&

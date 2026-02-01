@@ -16,11 +16,11 @@
 
 import * as runtime from '../runtime';
 import type {
-  AppSchemasStatisticsBatchResponse,
-  HTTPValidationError,
-  MinecraftPlayerProfile,
-  MinecraftServerStats,
-  MinecraftStatisticsBatch,
+    AppSchemasStatisticsBatchResponse,
+    HTTPValidationError,
+    MinecraftPlayerProfile,
+    MinecraftServerStats,
+    MinecraftStatisticsBatch,
 } from '../models/index';
 import {
     AppSchemasStatisticsBatchResponseFromJSON,
@@ -39,16 +39,19 @@ export interface GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGet
     playerUuid: any;
     limit?: any;
     offset?: any;
+    server_id?: any;
 }
 
 export interface GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest {
     playerUuid: any;
+    server_id?: any;
 }
 
 export interface GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest {
     playerUuid: any;
     limit?: any;
     offset?: any;
+    server_id?: any;
 }
 
 export interface GetServerStatsApiV1StatisticsMinecraftServersServerIdStatsGetRequest {
@@ -76,7 +79,7 @@ export class StatisticsApi extends runtime.BaseAPI {
      */
     async getPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRaw(requestParameters: GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         if (requestParameters.playerUuid === null || requestParameters.playerUuid === undefined) {
-            throw new runtime.RequiredError('playerUuid','Required parameter requestParameters.playerUuid was null or undefined when calling getPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGet.');
+            throw new runtime.RequiredError('playerUuid', 'Required parameter requestParameters.playerUuid was null or undefined when calling getPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGet.');
         }
 
         const queryParameters: any = {};
@@ -87,6 +90,10 @@ export class StatisticsApi extends runtime.BaseAPI {
 
         if (requestParameters.offset !== undefined) {
             queryParameters['offset'] = requestParameters.offset;
+        }
+
+        if (requestParameters.server_id !== undefined) {
+            queryParameters['server_id'] = requestParameters.server_id;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -120,10 +127,14 @@ export class StatisticsApi extends runtime.BaseAPI {
      */
     async getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRaw(requestParameters: GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MinecraftPlayerProfile>> {
         if (requestParameters.playerUuid === null || requestParameters.playerUuid === undefined) {
-            throw new runtime.RequiredError('playerUuid','Required parameter requestParameters.playerUuid was null or undefined when calling getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGet.');
+            throw new runtime.RequiredError('playerUuid', 'Required parameter requestParameters.playerUuid was null or undefined when calling getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGet.');
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.server_id !== undefined) {
+            queryParameters['server_id'] = requestParameters.server_id;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -152,7 +163,7 @@ export class StatisticsApi extends runtime.BaseAPI {
      */
     async getPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRaw(requestParameters: GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         if (requestParameters.playerUuid === null || requestParameters.playerUuid === undefined) {
-            throw new runtime.RequiredError('playerUuid','Required parameter requestParameters.playerUuid was null or undefined when calling getPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGet.');
+            throw new runtime.RequiredError('playerUuid', 'Required parameter requestParameters.playerUuid was null or undefined when calling getPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGet.');
         }
 
         const queryParameters: any = {};
@@ -163,6 +174,10 @@ export class StatisticsApi extends runtime.BaseAPI {
 
         if (requestParameters.offset !== undefined) {
             queryParameters['offset'] = requestParameters.offset;
+        }
+
+        if (requestParameters.server_id !== undefined) {
+            queryParameters['server_id'] = requestParameters.server_id;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -196,7 +211,7 @@ export class StatisticsApi extends runtime.BaseAPI {
      */
     async getServerStatsApiV1StatisticsMinecraftServersServerIdStatsGetRaw(requestParameters: GetServerStatsApiV1StatisticsMinecraftServersServerIdStatsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MinecraftServerStats>> {
         if (requestParameters.serverId === null || requestParameters.serverId === undefined) {
-            throw new runtime.RequiredError('serverId','Required parameter requestParameters.serverId was null or undefined when calling getServerStatsApiV1StatisticsMinecraftServersServerIdStatsGet.');
+            throw new runtime.RequiredError('serverId', 'Required parameter requestParameters.serverId was null or undefined when calling getServerStatsApiV1StatisticsMinecraftServersServerIdStatsGet.');
         }
 
         const queryParameters: any = {};
@@ -228,7 +243,7 @@ export class StatisticsApi extends runtime.BaseAPI {
      */
     async getServerTopPlayersApiV1StatisticsMinecraftServersServerIdPlayersGetRaw(requestParameters: GetServerTopPlayersApiV1StatisticsMinecraftServersServerIdPlayersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
         if (requestParameters.serverId === null || requestParameters.serverId === undefined) {
-            throw new runtime.RequiredError('serverId','Required parameter requestParameters.serverId was null or undefined when calling getServerTopPlayersApiV1StatisticsMinecraftServersServerIdPlayersGet.');
+            throw new runtime.RequiredError('serverId', 'Required parameter requestParameters.serverId was null or undefined when calling getServerTopPlayersApiV1StatisticsMinecraftServersServerIdPlayersGet.');
         }
 
         const queryParameters: any = {};
@@ -272,7 +287,7 @@ export class StatisticsApi extends runtime.BaseAPI {
      */
     async receiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRaw(requestParameters: ReceiveStatisticsBatchApiV1StatisticsMinecraftBatchPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppSchemasStatisticsBatchResponse>> {
         if (requestParameters.minecraftStatisticsBatch === null || requestParameters.minecraftStatisticsBatch === undefined) {
-            throw new runtime.RequiredError('minecraftStatisticsBatch','Required parameter requestParameters.minecraftStatisticsBatch was null or undefined when calling receiveStatisticsBatchApiV1StatisticsMinecraftBatchPost.');
+            throw new runtime.RequiredError('minecraftStatisticsBatch', 'Required parameter requestParameters.minecraftStatisticsBatch was null or undefined when calling receiveStatisticsBatchApiV1StatisticsMinecraftBatchPost.');
         }
 
         const queryParameters: any = {};

@@ -8,6 +8,8 @@ import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 
+import { ResponseError } from '@/lib/api/generated/runtime';
+
 interface MinecraftServerStatsCardProps {
 	serverId: string | number;
 }
@@ -25,13 +27,17 @@ export function MinecraftServerStatsCard({ serverId }: MinecraftServerStatsCardP
 				const data = await minecraftStatsService.getServerStats(serverId);
 				setStats(data);
 			} catch (err) {
-				if (
+				if (err instanceof ResponseError && err.response.status === 404) {
+					// 404 - статистики нет, это нормально
+					setStats(null);
+				} else if (
 					err instanceof Error &&
 					'message' in err &&
 					(err.message.includes('404') || err.message.includes('not found'))
 				) {
 					setStats(null);
 				} else {
+					// Другая ошибка - показываем её
 					setError(err instanceof Error ? err.message : 'Не удалось загрузить статистику сервера');
 				}
 			} finally {

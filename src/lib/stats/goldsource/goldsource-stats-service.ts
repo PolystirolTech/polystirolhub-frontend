@@ -7,6 +7,7 @@ import {
 	GoldsourceStatisticsApi,
 	type GetPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGetRequest,
 } from '@/lib/api/generated/apis/GoldsourceStatisticsApi';
+import { ResponseError } from '@/lib/api/generated/runtime';
 import { apiConfig } from '@/lib/api/config';
 import type {
 	GoldSourcePlayerProfile,
@@ -38,6 +39,9 @@ class GoldSourceStatsService {
 				await this.api.getPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGet(requestParams);
 			return profile;
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return null;
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
@@ -60,6 +64,9 @@ class GoldSourceStatsService {
 			});
 			return stats;
 		} catch (error) {
+			if (error instanceof ResponseError && error.response.status === 404) {
+				return null;
+			}
 			if (
 				error instanceof Error &&
 				'status' in error &&
