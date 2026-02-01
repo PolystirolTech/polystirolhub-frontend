@@ -39,8 +39,11 @@ export function GoldSourceServerTopPlayers({
 					setPlayers([]);
 				} else if (
 					err instanceof Error &&
-					'message' in err &&
-					(err.message.includes('404') || err.message.includes('not found'))
+					('status' in err || 'message' in err) &&
+					((err as any).status === 404 ||
+						err.message.includes('404') ||
+						err.message.includes('not found') ||
+						err.message.includes('не найдена'))
 				) {
 					setNotFound(true);
 					setPlayers([]);
