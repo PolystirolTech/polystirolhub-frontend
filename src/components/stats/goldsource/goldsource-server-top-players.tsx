@@ -34,8 +34,8 @@ export function GoldSourceServerTopPlayers({
 			} catch (err) {
 				if (
 					err instanceof Error &&
-					'status' in err &&
-					(err as { status?: number }).status === 404
+					'message' in err &&
+					(err.message.includes('404') || err.message.includes('not found'))
 				) {
 					setNotFound(true);
 					setPlayers([]);
@@ -66,7 +66,14 @@ export function GoldSourceServerTopPlayers({
 	};
 
 	if (notFound) {
-		return null;
+		return (
+			<StatsSection title="Топ игроков">
+				<StatsEmpty
+					message="Нет данных о топе игроков"
+					description="Для этого сервера статистика пока не собрана."
+				/>
+			</StatsSection>
+		);
 	}
 
 	if (loading) {

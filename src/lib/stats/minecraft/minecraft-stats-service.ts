@@ -36,9 +36,9 @@ class MinecraftStatsService {
 			// В сгенерированном API может не быть serverId в параметрах,
 			// поэтому используем ручной запрос если нужно, или проверяем типы
 			const requestParams: GetPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGetRequest & {
-				serverId?: string;
+				server_id?: string;
 			} = { playerUuid };
-			if (serverId) requestParams.serverId = String(serverId);
+			if (serverId) requestParams.server_id = String(serverId);
 
 			const profile =
 				await this.api.getPlayerProfileApiV1StatisticsMinecraftPlayersPlayerUuidGet(requestParams);
@@ -67,13 +67,13 @@ class MinecraftStatsService {
 	): Promise<MinecraftSessionResponse[]> {
 		try {
 			const requestParams: GetPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGetRequest & {
-				serverId?: string;
+				server_id?: string;
 			} = {
 				playerUuid,
 				limit,
 				offset,
 			};
-			if (serverId) requestParams.serverId = String(serverId);
+			if (serverId) requestParams.server_id = String(serverId);
 
 			const sessions =
 				await this.api.getPlayerSessionsApiV1StatisticsMinecraftPlayersPlayerUuidSessionsGet(
@@ -108,13 +108,13 @@ class MinecraftStatsService {
 	): Promise<MinecraftKillResponse[]> {
 		try {
 			const requestParams: GetPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGetRequest & {
-				serverId?: string;
+				server_id?: string;
 			} = {
 				playerUuid,
 				limit,
 				offset,
 			};
-			if (serverId) requestParams.serverId = String(serverId);
+			if (serverId) requestParams.server_id = String(serverId);
 
 			const kills =
 				await this.api.getPlayerKillsApiV1StatisticsMinecraftPlayersPlayerUuidKillsGet(

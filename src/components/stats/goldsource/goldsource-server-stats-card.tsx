@@ -6,6 +6,7 @@ import type { GoldSourceServerStats } from '@/lib/api/generated/models';
 import { formatTimestamp } from '@/lib/utils/stats-formatters';
 import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
+import { StatsEmpty } from '@/components/stats/common/stats-empty';
 
 interface GoldSourceServerStatsCardProps {
 	serverId: string | number;
@@ -26,8 +27,8 @@ export function GoldSourceServerStatsCard({ serverId }: GoldSourceServerStatsCar
 			} catch (err) {
 				if (
 					err instanceof Error &&
-					'status' in err &&
-					(err as { status?: number }).status === 404
+					'message' in err &&
+					(err.message.includes('404') || err.message.includes('not found'))
 				) {
 					setStats(null);
 				} else {
@@ -86,8 +87,15 @@ export function GoldSourceServerStatsCard({ serverId }: GoldSourceServerStatsCar
 		);
 	}
 
-	if (!stats) {
-		return null;
+	if (!stats && !error) {
+		return (
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 mb-6">
+				<StatsEmpty
+					message="Статистика не найдена"
+					description="Для этого сервера статистика пока не собрана."
+				/>
+			</div>
+		);
 	}
 
 	if (error) {
@@ -98,13 +106,13 @@ export function GoldSourceServerStatsCard({ serverId }: GoldSourceServerStatsCar
 		);
 	}
 
-	const serverName = getStringValue(stats.name) || 'Неизвестный сервер';
-	const totalPlayers = getValue(stats.totalPlayers) ?? 0;
-	const totalSessions = getValue(stats.totalSessions) ?? 0;
-	const averageFps = getValue(stats.averageFps);
-	const currentPlayers = getValue(stats.currentPlayers);
-	const currentMap = getStringValue(stats.currentMap);
-	const lastUpdate = getValue(stats.lastUpdate);
+	const serverName = getStringValue(stats!.name) || 'Неизвестный сервер';
+	const totalPlayers = getValue(stats!.totalPlayers) ?? 0;
+	const totalSessions = getValue(stats!.totalSessions) ?? 0;
+	const averageFps = getValue(stats!.averageFps);
+	const currentPlayers = getValue(stats!.currentPlayers);
+	const currentMap = getStringValue(stats!.currentMap);
+	const lastUpdate = getValue(stats!.lastUpdate);
 
 	return (
 		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 mb-6">

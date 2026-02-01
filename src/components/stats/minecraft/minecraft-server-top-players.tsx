@@ -70,9 +70,16 @@ export function MinecraftServerTopPlayers({
 		return null;
 	};
 
-	// Если статистики нет (404), не показываем компонент
+	// Если статистики нет (404), показываем пустое состояние
 	if (notFound) {
-		return null;
+		return (
+			<StatsSection title="Топ игроков">
+				<StatsEmpty
+					message="Нет данных о топе игроков"
+					description="Для этого сервера статистика пока не собрана."
+				/>
+			</StatsSection>
+		);
 	}
 
 	if (loading) {

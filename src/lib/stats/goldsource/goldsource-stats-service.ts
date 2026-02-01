@@ -30,9 +30,9 @@ class GoldSourceStatsService {
 	): Promise<GoldSourcePlayerProfile | null> {
 		try {
 			const requestParams: GetPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGetRequest & {
-				serverId?: string;
+				server_id?: string;
 			} = { steamId };
-			if (serverId) requestParams.serverId = String(serverId);
+			if (serverId) requestParams.server_id = String(serverId);
 
 			const profile =
 				await this.api.getPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGet(requestParams);
