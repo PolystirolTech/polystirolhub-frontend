@@ -6,6 +6,7 @@ import { authService } from '@/lib/auth/auth-service';
 import type { ExternalLinkResponse } from '@/lib/api/generated';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 import { StatsLoading } from '@/components/stats/common/stats-loading';
+import { GoldSourcePlayerProfileCard } from './goldsource-player-profile-card';
 
 export function GoldSourceStats() {
 	const { user } = useAuth();
@@ -73,16 +74,9 @@ export function GoldSourceStats() {
 			/>
 		);
 	}
-
 	return (
 		<div>
-			{/* Player profile and stats will go here */}
-			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
-				<p className="text-white/60">
-					SteamID: <span className="text-white">{steamId}</span>
-				</p>
-				<p className="text-white/60 text-sm mt-2">Компонент статистики игрока в разработке</p>
-			</div>
+			<GoldSourcePlayerProfileCard steamId={steamId} />
 		</div>
 	);
 }
