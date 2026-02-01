@@ -12,9 +12,13 @@ import { StatsEmpty } from '@/components/stats/common/stats-empty';
 
 interface MinecraftPlayerProfileCardProps {
 	playerUuid: string;
+	serverId?: string | number;
 }
 
-export function MinecraftPlayerProfileCard({ playerUuid }: MinecraftPlayerProfileCardProps) {
+export function MinecraftPlayerProfileCard({
+	playerUuid,
+	serverId,
+}: MinecraftPlayerProfileCardProps) {
 	const [profile, setProfile] = useState<MinecraftPlayerProfile | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -24,7 +28,7 @@ export function MinecraftPlayerProfileCard({ playerUuid }: MinecraftPlayerProfil
 			try {
 				setLoading(true);
 				setError(null);
-				const data = await minecraftStatsService.getPlayerProfile(playerUuid);
+				const data = await minecraftStatsService.getPlayerProfile(playerUuid, serverId);
 				setProfile(data);
 			} catch (err) {
 				setError(err instanceof Error ? err.message : 'Не удалось загрузить профиль');
@@ -36,7 +40,7 @@ export function MinecraftPlayerProfileCard({ playerUuid }: MinecraftPlayerProfil
 		if (playerUuid) {
 			loadProfile();
 		}
-	}, [playerUuid]);
+	}, [playerUuid, serverId]);
 
 	if (loading) {
 		return <StatsLoading message="Загрузка профиля игрока..." />;

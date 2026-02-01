@@ -21,11 +21,16 @@ class GoldSourceStatsService {
 	/**
 	 * Получает профиль игрока по SteamID
 	 */
-	async getPlayerProfile(steamId: string): Promise<GoldSourcePlayerProfile | null> {
+	async getPlayerProfile(
+		steamId: string,
+		serverId?: string | number
+	): Promise<GoldSourcePlayerProfile | null> {
 		try {
-			const profile = await this.api.getPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGet({
-				steamId,
-			});
+			const requestParams: any = { steamId };
+			if (serverId) requestParams.serverId = String(serverId);
+
+			const profile =
+				await this.api.getPlayerProfileApiV1StatisticsGoldsourcePlayersSteamIdGet(requestParams);
 			return profile;
 		} catch (error) {
 			if (

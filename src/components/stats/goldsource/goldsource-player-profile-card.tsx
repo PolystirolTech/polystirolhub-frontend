@@ -12,9 +12,13 @@ import { StatsEmpty } from '@/components/stats/common/stats-empty';
 
 interface GoldSourcePlayerProfileCardProps {
 	steamId: string;
+	serverId?: string | number;
 }
 
-export function GoldSourcePlayerProfileCard({ steamId }: GoldSourcePlayerProfileCardProps) {
+export function GoldSourcePlayerProfileCard({
+	steamId,
+	serverId,
+}: GoldSourcePlayerProfileCardProps) {
 	const { user } = useAuth();
 	const [profile, setProfile] = useState<GoldSourcePlayerProfile | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -25,7 +29,7 @@ export function GoldSourcePlayerProfileCard({ steamId }: GoldSourcePlayerProfile
 			try {
 				setLoading(true);
 				setError(null);
-				const data = await goldSourceStatsService.getPlayerProfile(steamId);
+				const data = await goldSourceStatsService.getPlayerProfile(steamId, serverId);
 				setProfile(data);
 			} catch (err) {
 				setError(err instanceof Error ? err.message : 'Не удалось загрузить профиль GoldSource');
@@ -37,7 +41,7 @@ export function GoldSourcePlayerProfileCard({ steamId }: GoldSourcePlayerProfile
 		if (steamId) {
 			loadProfile();
 		}
-	}, [steamId]);
+	}, [steamId, serverId]);
 
 	if (loading) {
 		return <StatsLoading message="Загрузка статистики GoldSource..." />;

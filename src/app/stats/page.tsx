@@ -237,9 +237,9 @@ export default function StatsPage() {
 								<div className="mb-6">
 									<h2 className="text-2xl font-bold text-white mb-4">Моя статистика</h2>
 									{selectedServer.serverType === 'minecraft' ? (
-										<MinecraftStats />
+										<MinecraftStats serverId={selectedServer.id} />
 									) : (
-										<GoldSourceStats />
+										<GoldSourceStats serverId={selectedServer.id} />
 									)}
 								</div>
 

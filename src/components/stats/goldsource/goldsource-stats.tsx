@@ -8,7 +8,11 @@ import { StatsEmpty } from '@/components/stats/common/stats-empty';
 import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { GoldSourcePlayerProfileCard } from './goldsource-player-profile-card';
 
-export function GoldSourceStats() {
+interface GoldSourceStatsProps {
+	serverId?: string | number;
+}
+
+export function GoldSourceStats({ serverId }: GoldSourceStatsProps) {
 	const { user } = useAuth();
 	const [steamLink, setSteamLink] = useState<ExternalLinkResponse | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -76,7 +80,7 @@ export function GoldSourceStats() {
 	}
 	return (
 		<div>
-			<GoldSourcePlayerProfileCard steamId={steamId} />
+			<GoldSourcePlayerProfileCard steamId={steamId} serverId={serverId} />
 		</div>
 	);
 }
