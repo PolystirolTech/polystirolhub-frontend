@@ -78,6 +78,7 @@ export function GoldSourcePlayerProfileCard({
 								className="h-full w-full object-cover"
 								width={96}
 								height={96}
+								unoptimized
 							/>
 						) : (
 							<span role="img" aria-label="player">
