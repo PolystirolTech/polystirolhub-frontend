@@ -318,12 +318,11 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 												// Find relevant stats
 												// Try to find stats where servers_played includes this server name or ID
 												// Or just take the first one if available
-												const stats =
-													minecraft_stats.find(
-														(s) =>
-															s.servers_played?.includes(selectedServer.serverName) ||
-															s.servers_played?.includes(String(selectedServer.id))
-													);
+												const stats = minecraft_stats.find(
+													(s) =>
+														s.servers_played?.includes(selectedServer.serverName) ||
+														s.servers_played?.includes(String(selectedServer.id))
+												);
 
 												if (!stats) {
 													return (
@@ -345,12 +344,11 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 												);
 											})()
 										: (() => {
-												const stats =
-													goldsource_stats.find(
-														(s) =>
-															s.servers_played?.includes(selectedServer.serverName) ||
-															s.servers_played?.includes(String(selectedServer.id))
-													);
+												const stats = goldsource_stats.find(
+													(s) =>
+														s.servers_played?.includes(selectedServer.serverName) ||
+														s.servers_played?.includes(String(selectedServer.id))
+												);
 
 												if (!stats) {
 													return (
