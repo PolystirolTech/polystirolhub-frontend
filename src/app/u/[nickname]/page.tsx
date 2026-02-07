@@ -323,7 +323,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 														(s) =>
 															s.servers_played?.includes(selectedServer.serverName) ||
 															s.servers_played?.includes(String(selectedServer.id))
-													) || minecraft_stats[0];
+													);
 
 												if (!stats) {
 													return (
@@ -350,7 +350,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 														(s) =>
 															s.servers_played?.includes(selectedServer.serverName) ||
 															s.servers_played?.includes(String(selectedServer.id))
-													) || goldsource_stats[0];
+													);
 
 												if (!stats) {
 													return (
