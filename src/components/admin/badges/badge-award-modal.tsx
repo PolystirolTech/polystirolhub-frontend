@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { badgeService } from '@/lib/badges/badge-service';
-import { AdminApi, apiConfig } from '@/lib/api';
+import { apiConfig } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { Badge } from '@/lib/api/generated';

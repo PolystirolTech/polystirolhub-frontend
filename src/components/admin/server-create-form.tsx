@@ -19,6 +19,7 @@ interface ServerFormData {
 	serverStatus: ServerStatus;
 	seasonStart?: string;
 	seasonEnd?: string;
+	isWhitelist: boolean;
 }
 
 export function ServerCreateForm() {
@@ -34,6 +35,7 @@ export function ServerCreateForm() {
 		serverStatus: 'active' as ServerStatus,
 		seasonStart: '',
 		seasonEnd: '',
+		isWhitelist: false,
 	});
 	const [modName, setModName] = useState('');
 	const [modUrl, setModUrl] = useState('');
@@ -163,6 +165,7 @@ export function ServerCreateForm() {
 				serverStatus: formData.serverStatus,
 				seasonStart: formData.seasonStart?.trim() || undefined,
 				seasonEnd: formData.seasonEnd?.trim() || undefined,
+				isWhitelist: formData.isWhitelist,
 			});
 			setMessage({ type: 'success', text: 'Сервер успешно создан!' });
 			// Отправляем событие для обновления списка серверов
@@ -179,6 +182,7 @@ export function ServerCreateForm() {
 				serverStatus: 'active' as ServerStatus,
 				seasonStart: '',
 				seasonEnd: '',
+				isWhitelist: false,
 			});
 			setModName('');
 			setModUrl('');
@@ -387,6 +391,20 @@ export function ServerCreateForm() {
 						placeholder="25565"
 						className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
 					/>
+				</div>
+
+				{/* Вайтлист */}
+				<div className="flex items-center gap-2">
+					<input
+						id="isWhitelist"
+						type="checkbox"
+						checked={formData.isWhitelist}
+						onChange={(e) => setFormData((prev) => ({ ...prev, isWhitelist: e.target.checked }))}
+						className="h-4 w-4 rounded border-white/20 bg-black/20 text-primary focus:ring-primary"
+					/>
+					<label htmlFor="isWhitelist" className="text-xs font-medium text-white">
+						Вайтлист
+					</label>
 				</div>
 
 				{/* Статус сервера */}

@@ -27,8 +27,6 @@ interface BadgeWithOwnership {
 export default function MyBadgesPage() {
 	const { user, isAuthenticated, isLoading: authLoading, refreshUser } = useAuth();
 	const router = useRouter();
-	const [allBadges, setAllBadges] = useState<Badge[]>([]);
-	const [userBadges, setUserBadges] = useState<UserBadgeWithBadge[]>([]);
 	const [badgesWithOwnership, setBadgesWithOwnership] = useState<BadgeWithOwnership[]>([]);
 	const [filteredBadges, setFilteredBadges] = useState<BadgeWithOwnership[]>([]);
 	const [totalFilteredCount, setTotalFilteredCount] = useState(0);
@@ -63,9 +61,6 @@ export default function MyBadgesPage() {
 					badgeService.getAllBadges(),
 					badgeService.getMyBadges(),
 				]);
-
-				setAllBadges(allBadgesData);
-				setUserBadges(myBadgesData);
 
 				// Создаем Map для быстрого поиска баджиков пользователя по ID
 				const userBadgesMap = new Map<string, UserBadgeWithBadge>();
@@ -162,7 +157,6 @@ export default function MyBadgesPage() {
 	// Reset to page 1 when filters change
 	useEffect(() => {
 		setPage(1);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchQuery, typeFilter, sortBy]);
 
 	const handleSelectBadge = async (badgeId: string) => {
@@ -172,7 +166,6 @@ export default function MyBadgesPage() {
 			await refreshUser(); // Refresh user to get updated selected_badge_id
 			// Reload user badges to update selected state
 			const data = await badgeService.getMyBadges();
-			setUserBadges(data);
 
 			// Update badges with ownership using functional update
 			setBadgesWithOwnership((prev) => {
@@ -204,7 +197,6 @@ export default function MyBadgesPage() {
 			await refreshUser(); // Refresh user to get updated selected_badge_id
 			// Reload user badges to update selected state
 			const data = await badgeService.getMyBadges();
-			setUserBadges(data);
 
 			// Update badges with ownership using functional update
 			setBadgesWithOwnership((prev) => {
