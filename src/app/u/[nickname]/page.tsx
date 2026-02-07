@@ -13,10 +13,10 @@ import { isMinecraftGame, isGoldSourceGame } from '@/lib/utils/game-type-utils';
 import { BadgeImage } from '@/components/badges/badge-image';
 import { MinecraftPlayerProfileCard } from '@/components/stats/minecraft/minecraft-player-profile-card';
 import { GoldSourcePlayerProfileCard } from '@/components/stats/goldsource/goldsource-player-profile-card';
-import { MinecraftPlayerProfileFromJSON } from '@/lib/api/generated/models/MinecraftPlayerProfile';
+// import { MinecraftPlayerProfileFromJSON } from '@/lib/api/generated/models/MinecraftPlayerProfile';
 // Import GoldSourcePlayerProfileFromJSON if available, otherwise we might need to cast or mock
 // Assuming it exists similar to Minecraft
-import { GoldSourcePlayerProfileFromJSON } from '@/lib/api/generated/models/GoldSourcePlayerProfile';
+// import { GoldSourcePlayerProfileFromJSON } from '@/lib/api/generated/models/GoldSourcePlayerProfile';
 import { useBackground } from '@/lib/background/background-context';
 
 interface ServerWithType extends GameServerPublic {
@@ -333,13 +333,13 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 												}
 
 												// Convert to component format
-												const profileData = MinecraftPlayerProfileFromJSON(stats);
+												// const profileData = MinecraftPlayerProfileFromJSON(stats);
 
 												return (
 													<MinecraftPlayerProfileCard
 														playerUuid={String(stats.uuid)}
 														serverId={selectedServer.id}
-														initialProfile={profileData}
+														// initialProfile={profileData} // Don't use aggregated stats for specific server
 													/>
 												);
 											})()
@@ -358,13 +358,13 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 													);
 												}
 
-												const profileData = GoldSourcePlayerProfileFromJSON(stats);
+												// const profileData = GoldSourcePlayerProfileFromJSON(stats);
 
 												return (
 													<GoldSourcePlayerProfileCard
 														steamId={stats.steam_id}
 														serverId={selectedServer.id}
-														initialProfile={profileData}
+														// initialProfile={profileData} // Don't use aggregated stats for specific server
 													/>
 												);
 											})()}
