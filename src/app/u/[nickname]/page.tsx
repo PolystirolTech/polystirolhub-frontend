@@ -17,6 +17,7 @@ import { MinecraftPlayerProfileFromJSON } from '@/lib/api/generated/models/Minec
 // Import GoldSourcePlayerProfileFromJSON if available, otherwise we might need to cast or mock
 // Assuming it exists similar to Minecraft
 import { GoldSourcePlayerProfileFromJSON } from '@/lib/api/generated/models/GoldSourcePlayerProfile';
+import { useBackground } from '@/lib/background/background-context';
 
 interface ServerWithType extends GameServerPublic {
 	serverType: 'minecraft' | 'goldsource';
@@ -34,6 +35,8 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 	const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
 	const [loadingServers, setLoadingServers] = useState(true);
 
+	const { setOverrideBackground } = useBackground();
+
 	useEffect(() => {
 		async function loadData() {
 			try {
@@ -41,6 +44,10 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 				const decodedNickname = decodeURIComponent(nickname);
 				const data = await profileService.getProfile(decodedNickname);
 				setProfile(data);
+
+				// Check for background in root or header (backend consistency)
+				const bg = data.background || data.header.background || null;
+				setOverrideBackground(bg);
 			} catch (err) {
 				console.error('Error loading profile:', err);
 				if (err instanceof Error && err.message === 'Пользователь не найден') {
@@ -53,7 +60,14 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 		}
 
 		loadData();
-	}, [nickname]);
+	}, [nickname, setOverrideBackground]);
+
+	useEffect(() => {
+		// Cleanup override when component unmounts
+		return () => {
+			setOverrideBackground(undefined);
+		};
+	}, [setOverrideBackground]);
 
 	useEffect(() => {
 		async function loadServers() {

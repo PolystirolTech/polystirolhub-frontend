@@ -14,6 +14,7 @@ export interface ProfileHeader {
 	xp_for_next_level: number;
 	progress_percent: number;
 	linked_accounts: LinkedAccount[];
+	background?: string | null;
 }
 
 export interface ProfileBadge {
@@ -53,6 +54,7 @@ export interface UserProfileResponse {
 	badges: ProfileBadge[];
 	minecraft_stats: MinecraftStat[];
 	goldsource_stats: GoldSourceStat[];
+	background?: string | null;
 }
 
 class ProfileService {

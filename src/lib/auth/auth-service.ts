@@ -189,6 +189,33 @@ class AuthService {
 	}
 
 	/**
+	 * Upload user background
+	 */
+	async uploadBackground(file: File): Promise<User> {
+		try {
+			const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+			const formData = new FormData();
+			formData.append('file', file);
+
+			const response = await fetch(`${baseUrl}/api/v1/auth/me/background`, {
+				method: 'POST',
+				credentials: 'include',
+				body: formData,
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				throw new Error(errorData.detail || 'Failed to upload background');
+			}
+
+			return await response.json();
+		} catch (error) {
+			console.error('Failed to upload background:', error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Generate a one-time link code for linking Minecraft UUID to user account
 	 */
 	async generateLinkCode(): Promise<LinkCodeGenerateResponse> {

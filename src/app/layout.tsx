@@ -9,6 +9,8 @@ import { Analytics } from '@/components/analytics/analytics';
 import { ENABLE_CHRISTMAS_THEME } from '@/lib/theme/config';
 
 import { CookieConsent } from '@/components/layout/cookie-consent';
+import { BackgroundManager } from '@/components/layout/background-manager';
+import { BackgroundProvider } from '@/lib/background/background-context';
 
 const pixelFont = Press_Start_2P({
 	variable: '--font-pixel',
@@ -33,10 +35,13 @@ export default function RootLayout({
 				{ENABLE_CHRISTMAS_THEME && <ChristmasDecorations />}
 				<Analytics />
 				<AuthProvider>
-					<LevelProvider>
-						<MaintenanceGuard>{children}</MaintenanceGuard>
-						<CookieConsent />
-					</LevelProvider>
+					<BackgroundProvider>
+						<BackgroundManager />
+						<LevelProvider>
+							<MaintenanceGuard>{children}</MaintenanceGuard>
+							<CookieConsent />
+						</LevelProvider>
+					</BackgroundProvider>
 				</AuthProvider>
 			</body>
 		</html>
