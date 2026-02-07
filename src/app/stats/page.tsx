@@ -32,12 +32,12 @@ export default function StatsPage() {
 	const [loadingServers, setLoadingServers] = useState(true);
 	const [serversError, setServersError] = useState<string | null>(null);
 
-	// Redirect to login if not authenticated
-	useEffect(() => {
-		if (!isLoading && !isAuthenticated) {
-			router.push('/login');
-		}
-	}, [isAuthenticated, isLoading, router]);
+	// Redirect to login if not authenticated - REMOVED
+	// useEffect(() => {
+	// 	if (!isLoading && !isAuthenticated) {
+	// 		router.push('/login');
+	// 	}
+	// }, [isAuthenticated, isLoading, router]);
 
 	// Helper functions
 	const getGameTypeName = (gameType: unknown): string | null => {
@@ -131,10 +131,8 @@ export default function StatsPage() {
 			}
 		}
 
-		if (isAuthenticated) {
-			loadServers();
-		}
-	}, [isAuthenticated]);
+		loadServers();
+	}, []);
 
 	if (isLoading) {
 		return (
@@ -150,9 +148,9 @@ export default function StatsPage() {
 		);
 	}
 
-	if (!isAuthenticated || !user) {
-		return null; // Will redirect to login
-	}
+	// if (!isAuthenticated || !user) {
+	// 	return null; // Will redirect to login
+	// }
 
 	const selectedServer = servers.find((s) => String(s.id) === selectedServerId);
 
@@ -234,14 +232,16 @@ export default function StatsPage() {
 						{selectedServer && selectedServer.id && (
 							<div>
 								{/* Player Stats Section */}
-								<div className="mb-6">
-									<h2 className="text-2xl font-bold text-white mb-4">Моя статистика</h2>
-									{selectedServer.serverType === 'minecraft' ? (
-										<MinecraftStats serverId={selectedServer.id} />
-									) : (
-										<GoldSourceStats serverId={selectedServer.id} />
-									)}
-								</div>
+								{isAuthenticated && (
+									<div className="mb-6">
+										<h2 className="text-2xl font-bold text-white mb-4">Моя статистика</h2>
+										{selectedServer.serverType === 'minecraft' ? (
+											<MinecraftStats serverId={selectedServer.id} />
+										) : (
+											<GoldSourceStats serverId={selectedServer.id} />
+										)}
+									</div>
+								)}
 
 								{/* Server Stats Card */}
 								<div className="mb-4">
