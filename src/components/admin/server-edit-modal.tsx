@@ -303,7 +303,7 @@ export function ServerEditModal({
 			/>
 
 			{/* Modal */}
-			<div className="glass-card bg-[var(--color-secondary)] relative max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+			<div className="glass-card bg-[var(--color-secondary)] backdrop-blur-md relative max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
 				<h2 className="mb-4 text-sm font-bold text-white">Редактирование сервера</h2>
 
 				<form onSubmit={handleSubmit} className="space-y-4">

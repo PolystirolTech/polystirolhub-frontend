@@ -151,7 +151,7 @@ export function BadgeRevokeModal({ badge, onSuccess, onCancel }: BadgeRevokeModa
 			/>
 
 			{/* Modal */}
-			<div className="glass-card bg-[var(--color-secondary)] relative max-w-md w-full p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+			<div className="glass-card bg-[var(--color-secondary)] backdrop-blur-md relative max-w-md w-full p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
 				<h2 className="mb-4 text-2xl font-bold text-white">Отозвать бэйджик</h2>
 				<p className="text-sm text-white/60 mb-6">
 					Отзыв бэйджа: <span className="font-medium text-white">{badge.name}</span>

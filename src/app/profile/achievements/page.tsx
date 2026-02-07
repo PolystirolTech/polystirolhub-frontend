@@ -179,7 +179,7 @@ export default function MyAchievementsPage() {
 				</div>
 
 				{/* Filters and Search */}
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 mb-6">
+				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 mb-6">
 					<div className="flex flex-col sm:flex-row gap-4">
 						{/* Search */}
 						<div className="flex-1">
@@ -224,14 +224,14 @@ export default function MyAchievementsPage() {
 
 				{/* Error */}
 				{error && (
-					<div className="glass-card bg-red-500/20 border border-red-500/50 p-4 mb-6">
+					<div className="glass-card bg-red-500/20 backdrop-blur-md border border-red-500/50 p-4 mb-6">
 						<p className="text-red-400">{error}</p>
 					</div>
 				)}
 
 				{/* Achievements List */}
 				{filteredAchievements.length === 0 ? (
-					<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 text-center">
 						<p className="text-white/60">
 							{searchQuery || statusFilter !== 'all'
 								? 'Достижения не найдены'
@@ -259,7 +259,7 @@ export default function MyAchievementsPage() {
 							return (
 								<div
 									key={userQuest.id}
-									className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg"
+									className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg"
 								>
 									{/* Header */}
 									<div className="mb-3 flex items-start gap-3">

@@ -115,7 +115,7 @@ export function QuestsListWidget() {
 
 	if (isLoading) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8">
 				<div className="flex justify-center py-8">
 					<div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
 				</div>
@@ -126,7 +126,7 @@ export function QuestsListWidget() {
 	return (
 		<>
 			{/* Controls */}
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 mb-6">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 mb-6">
 				<div className="flex flex-col sm:flex-row gap-4 mb-4">
 					{/* Search */}
 					<div className="flex-1">
@@ -160,14 +160,14 @@ export function QuestsListWidget() {
 
 			{/* Error */}
 			{error && (
-				<div className="glass-card bg-red-500/20 border border-red-500/50 p-4 mb-6">
+				<div className="glass-card bg-red-500/20 backdrop-blur-md border border-red-500/50 p-4 mb-6">
 					<p className="text-red-400">{error}</p>
 				</div>
 			)}
 
 			{/* Quests Grid */}
 			{filteredQuests.length === 0 && !isLoading ? (
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
+				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 text-center">
 					<p className="text-white/60">
 						{searchQuery || typeFilter !== 'all' ? 'Квесты не найдены' : 'Квесты не созданы'}
 					</p>
@@ -184,7 +184,7 @@ export function QuestsListWidget() {
 							return (
 								<div
 									key={quest.id}
-									className={`glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 rounded-lg ${
+									className={`glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 rounded-lg ${
 										!isActive ? 'opacity-60' : ''
 									}`}
 								>

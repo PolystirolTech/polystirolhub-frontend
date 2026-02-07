@@ -253,7 +253,7 @@ export default function MyBadgesPage() {
 				</div>
 
 				{/* Filters and Search */}
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 mb-6">
+				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 mb-6">
 					<div className="flex flex-col sm:flex-row gap-4">
 						{/* Search */}
 						<div className="flex-1">
@@ -299,18 +299,18 @@ export default function MyBadgesPage() {
 
 				{/* Error */}
 				{error && (
-					<div className="glass-card bg-red-500/20 border border-red-500/50 p-4 mb-6">
+					<div className="glass-card bg-red-500/20 backdrop-blur-md border border-red-500/50 p-4 mb-6">
 						<p className="text-red-400">{error}</p>
 					</div>
 				)}
 
 				{/* Badges List */}
 				{badgesWithOwnership.length === 0 && !isLoading ? (
-					<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 text-center">
 						<p className="text-white/60">Бэджики не найдены</p>
 					</div>
 				) : filteredBadges.length === 0 && !isLoading ? (
-					<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 text-center">
 						<p className="text-white/60">
 							{searchQuery || typeFilter !== 'all' ? 'Бэджики не найдены' : 'Бэджики не найдены'}
 						</p>

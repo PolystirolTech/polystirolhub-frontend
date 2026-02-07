@@ -287,7 +287,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 						<>
 							{/* Server Tabs */}
 							<div className="mb-6">
-								<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4">
+								<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
 									<div className="flex flex-wrap items-center gap-3">
 										<span className="text-sm font-medium text-white/80">Сервер:</span>
 										{servers.map((server) => {

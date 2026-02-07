@@ -12,7 +12,7 @@ export function ProfileWidget() {
 
 	if (!user) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<p className="text-sm text-white/60">Войдите для просмотра профиля</p>
 			</div>
 		);
@@ -21,7 +21,7 @@ export function ProfileWidget() {
 	return (
 		<Link
 			href="/profile"
-			className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg transition-all hover:scale-[1.02] block"
+			className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg transition-all hover:scale-[1.02] block"
 			style={
 				{
 					'--progress-percent': `${(currentXp / nextLevelXp) * 100}%`,

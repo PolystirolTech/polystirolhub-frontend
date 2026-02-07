@@ -249,7 +249,7 @@ export function WhitelistAdminWidget() {
 	return (
 		<div className="space-y-6">
 			{/* Список заявок */}
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
 				<div className="flex items-center justify-between mb-4">
 					<h3 className="text-sm font-bold text-white">Управление вайтлистом</h3>
 					<div className="flex gap-2">
@@ -380,7 +380,7 @@ export function WhitelistAdminWidget() {
 			</div>
 
 			{/* Добавить вручную */}
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
 				<h3 className="mb-4 text-sm font-bold text-white">Добавить в вайтлист вручную</h3>
 
 				<form onSubmit={handleAddManually} className="space-y-4">

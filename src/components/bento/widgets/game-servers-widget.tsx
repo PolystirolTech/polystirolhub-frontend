@@ -184,7 +184,7 @@ export function GameServersWidget() {
 
 	if (isLoading) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Игровые серверы</h3>
 				<div className="text-xs text-white/60">Загрузка...</div>
 			</div>
@@ -193,7 +193,7 @@ export function GameServersWidget() {
 
 	if (error) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Игровые серверы</h3>
 				<div className="text-xs text-red-400">{error}</div>
 			</div>
@@ -202,7 +202,7 @@ export function GameServersWidget() {
 
 	if (servers.length === 0) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Игровые серверы</h3>
 				<div className="text-xs text-white/60">Нет серверов</div>
 			</div>
@@ -210,7 +210,7 @@ export function GameServersWidget() {
 	}
 
 	return (
-		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 			<h3 className="mb-3 text-sm font-bold text-white">Игровые серверы</h3>
 			<div className="space-y-2">
 				{servers.map((server) => {

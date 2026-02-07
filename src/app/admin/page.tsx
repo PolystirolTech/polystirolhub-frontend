@@ -69,7 +69,7 @@ export default function AdminPage() {
 					<p className="text-lg text-white/60">Управление системой</p>
 				</div>
 
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 					<div className="mb-3">
 						<h2 className="text-sm font-bold text-white mb-2">
 							Добро пожаловать, {user.username}!

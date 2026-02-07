@@ -20,7 +20,7 @@ export default function ShopPage() {
 					<p className="text-lg text-white/60">Покупка предметов и улучшений</p>
 				</div>
 
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8">
+				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8">
 					<p className="text-white/60">Страница в разработке</p>
 				</div>
 			</main>
