@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { apiConfig, type ActivityResponse } from '@/lib/api';
 import { ActivityResponseFromJSON } from '@/lib/api/generated/models/ActivityResponse';
 import { formatNotificationTime } from '@/lib/notifications/utils';
+import Link from 'next/link';
 
 /**
  * Получить иконку для типа события активности
@@ -175,8 +176,11 @@ export function ActivityWidget() {
 
 									{/* Информация о пользователе */}
 									{user && username && (
-										<div className="mt-2 flex items-center gap-2">
-											<div className="h-5 w-5 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-primary to-secondary">
+										<Link
+											href={`/u/${username}`}
+											className="mt-2 flex items-center gap-2 group w-fit"
+										>
+											<div className="h-5 w-5 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-primary to-secondary transition-transform group-hover:scale-110">
 												{avatarUrl ? (
 													<Image
 														src={avatarUrl}
@@ -192,13 +196,15 @@ export function ActivityWidget() {
 													</div>
 												)}
 											</div>
-											<span className="text-white/80">{username}</span>
+											<span className="text-white/80 group-hover:text-primary transition-colors">
+												{username}
+											</span>
 											{userLevel !== null && (
 												<span className="rounded-full bg-primary/20 px-1.5 py-0.5 text-[9px] text-primary">
 													Lv.{userLevel}
 												</span>
 											)}
-										</div>
+										</Link>
 									)}
 
 									{/* Информация о сервере */}

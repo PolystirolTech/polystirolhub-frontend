@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/lib/auth';
@@ -25,8 +24,7 @@ interface ServerWithType extends GameServerPublic {
 }
 
 export default function StatsPage() {
-	const { user, isAuthenticated, isLoading } = useAuth();
-	const router = useRouter();
+	const { isAuthenticated, isLoading } = useAuth();
 	const [servers, setServers] = useState<ServerWithType[]>([]);
 	const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
 	const [loadingServers, setLoadingServers] = useState(true);

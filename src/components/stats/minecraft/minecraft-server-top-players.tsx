@@ -8,6 +8,7 @@ import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 import { StatsSection } from '@/components/stats/common/stats-section';
+import Link from 'next/link';
 
 import { ResponseError } from '@/lib/api/generated/runtime';
 
@@ -145,7 +146,14 @@ export function MinecraftServerTopPlayers({
 									<td className="py-3 px-4 text-sm text-white">
 										{rankEmoji} {rank}
 									</td>
-									<td className="py-3 px-4 text-sm font-medium text-white">{playerName}</td>
+									<td className="py-3 px-4 text-sm font-medium text-white">
+										<Link
+											href={`/u/${playerName}`}
+											className="hover:text-primary transition-colors"
+										>
+											{playerName}
+										</Link>
+									</td>
 									<td className="py-3 px-4 text-sm text-white">{formatPlaytime(playtime)}</td>
 									<td className="py-3 px-4 text-sm text-green-400">{kills}</td>
 									<td className="py-3 px-4 text-sm text-red-400">{deaths}</td>

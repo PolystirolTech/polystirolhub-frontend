@@ -8,6 +8,7 @@ import { StatsLoading } from '@/components/stats/common/stats-loading';
 import { StatsError } from '@/components/stats/common/stats-error';
 import { StatsEmpty } from '@/components/stats/common/stats-empty';
 import { StatsSection } from '@/components/stats/common/stats-section';
+import Link from 'next/link';
 
 interface MinecraftKillsListProps {
 	playerUuid: string;
@@ -262,7 +263,18 @@ export function MinecraftKillsList({ playerUuid, serverId }: MinecraftKillsListP
 
 							return (
 								<tr key={kill.id} className="border-b border-white/5 hover:bg-white/5">
-									<td className="py-3 px-4 text-sm text-white">{displayName}</td>
+									<td className="py-3 px-4 text-sm text-white">
+										{displayName !== 'Неизвестно' ? (
+											<Link
+												href={`/u/${displayName}`}
+												className="hover:text-primary transition-colors"
+											>
+												{displayName}
+											</Link>
+										) : (
+											displayName
+										)}
+									</td>
 									<td className="py-3 px-4 text-sm text-white">{weapon}</td>
 									<td className="py-3 px-4 text-sm text-white">
 										{date ? formatTimestamp(date) : 'Неизвестно'}
