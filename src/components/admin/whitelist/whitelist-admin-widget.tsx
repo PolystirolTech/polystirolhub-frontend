@@ -1,11 +1,18 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { whitelistService, type WhitelistEntry } from '@/lib/whitelist/whitelist-service';
 import { gameService } from '@/lib/game/game-service';
+import { apiConfig } from '@/lib/api';
 import type { GameServerResponse } from '@/lib/api/generated';
+
+interface AdminUser {
+	id: string;
+	username: string;
+	email: string | null;
+}
 
 export function WhitelistAdminWidget() {
 	const [activeTab, setActiveTab] = useState<'pending' | 'approved'>('pending');
@@ -24,6 +31,16 @@ export function WhitelistAdminWidget() {
 	const [addMessage, setAddMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(
 		null
 	);
+
+	// User search for User ID field
+	const [users, setUsers] = useState<AdminUser[]>([]);
+	const [userSearchQuery, setUserSearchQuery] = useState('');
+	const [filteredUsers, setFilteredUsers] = useState<AdminUser[]>([]);
+	const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+	const [showUserResults, setShowUserResults] = useState(false);
+	const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+	const userSearchInputRef = useRef<HTMLInputElement>(null);
+	const userResultsRef = useRef<HTMLDivElement>(null);
 
 	const loadServers = useCallback(async () => {
 		try {
@@ -56,6 +73,91 @@ export function WhitelistAdminWidget() {
 	useEffect(() => {
 		loadEntries();
 	}, [loadEntries]);
+
+	// Load users for User ID field
+	useEffect(() => {
+		async function loadUsers() {
+			try {
+				setIsLoadingUsers(true);
+				const basePath = apiConfig.basePath || 'http://localhost:8000';
+				const params = new URLSearchParams();
+				params.append('skip', '0');
+				params.append('limit', '100');
+				const url = `${basePath}/api/v1/admin/users?${params.toString()}`;
+
+				const response = await fetch(url, {
+					method: 'GET',
+					credentials: 'include',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error('Не удалось загрузить пользователей');
+				}
+
+				const usersList = await response.json();
+				const usersArray = Array.isArray(usersList) ? usersList : [];
+				setUsers(usersArray as AdminUser[]);
+				setFilteredUsers(usersArray as AdminUser[]);
+			} catch (err) {
+				console.error('Failed to load users:', err);
+			} finally {
+				setIsLoadingUsers(false);
+			}
+		}
+
+		loadUsers();
+	}, []);
+
+	// Filter users based on search query
+	useEffect(() => {
+		if (!userSearchQuery.trim()) {
+			setFilteredUsers(users);
+			setShowUserResults(false);
+			setSelectedUser(null);
+			return;
+		}
+
+		if (selectedUser && userSearchQuery.trim() === selectedUser.username) {
+			setShowUserResults(false);
+			return;
+		}
+
+		const query = userSearchQuery.toLowerCase();
+		const filtered = users.filter(
+			(user) =>
+				user.username.toLowerCase().includes(query) ||
+				(user.email && user.email.toLowerCase().includes(query))
+		);
+		setFilteredUsers(filtered);
+		setShowUserResults(filtered.length > 0);
+	}, [userSearchQuery, users, selectedUser]);
+
+	// Close user results when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				userResultsRef.current &&
+				!userResultsRef.current.contains(event.target as Node) &&
+				userSearchInputRef.current &&
+				!userSearchInputRef.current.contains(event.target as Node)
+			) {
+				setShowUserResults(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
+
+	const handleUserSelect = (user: AdminUser) => {
+		setSelectedUser(user);
+		setUserSearchQuery(user.username);
+		setAddUserId(user.id);
+		setShowUserResults(false);
+	};
 
 	const getServerName = (serverId: string): string => {
 		const server = servers.find((s) => String(s.id) === serverId);
@@ -132,6 +234,8 @@ export function WhitelistAdminWidget() {
 			setAddMessage({ type: 'success', text: 'Ник успешно добавлен в вайтлист' });
 			setAddNickname('');
 			setAddUserId('');
+			setUserSearchQuery('');
+			setSelectedUser(null);
 		} catch (err) {
 			setAddMessage({
 				type: 'error',
@@ -309,15 +413,54 @@ export function WhitelistAdminWidget() {
 						/>
 					</div>
 
-					<div>
+					<div className="relative">
 						<label className="text-xs font-medium text-white/80">User ID (опционально)</label>
 						<Input
+							ref={userSearchInputRef}
 							type="text"
-							value={addUserId}
-							onChange={(e) => setAddUserId(e.target.value)}
-							placeholder="UUID пользователя"
+							value={userSearchQuery}
+							onChange={(e) => {
+								setUserSearchQuery(e.target.value);
+								setSelectedUser(null);
+								setAddUserId('');
+							}}
+							onFocus={() => {
+								if (userSearchQuery.trim() && filteredUsers.length > 0) {
+									setShowUserResults(true);
+								}
+							}}
+							placeholder="Поиск по имени или email..."
 							className="bg-black/20 border-white/10 text-white mt-1"
 						/>
+						{showUserResults && filteredUsers.length > 0 && (
+							<div
+								ref={userResultsRef}
+								className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-lg bg-[var(--color-secondary)] border border-white/10 shadow-lg"
+							>
+								{filteredUsers.map((user) => (
+									<button
+										key={user.id}
+										type="button"
+										onClick={() => handleUserSelect(user)}
+										className="w-full px-4 py-2 text-left hover:bg-white/10 transition-colors"
+									>
+										<div className="font-medium text-white">{user.username}</div>
+										{user.email && <div className="text-xs text-white/60">{user.email}</div>}
+										<div className="text-xs text-white/40">ID: {user.id}</div>
+									</button>
+								))}
+							</div>
+						)}
+						{isLoadingUsers && (
+							<div className="absolute right-3 top-9">
+								<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
+							</div>
+						)}
+						{selectedUser && (
+							<div className="mt-1 text-xs text-white/60">
+								Выбран: {selectedUser.username} (ID: {selectedUser.id})
+							</div>
+						)}
 					</div>
 
 					{addMessage && (
