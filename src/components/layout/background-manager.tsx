@@ -1,38 +1,67 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useBackground } from '@/lib/background/background-context';
+
+function BackgroundImage({ src }: { src: string }) {
+	const [isLoaded, setIsLoaded] = useState(false);
+
+	// Check if the domain is allowed for optimization
+	// Based on next.config.ts
+	// const isOptimizable = (() => {
+	// 	if (src.startsWith('/')) return true;
+	// 	try {
+	// 		const url = new URL(src);
+	// 		const allowedDomains = [
+	// 			'localhost',
+	// 			'api.dev.sluicee.ru',
+	// 			'api.polystirolhub.net',
+	// 		];
+	// 		return allowedDomains.includes(url.hostname);
+	// 	} catch {
+	// 		return false;
+	// 	}
+	// })();
+
+	return (
+		<div className="fixed inset-0 -z-50">
+			{/* Dark overlay for readability */}
+			<div className="absolute inset-0 bg-black/20 z-10" />
+
+			<Image
+				src={src}
+				alt=""
+				fill
+				priority
+				className={`object-cover transition-opacity duration-500 ${
+					isLoaded ? 'opacity-100' : 'opacity-0'
+				}`}
+				sizes="100vw"
+				quality={75}
+				unoptimized={true}
+				onLoad={() => setIsLoaded(true)}
+			/>
+
+			{/* Fallback background color while loading */}
+			{!isLoaded && <div className="absolute inset-0 bg-[var(--background)] -z-10" />}
+		</div>
+	);
+}
 
 export function BackgroundManager() {
 	const { activeBackground } = useBackground();
 
+	// Reset body styles that might have been set by previous version
 	useEffect(() => {
-		if (activeBackground) {
-			// Apply background
-			// We keep a slight overlay to ensure text readability
-			document.body.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${activeBackground}')`;
-			document.body.style.backgroundSize = 'cover';
-			document.body.style.backgroundAttachment = 'fixed';
-			document.body.style.backgroundPosition = 'center';
-			document.body.style.backgroundRepeat = 'no-repeat';
-		} else {
-			// Reset to default styles defined in globals.css
-			document.body.style.backgroundImage = '';
-			document.body.style.backgroundSize = '';
-			document.body.style.backgroundAttachment = '';
-			document.body.style.backgroundPosition = '';
-			document.body.style.backgroundRepeat = '';
-		}
+		document.body.style.backgroundImage = '';
+		document.body.style.backgroundSize = '';
+		document.body.style.backgroundAttachment = '';
+		document.body.style.backgroundPosition = '';
+		document.body.style.backgroundRepeat = '';
+	}, []);
 
-		// Cleanup function to reset styles when component unmounts
-		return () => {
-			document.body.style.backgroundImage = '';
-			document.body.style.backgroundSize = '';
-			document.body.style.backgroundAttachment = '';
-			document.body.style.backgroundPosition = '';
-			document.body.style.backgroundRepeat = '';
-		};
-	}, [activeBackground]);
+	if (!activeBackground) return null;
 
-	return null;
+	return <BackgroundImage key={activeBackground} src={activeBackground} />;
 }
