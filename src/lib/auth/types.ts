@@ -11,6 +11,7 @@ export interface User {
 	email: string | null;
 	username: string;
 	avatar: string | null;
+	background?: string | null;
 	is_active: boolean;
 	is_admin?: boolean;
 	is_super_admin?: boolean;
@@ -23,6 +24,7 @@ export interface UpdateProfileData {
 	email?: string;
 	username?: string;
 	avatar?: string;
+	background?: string | null;
 	is_active?: boolean;
 }
 
