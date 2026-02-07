@@ -33,6 +33,7 @@ export function ServerEditModal({
 		serverStatus: (server.status as ServerStatus) || ('active' as ServerStatus),
 		seasonStart: '',
 		seasonEnd: '',
+		isWhitelist: !!server.isWhitelist,
 	});
 	const [modName, setModName] = useState('');
 	const [modUrl, setModUrl] = useState('');
@@ -112,6 +113,7 @@ export function ServerEditModal({
 				serverStatus: (server.status as ServerStatus) || ('active' as ServerStatus),
 				seasonStart: getSeasonDate(server.seasonStart),
 				seasonEnd: getSeasonDate(server.seasonEnd),
+				isWhitelist: !!server.isWhitelist,
 			});
 			setModName('');
 			setModUrl('');
@@ -267,6 +269,7 @@ export function ServerEditModal({
 				serverStatus: formData.serverStatus,
 				seasonStart: formData.seasonStart?.trim() || undefined,
 				seasonEnd: formData.seasonEnd?.trim() || undefined,
+				isWhitelist: formData.isWhitelist,
 			});
 			onServerUpdated(updatedServer);
 			setMessage({ type: 'success', text: 'Сервер успешно обновлен!' });
@@ -484,6 +487,20 @@ export function ServerEditModal({
 							placeholder="25565"
 							className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:border-primary/50"
 						/>
+					</div>
+
+					{/* Вайтлист */}
+					<div className="flex items-center gap-2">
+						<input
+							id="edit-isWhitelist"
+							type="checkbox"
+							checked={formData.isWhitelist}
+							onChange={(e) => setFormData((prev) => ({ ...prev, isWhitelist: e.target.checked }))}
+							className="h-4 w-4 rounded border-white/20 bg-black/20 text-primary focus:ring-primary"
+						/>
+						<label htmlFor="edit-isWhitelist" className="text-xs font-medium text-white">
+							Вайтлист
+						</label>
 					</div>
 
 					{/* Статус сервера */}

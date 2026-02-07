@@ -113,6 +113,12 @@ export default function AdminPage() {
 						>
 							Файловый менеджер →
 						</Link>
+						<Link
+							href="/admin/whitelist"
+							className="text-xs text-primary hover:text-primary/80 transition-colors underline"
+						>
+							Вайтлист →
+						</Link>
 					</div>
 				</div>
 

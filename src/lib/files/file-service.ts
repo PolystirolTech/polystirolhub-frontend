@@ -1,5 +1,3 @@
-import { apiConfig } from '@/lib/api/config';
-
 export interface FileItem {
 	filename: string;
 	url: string;

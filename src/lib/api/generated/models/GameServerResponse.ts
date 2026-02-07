@@ -171,6 +171,12 @@ export interface GameServerResponse {
      * @memberof GameServerResponse
      */
     gameType: GameTypeResponse;
+    /**
+     * Whether the server has whitelist enabled
+     * @type {boolean}
+     * @memberof GameServerResponse
+     */
+    isWhitelist?: boolean;
 }
 
 /**
@@ -216,6 +222,7 @@ export function GameServerResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'createdAt': json['created_at'],
         'updatedAt': json['updated_at'],
         'gameType': GameTypeResponseFromJSON(json['game_type']),
+        'isWhitelist': !exists(json, 'is_whitelist') ? undefined : json['is_whitelist'],
     };
 }
 
@@ -244,6 +251,7 @@ export function GameServerResponseToJSON(value?: GameServerResponse | null): any
         'created_at': value.createdAt,
         'updated_at': value.updatedAt,
         'game_type': GameTypeResponseToJSON(value.gameType),
+        'is_whitelist': value.isWhitelist,
     };
 }
 

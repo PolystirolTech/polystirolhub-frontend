@@ -27,6 +27,7 @@ interface CreateGameServerData {
 	serverStatus?: ServerStatus;
 	seasonStart?: string;
 	seasonEnd?: string;
+	isWhitelist?: boolean;
 }
 
 interface UpdateGameServerData {
@@ -40,6 +41,7 @@ interface UpdateGameServerData {
 	serverStatus?: ServerStatus;
 	seasonStart?: string;
 	seasonEnd?: string;
+	isWhitelist?: boolean;
 }
 
 class GameService {
@@ -257,6 +259,9 @@ class GameService {
 			if (data.seasonEnd) {
 				formData.append('season_end', data.seasonEnd);
 			}
+			if (data.isWhitelist !== undefined) {
+				formData.append('is_whitelist', String(data.isWhitelist));
+			}
 			if (data.banner) {
 				formData.append('banner', data.banner);
 			}
@@ -327,6 +332,9 @@ class GameService {
 				if (data.seasonEnd.trim()) {
 					formData.append('season_end', data.seasonEnd.trim());
 				}
+			}
+			if (data.isWhitelist !== undefined) {
+				formData.append('is_whitelist', String(data.isWhitelist));
 			}
 			if (data.banner) {
 				formData.append('banner', data.banner);

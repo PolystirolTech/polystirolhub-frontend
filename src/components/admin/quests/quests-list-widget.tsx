@@ -6,7 +6,7 @@
  * Widget for displaying and managing quests in admin panel
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { questService } from '@/lib/quests';
 import { QuestCreateForm } from './quest-create-form';
 import { QuestEditModal } from './quest-edit-modal';
@@ -36,11 +36,7 @@ export function QuestsListWidget() {
 	const [hasMore, setHasMore] = useState(false);
 
 	// Load quests
-	useEffect(() => {
-		loadQuests();
-	}, [page]);
-
-	async function loadQuests() {
+	const loadQuests = useCallback(async () => {
 		try {
 			setIsLoading(true);
 			setError(null);
@@ -55,7 +51,11 @@ export function QuestsListWidget() {
 		} finally {
 			setIsLoading(false);
 		}
-	}
+	}, [page]);
+
+	useEffect(() => {
+		loadQuests();
+	}, [loadQuests]);
 
 	// Filter quests
 	useEffect(() => {

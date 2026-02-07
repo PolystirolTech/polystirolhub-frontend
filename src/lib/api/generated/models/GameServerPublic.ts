@@ -165,6 +165,12 @@ export interface GameServerPublic {
      * @memberof GameServerPublic
      */
     updatedAt: any | null;
+    /**
+     * Whether the server has whitelist enabled
+     * @type {boolean}
+     * @memberof GameServerPublic
+     */
+    isWhitelist?: boolean;
 }
 
 /**
@@ -209,6 +215,7 @@ export function GameServerPublicFromJSONTyped(json: any, ignoreDiscriminator: bo
         'seasonEnd': !exists(json, 'season_end') ? undefined : SeasonEnd1FromJSON(json['season_end']),
         'createdAt': json['created_at'],
         'updatedAt': json['updated_at'],
+        'isWhitelist': !exists(json, 'is_whitelist') ? undefined : json['is_whitelist'],
     };
 }
 
@@ -236,6 +243,7 @@ export function GameServerPublicToJSON(value?: GameServerPublic | null): any {
         'season_end': SeasonEnd1ToJSON(value.seasonEnd),
         'created_at': value.createdAt,
         'updated_at': value.updatedAt,
+        'is_whitelist': value.isWhitelist,
     };
 }
 

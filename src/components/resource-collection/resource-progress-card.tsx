@@ -14,7 +14,7 @@ interface ResourceProgressCardProps {
 	serverName?: string;
 }
 
-export function ResourceProgressCard({ resources, serverName }: ResourceProgressCardProps) {
+export function ResourceProgressCard({ resources }: ResourceProgressCardProps) {
 	// Filter only resources with goals or resources with current amount > 0
 	const displayResources = resources.filter((r) => r.goalId || (r.currentAmount > 0 && !r.goalId));
 

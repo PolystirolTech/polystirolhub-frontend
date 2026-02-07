@@ -8,6 +8,7 @@ import { calculateSeasonCountdown } from '@/lib/utils/season-countdown';
 import { resourceCollectionService } from '@/lib/resource-collection';
 import type { ServerProgressResponse } from '@/lib/resource-collection';
 import { ResourceProgressCard } from '@/components/resource-collection/resource-progress-card';
+import { WhitelistApplyButton } from '@/components/whitelist/whitelist-apply-button';
 
 interface ServerWithStatus extends GameServerPublic {
 	mcStatus?: ServerStatusResponse;
@@ -395,7 +396,7 @@ export default function ServersPage() {
 		}
 
 		loadData();
-	}, []);
+	}, [loadResourceProgress]);
 
 	// Polling для обновления прогресса каждые 30 секунд
 	useEffect(() => {
@@ -676,6 +677,15 @@ export default function ServersPage() {
 														<ResourceProgressCard
 															resources={server.resourceProgress.resources}
 															serverName={server.resourceProgress.serverName}
+														/>
+													)}
+
+													{/* Кнопка вайтлиста */}
+													{server.isWhitelist === true && (
+														<WhitelistApplyButton
+															serverId={String(server.id)}
+															serverName={serverName}
+															isWhitelist={true}
 														/>
 													)}
 												</div>
