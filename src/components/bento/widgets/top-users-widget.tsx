@@ -51,7 +51,7 @@ export function TopUsersWidget() {
 	}, []);
 
 	return (
-		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 			<h3 className="mb-3 text-sm font-bold text-white">Топ игроков</h3>
 			{isLoading ? (
 				<div className="flex items-center justify-center py-4">

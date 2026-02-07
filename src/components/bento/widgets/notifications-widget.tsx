@@ -18,7 +18,7 @@ export function NotificationsWidget() {
 
 	if (!isAuthenticated) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Уведомления</h3>
 				<p className="text-xs text-white/60">Войдите для просмотра уведомлений</p>
 			</div>
@@ -27,7 +27,7 @@ export function NotificationsWidget() {
 
 	if (isLoading) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Уведомления</h3>
 				<div className="flex items-center justify-center py-4">
 					<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
@@ -40,7 +40,7 @@ export function NotificationsWidget() {
 		<>
 			<div
 				onClick={() => setIsModalOpen(true)}
-				className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg cursor-pointer transition-all hover:scale-[1.02] hover:border-white/20"
+				className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg cursor-pointer transition-all hover:scale-[1.02] hover:border-white/20"
 			>
 				<h3 className="mb-3 text-sm font-bold text-white">Уведомления</h3>
 				<div className="space-y-2">

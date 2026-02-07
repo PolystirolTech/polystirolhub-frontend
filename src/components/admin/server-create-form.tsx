@@ -207,7 +207,7 @@ export function ServerCreateForm() {
 	};
 
 	return (
-		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 			<h3 className="mb-4 text-sm font-bold text-white">Создание сервера</h3>
 
 			<form onSubmit={handleSubmit} className="space-y-4">

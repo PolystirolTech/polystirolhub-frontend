@@ -97,7 +97,7 @@ export function ActivityWidget() {
 
 	if (isLoading) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Активность</h3>
 				<div className="flex items-center justify-center py-4">
 					<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
@@ -108,7 +108,7 @@ export function ActivityWidget() {
 
 	if (error) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Активность</h3>
 				<p className="text-xs text-white/40">{error}</p>
 			</div>
@@ -117,7 +117,7 @@ export function ActivityWidget() {
 
 	if (activities.length === 0) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Активность</h3>
 				<p className="text-xs text-white/40">Нет событий активности</p>
 			</div>
@@ -125,7 +125,7 @@ export function ActivityWidget() {
 	}
 
 	return (
-		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 			<h3 className="mb-3 text-sm font-bold text-white">Активность</h3>
 			<div className="space-y-2">
 				{activities.map((activity) => {

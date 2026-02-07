@@ -59,7 +59,7 @@ export function AchievementsWidget() {
 
 	if (!isAuthenticated) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
 				<p className="text-xs text-white/60">Войдите для просмотра достижений</p>
 			</div>
@@ -68,7 +68,7 @@ export function AchievementsWidget() {
 
 	if (isLoading) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
 				<div className="flex items-center justify-center py-4">
 					<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary"></div>
@@ -79,7 +79,7 @@ export function AchievementsWidget() {
 
 	if (error) {
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
 				<p className="text-xs text-white/60">{error}</p>
 			</div>
@@ -101,14 +101,14 @@ export function AchievementsWidget() {
 		const hasCompleted = achievements.some((a) => isQuestCompleted(a.completedAt));
 		if (hasCompleted) {
 			return (
-				<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 					<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
 					<p className="text-xs text-white/40">Все достижения разблокированы!</p>
 				</div>
 			);
 		}
 		return (
-			<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 				<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
 				<p className="text-xs text-white/60">Нет активных достижений</p>
 			</div>
@@ -116,7 +116,7 @@ export function AchievementsWidget() {
 	}
 
 	return (
-		<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4 shadow-lg">
+		<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4 shadow-lg">
 			<h3 className="mb-3 text-sm font-bold text-white">Достижения</h3>
 			<div className="space-y-2 mb-3">
 				{uncompletedAchievements.map((userQuest) => {

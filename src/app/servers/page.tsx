@@ -443,7 +443,7 @@ export default function ServersPage() {
 
 				{/* Фильтр по типу */}
 				<div className="mb-6">
-					<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-4">
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
 						<div className="flex flex-wrap items-center gap-3">
 							<span className="text-sm font-medium text-white/80">Тип сервера:</span>
 							<button
@@ -486,7 +486,7 @@ export default function ServersPage() {
 
 				{/* Загрузка */}
 				{isLoading && (
-					<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 text-center">
 						<p className="text-white/60">Загрузка серверов...</p>
 					</div>
 				)}
@@ -495,7 +495,7 @@ export default function ServersPage() {
 				{!isLoading && !error && (
 					<>
 						{filteredServers.length === 0 ? (
-							<div className="glass-card bg-[var(--color-secondary)]/65 border border-white/10 p-8 text-center">
+							<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 text-center">
 								<p className="text-white/60">Нет серверов</p>
 							</div>
 						) : (
@@ -525,7 +525,7 @@ export default function ServersPage() {
 									return (
 										<div
 											key={String(server.id)}
-											className={`glass-card bg-[var(--color-secondary)]/65 overflow-hidden relative ${
+											className={`glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md overflow-hidden relative ${
 												bannerUrl ? 'min-h-[400px]' : ''
 											}`}
 											style={

@@ -103,7 +103,7 @@ export function NotificationsModal({ isOpen, onClose }: NotificationsModalProps)
 			/>
 
 			{/* Modal */}
-			<div className="glass-card bg-[var(--color-secondary)] relative max-w-2xl w-full max-h-[90vh] p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200 flex flex-col">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md relative max-w-2xl w-full max-h-[90vh] p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200 flex flex-col">
 				{/* Header */}
 				<div className="flex items-center justify-between mb-4">
 					<h2 className="text-xl md:text-2xl font-bold text-white">Уведомления</h2>

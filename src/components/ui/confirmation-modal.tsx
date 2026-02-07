@@ -71,7 +71,7 @@ export function ConfirmationModal({
 			/>
 
 			{/* Modal */}
-			<div className="glass-card bg-[var(--color-secondary)] relative max-w-md w-full p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md relative max-w-md w-full p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
 				{/* Title */}
 				<h2 className="mb-3 text-xl font-bold text-white">{title}</h2>
 
