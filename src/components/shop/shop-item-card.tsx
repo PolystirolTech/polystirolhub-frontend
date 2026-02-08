@@ -5,6 +5,9 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { GameServerPublic, GameTypeResponse } from '@/lib/api/generated';
 
+import { useAuth } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
+
 interface ShopItemCardProps {
 	item: ShopItem;
 	onBuy: (item: ShopItem) => void;
@@ -14,6 +17,9 @@ interface ShopItemCardProps {
 }
 
 export function ShopItemCard({ item, onBuy, className, gameTypes, servers }: ShopItemCardProps) {
+	const { isAuthenticated } = useAuth();
+	const router = useRouter();
+
 	// Collect unique game types
 	const uniqueGameTypes = new Set<string>();
 
@@ -111,12 +117,21 @@ export function ShopItemCard({ item, onBuy, className, gameTypes, servers }: Sho
 						</div>
 					</div>
 
-					<button
-						onClick={() => onBuy(item)}
-						className="w-full rounded-lg bg-white/10 px-3 py-2 text-xs font-medium text-white transition-all hover:bg-primary hover:text-white cursor-pointer"
-					>
-						Купить
-					</button>
+					{isAuthenticated ? (
+						<button
+							onClick={() => onBuy(item)}
+							className="w-full rounded-lg bg-white/10 px-3 py-2 text-xs font-medium text-white transition-all hover:bg-primary hover:text-white cursor-pointer"
+						>
+							Купить
+						</button>
+					) : (
+						<button
+							onClick={() => router.push('/login')}
+							className="w-full rounded-lg bg-white/5 px-3 py-2 text-xs font-medium text-white/60 transition-all hover:bg-white/10 hover:text-white cursor-pointer border border-white/5"
+						>
+							Войти
+						</button>
+					)}
 				</div>
 			</div>
 

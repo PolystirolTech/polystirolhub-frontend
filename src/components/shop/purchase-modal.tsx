@@ -216,13 +216,13 @@ export function PurchaseModal({
 				<div className="mb-6 space-y-4">
 					<div className="space-y-2">
 						<label className="text-sm font-medium text-white/60">Выберите сервер</label>
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+						<div className="flex flex-wrap gap-2">
 							{availableServers.map((server) => (
 								<button
 									key={server.id}
 									onClick={() => setTargetServerId(server.id)}
 									className={cn(
-										'flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition-all cursor-pointer text-left h-auto min-h-[3rem]',
+										'flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition-all cursor-pointer text-left h-auto min-h-[3rem] w-full',
 										targetServerId === server.id
 											? 'bg-primary/20 border-primary text-white shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]'
 											: 'bg-black/20 border-white/5 text-white/60 hover:bg-black/30 hover:border-white/10 hover:text-white'
