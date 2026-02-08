@@ -60,7 +60,7 @@ export function ShopItemCard({ item, onBuy, className, gameTypes }: ShopItemCard
 					<p className="text-xs text-white/60 line-clamp-2">{item.description}</p>
 				</div>
 
-				<div className="mt-auto flex items-center justify-between gap-2 pt-2">
+				<div className="mt-auto flex flex-col gap-3 pt-2">
 					<div className="flex flex-col">
 						<span className="text-[10px] text-white/40 uppercase tracking-wider">Цена</span>
 						<div className="flex items-center gap-1">
@@ -77,7 +77,7 @@ export function ShopItemCard({ item, onBuy, className, gameTypes }: ShopItemCard
 
 					<button
 						onClick={() => onBuy(item)}
-						className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition-all hover:bg-primary hover:text-white cursor-pointer"
+						className="w-full rounded-lg bg-white/10 px-3 py-2 text-xs font-medium text-white transition-all hover:bg-primary hover:text-white cursor-pointer"
 					>
 						Купить
 					</button>
