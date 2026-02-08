@@ -3,6 +3,7 @@ import { Press_Start_2P } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth';
 import { LevelProvider } from '@/lib/level/level-context';
+import { BalanceProvider } from '@/lib/balance-context';
 import { MaintenanceGuard } from '@/components/maintenance/maintenance-guard';
 import { ChristmasDecorations } from '@/components/decorations/christmas-decorations';
 import { Analytics } from '@/components/analytics/analytics';
@@ -38,8 +39,10 @@ export default function RootLayout({
 					<BackgroundProvider>
 						<BackgroundManager />
 						<LevelProvider>
-							<MaintenanceGuard>{children}</MaintenanceGuard>
-							<CookieConsent />
+							<BalanceProvider>
+								<MaintenanceGuard>{children}</MaintenanceGuard>
+								<CookieConsent />
+							</BalanceProvider>
 						</LevelProvider>
 					</BackgroundProvider>
 				</AuthProvider>

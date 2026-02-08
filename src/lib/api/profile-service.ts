@@ -69,12 +69,15 @@ class ProfileService {
 	 */
 	async getProfile(identifier: string): Promise<UserProfileResponse> {
 		try {
-			const response = await fetch(`${this.baseUrl}/api/v1/users/${identifier}/profile`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
+			const response = await fetch(
+				`${this.baseUrl}/api/v1/users/${encodeURIComponent(identifier)}/profile`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
 
 			if (!response.ok) {
 				if (response.status === 404) {
