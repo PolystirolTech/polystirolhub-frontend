@@ -136,6 +136,7 @@ export default function ShopPage() {
 										item={item}
 										onBuy={handleBuyClick}
 										gameTypes={gameTypes}
+										servers={servers}
 									/>
 								))}
 							</div>

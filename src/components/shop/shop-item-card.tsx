@@ -3,30 +3,66 @@
 import { ShopItem } from '@/types/shop';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { GameTypeResponse } from '@/lib/api/generated';
+import { GameServerPublic, GameTypeResponse } from '@/lib/api/generated';
 
 interface ShopItemCardProps {
 	item: ShopItem;
 	onBuy: (item: ShopItem) => void;
 	className?: string;
 	gameTypes?: GameTypeResponse[];
+	servers?: GameServerPublic[];
 }
 
-export function ShopItemCard({ item, onBuy, className, gameTypes }: ShopItemCardProps) {
-	// Determine what to show in the badge
-	let badgeText = '';
-	if (item.game_type_ids && item.game_type_ids.length > 0 && gameTypes) {
-		// Show first available game type name
-		const type = gameTypes.find((t) => t.id === item.game_type_ids![0]);
-		if (type) badgeText = type.name;
-	} else if (item.game_server_ids && item.game_server_ids.length > 0) {
-		// If specific servers but no types, maybe show "Specific Servers" or similar
-		// But user asked for "тип сервера". If we can't resolve type, maybe fallback?
-		// Let's leave it empty or show "Server"
-		badgeText = 'Server';
-	} else {
-		badgeText = 'Global';
+export function ShopItemCard({ item, onBuy, className, gameTypes, servers }: ShopItemCardProps) {
+	// Collect unique game types
+	const uniqueGameTypes = new Set<string>();
+
+	// 1. Add explicitly linked game types
+	if (item.game_type_ids && gameTypes) {
+		item.game_type_ids.forEach((id) => {
+			const type = gameTypes.find((t) => t.id === id);
+			if (type) uniqueGameTypes.add(type.name);
+		});
 	}
+
+	// 2. Add game types from linked servers
+	if (item.game_server_ids && servers) {
+		item.game_server_ids.forEach((serverId) => {
+			const server = servers.find((s) => s.id === serverId);
+			if (server) {
+				// Try to get game type name from various possible locations
+				// 1. server.gameType.name (standard)
+				// 2. server.gameType (if it's just a string ID - though unlikely with generated client)
+				// 3. server.game_type.name (if raw JSON leaked through)
+
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const rawServer = server as any;
+				const gameType = rawServer.gameType || rawServer.game_type;
+
+				let typeName: string | undefined;
+
+				if (gameType && typeof gameType === 'object' && 'name' in gameType) {
+					typeName = gameType.name;
+				} else if (gameTypes && typeof gameType === 'string') {
+					// ID reference
+					const type = gameTypes.find((t) => t.id === gameType);
+					if (type) typeName = type.name;
+				}
+
+				if (typeName) {
+					uniqueGameTypes.add(typeName);
+				}
+			}
+		});
+	}
+
+	const badges = Array.from(uniqueGameTypes);
+	const isGlobal =
+		(!item.game_server_ids || item.game_server_ids.length === 0) &&
+		(!item.game_type_ids || item.game_type_ids.length === 0);
+
+	// Fallback: if not global but no badges found (e.g. server not found or type missing), show "Server"
+	const showGenericServerBadge = !isGlobal && badges.length === 0;
 
 	return (
 		<div
@@ -84,12 +120,27 @@ export function ShopItemCard({ item, onBuy, className, gameTypes }: ShopItemCard
 				</div>
 			</div>
 
-			{/* Game Type Badge */}
-			{badgeText && (
-				<div className="absolute top-2 right-2 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm border border-white/10">
-					{badgeText}
-				</div>
-			)}
+			{/* Game Type Badges */}
+			<div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+				{isGlobal ? (
+					<div className="rounded-full bg-black/60 px-2 py-1 text-[10px] font-medium text-white backdrop-blur-sm border border-white/10">
+						Global
+					</div>
+				) : badges.length > 0 ? (
+					badges.map((badge) => (
+						<div
+							key={badge}
+							className="rounded-full bg-black/60 px-2 py-1 text-[10px] font-medium text-white backdrop-blur-sm border border-white/10 max-w-[150px] truncate"
+						>
+							{badge}
+						</div>
+					))
+				) : showGenericServerBadge ? (
+					<div className="rounded-full bg-black/60 px-2 py-1 text-[10px] font-medium text-white backdrop-blur-sm border border-white/10">
+						Server
+					</div>
+				) : null}
+			</div>
 		</div>
 	);
 }

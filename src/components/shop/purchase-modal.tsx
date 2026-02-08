@@ -54,7 +54,12 @@ export function PurchaseModal({
 		// Check game type ID
 		// Note: server.gameType might be an object or ID depending on API response,
 		// but GameServerPublic type says gameType: GameTypeResponse which has id.
-		if (item.game_type_ids && server.gameType && item.game_type_ids.includes(server.gameType.id)) {
+		if (
+			item.game_type_ids &&
+			server.gameType &&
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			item.game_type_ids.includes((server.gameType as any).id || (server.gameType as any))
+		) {
 			return true;
 		}
 
@@ -95,12 +100,6 @@ export function PurchaseModal({
 			try {
 				// Use user.id (UUID) to fetch profile to avoid issues with special characters in username
 				const profile = await profileService.getProfile(user.id);
-
-				console.log('Purchase check:', {
-					required: item.required_platform,
-					linked: profile.header.linked_accounts,
-					stats: profile.minecraft_stats,
-				});
 
 				// Check if user has the required platform linked
 				// We check both linked_accounts and specific stats if applicable
@@ -217,18 +216,25 @@ export function PurchaseModal({
 				<div className="mb-6 space-y-4">
 					<div className="space-y-2">
 						<label className="text-sm font-medium text-white/60">Выберите сервер</label>
-						<select
-							value={targetServerId || ''}
-							onChange={(e) => setTargetServerId(e.target.value)}
-							className="w-full rounded-lg bg-black/20 border border-white/10 px-4 py-2 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer truncate pr-8"
-						>
-							<option value="">Выберите сервер...</option>
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 							{availableServers.map((server) => (
-								<option key={server.id} value={server.id} className="bg-gray-900 truncate">
-									{server.name}
-								</option>
+								<button
+									key={server.id}
+									onClick={() => setTargetServerId(server.id)}
+									className={cn(
+										'flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition-all cursor-pointer text-left h-auto min-h-[3rem]',
+										targetServerId === server.id
+											? 'bg-primary/20 border-primary text-white shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]'
+											: 'bg-black/20 border-white/5 text-white/60 hover:bg-black/30 hover:border-white/10 hover:text-white'
+									)}
+								>
+									<span className="whitespace-normal break-words mr-2">{server.name}</span>
+									{targetServerId === server.id && (
+										<div className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+									)}
+								</button>
 							))}
-						</select>
+						</div>
 						{availableServers.length === 0 && (
 							<p className="text-xs text-red-400">Нет доступных серверов для этого товара</p>
 						)}
