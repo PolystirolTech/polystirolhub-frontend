@@ -93,20 +93,22 @@ export function PurchaseModal({
 		// Check platform requirements
 		if (item.required_platform && user) {
 			try {
-				const profile = await profileService.getProfile(user.username);
+				// Use user.id (UUID) to fetch profile to avoid issues with special characters in username
+				const profile = await profileService.getProfile(user.id);
 
 				// Check if user has the required platform linked
 				// We check both linked_accounts and specific stats if applicable
 				let hasPlatform = false;
 
 				if (item.required_platform === 'steam') {
-					hasPlatform = profile.header.linked_accounts.some(
+					hasPlatform = profile.header.linked_accounts?.some(
 						(acc) => acc.platform.toLowerCase() === 'steam'
 					);
 				} else if (item.required_platform === 'minecraft') {
 					// Check linked accounts or if minecraft stats exist (implies linked)
-					const hasLinkedMc = profile.header.linked_accounts.some(
-						(acc) => acc.platform.toLowerCase() === 'minecraft'
+					// Also check for 'mc', 'java', 'bedrock' just in case
+					const hasLinkedMc = profile.header.linked_accounts?.some((acc) =>
+						['minecraft', 'mc', 'java', 'bedrock'].includes(acc.platform.toLowerCase())
 					);
 					const hasMcStats = profile.minecraft_stats && profile.minecraft_stats.length > 0;
 					hasPlatform = hasLinkedMc || hasMcStats;
