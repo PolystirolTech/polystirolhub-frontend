@@ -420,9 +420,9 @@ export function ItemsManager() {
 														type="checkbox"
 														checked={formData.game_server_ids.includes(server.id)}
 														onChange={() => toggleGameServer(server.id)}
-														className="rounded border-white/20 bg-white/10 text-primary focus:ring-primary"
+														className="rounded border-white/20 bg-white/10 text-primary focus:ring-primary flex-shrink-0"
 													/>
-													<span className="text-sm text-white">{server.name}</span>
+													<span className="text-sm text-white break-words">{server.name}</span>
 												</label>
 											))}
 											{servers.length === 0 && (

@@ -33,7 +33,7 @@ export function ShopFilters({
 					<button
 						onClick={() => onServerChange(null)}
 						className={cn(
-							'px-3 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer',
+							'px-3 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer whitespace-normal text-left',
 							selectedServerId === null
 								? 'bg-primary text-white'
 								: 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
@@ -46,7 +46,7 @@ export function ShopFilters({
 							key={server.id}
 							onClick={() => onServerChange(server.id)}
 							className={cn(
-								'px-3 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer',
+								'px-3 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer whitespace-normal text-left max-w-full',
 								selectedServerId === server.id
 									? 'bg-primary text-white'
 									: 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'

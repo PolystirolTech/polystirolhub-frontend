@@ -211,11 +211,11 @@ export function PurchaseModal({
 						<select
 							value={targetServerId || ''}
 							onChange={(e) => setTargetServerId(e.target.value)}
-							className="w-full rounded-lg bg-black/20 border border-white/10 px-4 py-2 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
+							className="w-full rounded-lg bg-black/20 border border-white/10 px-4 py-2 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer truncate pr-8"
 						>
 							<option value="">Выберите сервер...</option>
 							{availableServers.map((server) => (
-								<option key={server.id} value={server.id} className="bg-gray-900">
+								<option key={server.id} value={server.id} className="bg-gray-900 truncate">
 									{server.name}
 								</option>
 							))}
