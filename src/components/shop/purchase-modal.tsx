@@ -96,15 +96,22 @@ export function PurchaseModal({
 				// Use user.id (UUID) to fetch profile to avoid issues with special characters in username
 				const profile = await profileService.getProfile(user.id);
 
+				console.log('Purchase check:', {
+					required: item.required_platform,
+					linked: profile.header.linked_accounts,
+					stats: profile.minecraft_stats,
+				});
+
 				// Check if user has the required platform linked
 				// We check both linked_accounts and specific stats if applicable
 				let hasPlatform = false;
+				const requiredPlatform = item.required_platform.toLowerCase();
 
-				if (item.required_platform === 'steam') {
+				if (requiredPlatform === 'steam') {
 					hasPlatform = profile.header.linked_accounts?.some(
 						(acc) => acc.platform.toLowerCase() === 'steam'
 					);
-				} else if (item.required_platform === 'minecraft') {
+				} else if (requiredPlatform === 'minecraft') {
 					// Check linked accounts or if minecraft stats exist (implies linked)
 					// Also check for 'mc', 'java', 'bedrock' just in case
 					const hasLinkedMc = profile.header.linked_accounts?.some((acc) =>
@@ -117,7 +124,7 @@ export function PurchaseModal({
 				if (!hasPlatform) {
 					setValidationError(
 						`Для покупки этого товара необходимо привязать ${
-							item.required_platform === 'steam' ? 'Steam' : 'Minecraft'
+							requiredPlatform === 'steam' ? 'Steam' : 'Minecraft'
 						} аккаунт в настройках профиля`
 					);
 				}
