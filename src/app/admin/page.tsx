@@ -119,6 +119,12 @@ export default function AdminPage() {
 						>
 							Вайтлист →
 						</Link>
+						<Link
+							href="/admin/shop"
+							className="text-xs text-primary hover:text-primary/80 transition-colors underline"
+						>
+							Магазин →
+						</Link>
 					</div>
 				</div>
 
