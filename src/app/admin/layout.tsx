@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AdminGuard } from '@/components/admin/admin-guard';
 
 export const metadata: Metadata = {
 	title: 'Admin Panel - PolystirolHub',
@@ -10,5 +11,5 @@ export default function AdminLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return <>{children}</>;
+	return <AdminGuard>{children}</AdminGuard>;
 }
