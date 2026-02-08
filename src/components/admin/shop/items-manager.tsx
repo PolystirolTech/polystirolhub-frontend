@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShopItem, CreateShopItemRequest } from '@/types/shop';
+import { ShopItem, CreateShopItemRequest, ShopCategory } from '@/types/shop';
 import { shopService } from '@/lib/api/shop-service';
 import { gameService } from '@/lib/game/game-service';
 import { fileService } from '@/lib/files/file-service';
@@ -18,6 +18,7 @@ export function ItemsManager() {
 	const [items, setItems] = useState<ShopItem[]>([]);
 	const [servers, setServers] = useState<GameServerPublic[]>([]);
 	const [gameTypes, setGameTypes] = useState<GameType[]>([]);
+	const [categories, setCategories] = useState<ShopCategory[]>([]);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingItem, setEditingItem] = useState<ShopItem | null>(null);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -28,6 +29,7 @@ export function ItemsManager() {
 		description: '',
 		price: 0,
 		image_url: '',
+		category_id: undefined,
 		command: '',
 		required_platform: null,
 		game_type_ids: [],
@@ -36,14 +38,16 @@ export function ItemsManager() {
 
 	const loadData = async () => {
 		try {
-			const [itemsData, serversData, typesData] = await Promise.all([
+			const [itemsData, serversData, typesData, categoriesData] = await Promise.all([
 				shopService.getItems(),
 				gameService.getGameServers(),
 				gameService.getGameTypes(),
+				shopService.getCategories(),
 			]);
 			setItems(itemsData);
 			setServers(serversData);
 			setGameTypes(typesData);
+			setCategories(categoriesData);
 		} catch (error) {
 			console.error('Failed to load data:', error);
 		}
@@ -93,6 +97,7 @@ export function ItemsManager() {
 			description: '',
 			price: 0,
 			image_url: '',
+			category_id: undefined,
 			command: '',
 			required_platform: null,
 			game_type_ids: [],
@@ -107,6 +112,7 @@ export function ItemsManager() {
 			description: item.description,
 			price: item.price,
 			image_url: item.image_url,
+			category_id: item.category_id,
 			command: item.command || '',
 			required_platform: item.required_platform,
 			game_type_ids: item.game_type_ids || [],
@@ -261,6 +267,26 @@ export function ItemsManager() {
 											className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
 										/>
 									</div>
+								</div>
+
+								<div>
+									<label className="block text-sm font-medium text-white/60 mb-1">Категория</label>
+									<select
+										value={formData.category_id || ''}
+										onChange={(e) =>
+											setFormData({ ...formData, category_id: e.target.value || undefined })
+										}
+										className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-primary focus:outline-none"
+									>
+										<option value="" className="bg-gray-900">
+											Без категории
+										</option>
+										{categories.map((category) => (
+											<option key={category.id} value={category.id} className="bg-gray-900">
+												{category.name}
+											</option>
+										))}
+									</select>
 								</div>
 
 								<div>

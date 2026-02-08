@@ -22,6 +22,7 @@ export interface CreateShopItemRequest {
 	description?: string;
 	price: number;
 	image_url: string;
+	category_id?: string;
 	command: string;
 	required_platform: 'steam' | 'minecraft' | null;
 	game_type_ids: string[];
