@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Press_Start_2P } from 'next/font/google';
+import { Press_Start_2P, Noto_Sans_JP } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth';
 import { LevelProvider } from '@/lib/level/level-context';
@@ -20,6 +20,12 @@ const pixelFont = Press_Start_2P({
 	display: 'swap',
 });
 
+const japaneseFont = Noto_Sans_JP({
+	variable: '--font-japanese',
+	weight: ['400', '700'],
+	display: 'swap',
+});
+
 export const metadata: Metadata = {
 	title: 'PolystirolHub',
 	description: 'The central hub for Polystirol technologies',
@@ -32,7 +38,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="ru">
-			<body className={`${pixelFont.variable} antialiased font-pixel`}>
+			<body className={`${pixelFont.variable} ${japaneseFont.variable} antialiased font-pixel`}>
 				{ENABLE_CHRISTMAS_THEME && <ChristmasDecorations />}
 				<Analytics />
 				<AuthProvider>
