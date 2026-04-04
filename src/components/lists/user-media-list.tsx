@@ -75,10 +75,25 @@ function StarRating({ rating }: { rating: number }) {
 function MediaCard({ item }: { item: MediaListItem }) {
 	const isAlbum = item.media_type === 'album';
 	const coverAspect = isAlbum ? 'aspect-square' : 'aspect-[2/3]';
+	const commentRef = useRef<HTMLParagraphElement>(null);
+	const [isTruncated, setIsTruncated] = useState(false);
+
+	useEffect(() => {
+		const checkTruncation = () => {
+			if (commentRef.current) {
+				const { scrollHeight, clientHeight } = commentRef.current;
+				setIsTruncated(scrollHeight > clientHeight);
+			}
+		};
+
+		checkTruncation();
+		window.addEventListener('resize', checkTruncation);
+		return () => window.removeEventListener('resize', checkTruncation);
+	}, [item.comment]);
 
 	return (
-		<div className="group flex flex-col rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-200 hover:shadow-lg hover:shadow-black/30">
-			<div className={`relative w-full ${coverAspect} overflow-hidden bg-black/30`}>
+		<div className="group flex flex-col rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 relative hover:z-50">
+			<div className={`relative w-full ${coverAspect} overflow-hidden rounded-t-xl bg-black/30`}>
 				{item.cover_url ? (
 					<Image
 						src={proxyImageUrl(item.cover_url)!}
@@ -127,14 +142,22 @@ function MediaCard({ item }: { item: MediaListItem }) {
 			</div>
 
 			{item.comment && (
-				<div className="px-3 pb-3 border-t border-white/10 pt-2">
+				<div className="px-3 pb-3 border-t border-white/10 pt-2 rounded-b-xl">
 					<div className="relative group/comment">
-						<p className="text-xs text-white/60 italic line-clamp-3 cursor-default">
+						<p
+							ref={commentRef}
+							className="text-xs text-white/60 italic line-clamp-3 cursor-default"
+						>
 							{item.comment}
 						</p>
-						<div className="pointer-events-none absolute bottom-full left-0 mb-2 z-50 w-64 opacity-0 scale-95 group-hover/comment:opacity-100 group-hover/comment:scale-100 transition-all duration-200 ease-out glass-card bg-[var(--color-secondary)]/90 backdrop-blur-md border border-white/15 px-3 py-2 text-xs text-white/75 shadow-2xl leading-relaxed">
-							{item.comment}
-						</div>
+						{isTruncated && (
+							<div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-[60] w-64 opacity-0 scale-95 group-hover/comment:opacity-100 group-hover/comment:scale-100 transition-all duration-200 ease-out glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/15 px-3 py-2.5 text-xs text-white/90 shadow-2xl leading-relaxed text-center">
+								{item.comment}
+								{/* Tooltip Arrow */}
+								<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-8 border-transparent border-t-white/15" />
+								<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1.5px] border-[7px] border-transparent border-t-[var(--color-secondary)]" />
+							</div>
+						)}
 					</div>
 				</div>
 			)}
@@ -265,9 +288,9 @@ export function UserMediaList({ username }: Props) {
 
 	return (
 		<div>
-			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 overflow-hidden">
+			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10">
 				{/* Media type tabs */}
-				<div className="flex overflow-x-auto border-b border-white/10 scrollbar-none">
+				<div className="flex overflow-x-auto border-b border-white/10 scrollbar-none rounded-t-lg">
 					{MEDIA_TABS.map((tab) => {
 						const total = tabStats[tab.type]?.total ?? 0;
 						if (total === 0) return null;
