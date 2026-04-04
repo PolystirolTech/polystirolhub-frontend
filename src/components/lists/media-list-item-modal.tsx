@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { mediaListService } from '@/lib/lists/media-list-service';
 import { proxyImageUrl } from '@/lib/utils';
@@ -84,7 +84,16 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 	const [customTitle, setCustomTitle] = useState('');
 	const [customYear, setCustomYear] = useState('');
 	const [customCoverUrl, setCustomCoverUrl] = useState('');
+	const [customDescription, setCustomDescription] = useState('');
 	const [customGenres, setCustomGenres] = useState('');
+
+	const [editTitle, setEditTitle] = useState('');
+	const [editCoverUrl, setEditCoverUrl] = useState('');
+	const [editDescription, setEditDescription] = useState('');
+
+	const [coverPreview, setCoverPreview] = useState<string | null>(null);
+	const [coverUploading, setCoverUploading] = useState(false);
+	const coverInputRef = useRef<HTMLInputElement>(null);
 
 	// Editable fields
 	const [status, setStatus] = useState<MediaStatus | ''>('');
@@ -110,6 +119,10 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 		if (isOpen) {
 			if (isEdit) {
 				// Edit mode: fill editable fields only
+				setEditTitle(item?.title ?? '');
+				setEditCoverUrl(item?.cover_url ?? '');
+				setEditDescription(item?.description ?? '');
+				setCoverPreview(null);
 				setStatus(item?.status ?? '');
 				setRating(item?.rating != null ? String(item.rating) : '');
 				setComment(item?.comment ?? '');
@@ -128,7 +141,9 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 				setCustomTitle('');
 				setCustomYear('');
 				setCustomCoverUrl('');
+				setCustomDescription('');
 				setCustomGenres('');
+				setCoverPreview(null);
 				setStatus('');
 				setRating('');
 				setComment('');
@@ -203,6 +218,30 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 		setSearchResults([]);
 	};
 
+	const handleCoverFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+		const preview = URL.createObjectURL(file);
+		setCoverPreview(preview);
+		setCoverUploading(true);
+		setError(null);
+		try {
+			const { url } = await mediaListService.uploadCover(file);
+			if (isEdit) {
+				setEditCoverUrl(url);
+			} else {
+				setCustomCoverUrl(url);
+			}
+		} catch (err) {
+			const e = err as Error;
+			setError(`Ошибка загрузки обложки: ${e.message}`);
+			setCoverPreview(null);
+		} finally {
+			setCoverUploading(false);
+			if (coverInputRef.current) coverInputRef.current.value = '';
+		}
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -235,6 +274,11 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 		if (isEdit) {
 			// Update existing item
 			const data: UpdateMediaListItem = {
+				...(item?.is_custom && {
+					title: editTitle.trim() || undefined,
+					cover_url: editCoverUrl || null,
+					description: editDescription.trim() || null,
+				}),
 				...(!isAlbum(mediaType) && { status: (status as MediaStatus) || null }),
 				rating: ratingNum,
 				comment: comment.trim() || null,
@@ -310,7 +354,7 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 			}
 		}
 		const coverUrlValue = customCoverUrl.trim();
-		if (coverUrlValue) {
+		if (coverUrlValue && !coverUrlValue.startsWith('/')) {
 			try {
 				new URL(coverUrlValue);
 			} catch {
@@ -323,11 +367,13 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 			.map((g) => g.trim())
 			.filter(Boolean);
 
+		const trimmedDescription = customDescription.trim();
 		const data: CreateCustomMediaListItem = {
 			media_type: mediaType,
 			title: trimmedTitle,
 			...(yearValue !== undefined ? { year: yearValue } : {}),
 			...(coverUrlValue ? { cover_url: coverUrlValue } : {}),
+			...(trimmedDescription ? { description: trimmedDescription } : {}),
 			...(!isAlbum(mediaType) && { status: (status as MediaStatus) || null }),
 			rating: ratingNum,
 			comment: comment.trim() || null,
@@ -350,6 +396,110 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 				<h2 className="mb-5 text-xl font-bold text-white">
 					{isEdit ? 'Редактировать' : 'Добавить запись'}
 				</h2>
+
+				<input
+					ref={coverInputRef}
+					type="file"
+					accept="image/jpeg,image/png,image/webp,image/gif"
+					className="hidden"
+					onChange={handleCoverFileChange}
+				/>
+
+				{/* Edit mode: title + cover / info block */}
+				{isEdit && (
+					<div className="mb-6 pb-6 border-b border-white/10 space-y-3">
+						{item?.is_custom ? (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-white/70 mb-1">
+										Название
+										<span className="text-red-400 ml-1">*</span>
+									</label>
+									<input
+										type="text"
+										value={editTitle}
+										onChange={(e) => setEditTitle(e.target.value)}
+										className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-white/70 mb-1">Обложка</label>
+									<div className="flex items-center gap-3">
+										{(coverPreview || editCoverUrl) && (
+											<div
+												className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-10 w-10' : 'h-14 w-10'}`}
+											>
+												<Image
+													src={proxyImageUrl(coverPreview ?? editCoverUrl)!}
+													alt="Обложка"
+													width={40}
+													height={isAlbum(mediaType) ? 40 : 56}
+													className="h-full w-full object-cover"
+													unoptimized
+												/>
+											</div>
+										)}
+										<button
+											type="button"
+											disabled={coverUploading}
+											onClick={() => coverInputRef.current?.click()}
+											className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+										>
+											{coverUploading ? 'Загрузка...' : editCoverUrl ? 'Заменить' : 'Загрузить'}
+										</button>
+										{editCoverUrl && !coverUploading && (
+											<button
+												type="button"
+												onClick={() => {
+													setEditCoverUrl('');
+													setCoverPreview(null);
+												}}
+												className="text-xs text-red-400 hover:text-red-300 transition-colors cursor-pointer"
+											>
+												Удалить
+											</button>
+										)}
+									</div>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-white/70 mb-1">Описание</label>
+									<textarea
+										value={editDescription}
+										onChange={(e) => setEditDescription(e.target.value)}
+										rows={2}
+										placeholder="Описание..."
+										className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm resize-none"
+									/>
+								</div>
+							</>
+						) : (
+							<div className="flex gap-4">
+								{item?.cover_url && (
+									<div
+										className={`shrink-0 rounded overflow-hidden shadow-lg border border-white/5 ${isAlbum(mediaType) ? 'h-16 w-16' : 'h-24 w-16'}`}
+									>
+										<Image
+											src={proxyImageUrl(item.cover_url)!}
+											alt={item.title}
+											width={64}
+											height={isAlbum(mediaType) ? 64 : 96}
+											className="h-full w-full object-cover"
+											unoptimized
+										/>
+									</div>
+								)}
+								<div className="flex-1 min-w-0 flex flex-col justify-center">
+									<p className="text-xs font-medium text-white/40 uppercase tracking-wider mb-1">
+										Название
+									</p>
+									<p className="text-lg font-bold text-white line-clamp-2 leading-tight">
+										{item?.title}
+									</p>
+								</div>
+							</div>
+						)}
+					</div>
+				)}
 
 				{/* Search / custom section — only for add mode */}
 				{!isEdit && (
@@ -384,6 +534,7 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 								<>
 									<label className="block text-sm font-medium text-white/70 mb-2">
 										🔍 Поиск в базах данных
+										<span className="text-red-400 ml-1">*</span>
 									</label>
 									<div className="relative">
 										<input
@@ -497,7 +648,10 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 						) : (
 							<div className="grid gap-3">
 								<div>
-									<label className="block text-sm font-medium text-white/70 mb-1">Название</label>
+									<label className="block text-sm font-medium text-white/70 mb-1">
+										Название
+										<span className="text-red-400 ml-1">*</span>
+									</label>
 									<input
 										type="text"
 										value={customTitle}
@@ -520,17 +674,46 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 										/>
 									</div>
 									<div>
-										<label className="block text-sm font-medium text-white/70 mb-1">
-											Обложка (URL)
-										</label>
-										<input
-											type="text"
-											value={customCoverUrl}
-											onChange={(e) => setCustomCoverUrl(e.target.value)}
-											placeholder="https://example.com/cover.jpg"
-											className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
-										/>
+										<label className="block text-sm font-medium text-white/70 mb-1">Обложка</label>
+										<div className="flex items-center gap-2">
+											{(coverPreview || customCoverUrl) && (
+												<div
+													className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-8 w-8' : 'h-10 w-7'}`}
+												>
+													<Image
+														src={proxyImageUrl(coverPreview ?? customCoverUrl)!}
+														alt="Обложка"
+														width={28}
+														height={isAlbum(mediaType) ? 28 : 40}
+														className="h-full w-full object-cover"
+														unoptimized
+													/>
+												</div>
+											)}
+											<button
+												type="button"
+												disabled={coverUploading}
+												onClick={() => coverInputRef.current?.click()}
+												className="flex-1 px-3 py-2 rounded-lg bg-black/20 border border-white/10 text-white/50 hover:text-white hover:border-white/20 text-xs transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed text-left"
+											>
+												{coverUploading
+													? 'Загрузка...'
+													: customCoverUrl
+														? 'Заменить...'
+														: 'Выбрать файл...'}
+											</button>
+										</div>
 									</div>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-white/70 mb-1">Описание</label>
+									<textarea
+										value={customDescription}
+										onChange={(e) => setCustomDescription(e.target.value)}
+										rows={2}
+										placeholder="Краткое описание..."
+										className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm resize-none"
+									/>
 								</div>
 								<div>
 									<label className="block text-sm font-medium text-white/70 mb-1">Жанры</label>
