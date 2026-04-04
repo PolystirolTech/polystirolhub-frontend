@@ -43,7 +43,7 @@ body {
 		cover;
 	background-position: center;
 	color: var(--foreground);
-	font-family: var(--font-pixel), 'Courier New', Courier, monospace;
+	font-family: var(--font-pixel), var(--font-japanese), 'Courier New', Courier, monospace;
 	min-height: 100vh;
 	overflow-x: hidden;
 }
