@@ -51,7 +51,7 @@ const FIELD_LABELS: Record<string, string> = {
 	is_favorite: 'Избранное',
 	started_at: 'Дата начала',
 	completed_at: 'Дата завершения',
-	play_time_hours: 'Часов'
+	play_time_hours: 'Часов',
 };
 
 function formatValidationError(raw?: string | null) {
@@ -303,10 +303,7 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 				setError('Год должен быть целым числом');
 				return;
 			}
-			if (
-				yearValue !== undefined &&
-				(yearValue < CUSTOM_YEAR_MIN || yearValue > CUSTOM_YEAR_MAX)
-			) {
+			if (yearValue !== undefined && (yearValue < CUSTOM_YEAR_MIN || yearValue > CUSTOM_YEAR_MAX)) {
 				setError(`Год должен быть от ${CUSTOM_YEAR_MIN} до ${CUSTOM_YEAR_MAX}`);
 				return;
 			}
@@ -522,7 +519,9 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 										/>
 									</div>
 									<div>
-										<label className="block text-sm font-medium text-white/70 mb-1">Обложка (URL)</label>
+										<label className="block text-sm font-medium text-white/70 mb-1">
+											Обложка (URL)
+										</label>
 										<input
 											type="text"
 											value={customCoverUrl}
@@ -728,10 +727,7 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 						</button>
 						<button
 							type="submit"
-							disabled={
-								saving ||
-								(!isEdit && entryMode === 'search' && !selectedResult)
-							}
+							disabled={saving || (!isEdit && entryMode === 'search' && !selectedResult)}
 							className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{saving ? 'Сохранение...' : isEdit ? 'Сохранить' : 'Добавить'}
