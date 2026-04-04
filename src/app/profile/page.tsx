@@ -20,6 +20,7 @@ import type { ExternalLinkResponse } from '@/lib/api/generated';
 import Link from 'next/link';
 import { UserBadgeDisplay } from '@/components/badges/user-badge-display';
 import { BadgesPreview } from '@/components/badges/badges-preview';
+import { ListsPreview } from '@/components/lists/lists-preview';
 import { Footer } from '@/components/layout/footer';
 
 export default function ProfilePage() {
@@ -404,6 +405,23 @@ export default function ProfilePage() {
 							</Link>
 						</div>
 						<BadgesPreview />
+					</div>
+
+					{/* Lists Preview */}
+					<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-8 mb-6">
+						<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+							<div>
+								<h3 className="text-xl font-bold text-white mb-2">Мои списки</h3>
+								<p className="text-muted">Аниме, фильмы, сериалы, игры и музыка</p>
+							</div>
+							<Link
+								href="/profile/lists"
+								className="text-sm text-primary hover:text-primary/80 transition-colors underline"
+							>
+								Управлять →
+							</Link>
+						</div>
+						<ListsPreview />
 					</div>
 
 					{/* Connected Accounts */}
