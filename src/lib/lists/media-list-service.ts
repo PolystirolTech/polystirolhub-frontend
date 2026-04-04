@@ -167,6 +167,10 @@ class MediaListService {
 		return this._importMultipart(`${BASE()}/import/imdb/watchlist`, file);
 	}
 
+	async enrich(): Promise<{ processed: number; enriched: number; errors: number }> {
+		return request(`${BASE()}/enrich`, { method: 'POST' });
+	}
+
 	private async _importMultipart(url: string, file: File): Promise<ImportResult> {
 		const formData = new FormData();
 		formData.append('file', file);
