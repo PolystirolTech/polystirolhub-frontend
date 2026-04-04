@@ -29,16 +29,21 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 	const [importResult, setImportResult] = useState<ImportResult | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [dragOver, setDragOver] = useState(false);
+	const [pendingFile, setPendingFile] = useState<File | null>(null);
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const importContextKey = `${mediaTab}-${source}-${imdbSection}`;
 
 	useEffect(() => {
 		if (!isOpen) {
 			setImportResult(null);
 			setError(null);
 			setDragOver(false);
+			setPendingFile(null);
+			return;
 		}
-	}, [isOpen]);
+		setPendingFile(null);
+	}, [isOpen, importContextKey]);
 
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
@@ -79,9 +84,25 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 		}
 	};
 
-	const handleFile = async (file: File) => {
-		if (!file.name.toLowerCase().endsWith(acceptedExt)) {
-			setError(`Поддерживается только ${acceptedExt.toUpperCase()} файл`);
+	const getExtensionErrorMessage = () => `Поддерживается только ${acceptedExt.toUpperCase()} файл`;
+	const isAcceptedFile = (file: File) => file.name.toLowerCase().endsWith(acceptedExt);
+	const showExtensionError = () => setError(getExtensionErrorMessage());
+
+	const queueFile = (file: File) => {
+		if (!isAcceptedFile(file)) {
+			setPendingFile(null);
+			showExtensionError();
+			return;
+		}
+		setPendingFile(file);
+		setImportResult(null);
+		setError(null);
+	};
+
+	const importFile = async (file: File) => {
+		if (!isAcceptedFile(file)) {
+			setPendingFile(null);
+			showExtensionError();
 			return;
 		}
 		setImporting(true);
@@ -100,6 +121,7 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 			}
 			setImportResult(result);
 			onImported();
+			setPendingFile(null);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Ошибка импорта');
 		} finally {
@@ -109,7 +131,7 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 
 	const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
-		if (file) handleFile(file);
+		if (file) queueFile(file);
 		e.target.value = '';
 	};
 
@@ -117,7 +139,12 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 		e.preventDefault();
 		setDragOver(false);
 		const file = e.dataTransfer.files[0];
-		if (file) handleFile(file);
+		if (file) queueFile(file);
+	};
+
+	const handleStartImport = () => {
+		if (!pendingFile || importing) return;
+		importFile(pendingFile);
 	};
 
 	return (
@@ -193,15 +220,22 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 							<p className="text-xs text-white/40 mb-3">
 								Загрузить XML из MAL или Shikimori. Дубликаты по названию пропускаются.
 							</p>
-							<DropZone
-								importing={importing}
-								dragOver={dragOver}
-								setDragOver={setDragOver}
-								onDrop={handleDrop}
-								onClick={() => fileInputRef.current?.click()}
-								hint="animelist.xml"
-								accept={acceptedExt}
-							/>
+							<div className="space-y-3">
+								<DropZone
+									importing={importing}
+									dragOver={dragOver}
+									setDragOver={setDragOver}
+									onDrop={handleDrop}
+									onClick={() => fileInputRef.current?.click()}
+									hint="animelist.xml"
+									accept={acceptedExt}
+								/>
+								<ImportSubmission
+									pendingFile={pendingFile}
+									importing={importing}
+									onStart={handleStartImport}
+								/>
+							</div>
 						</div>
 					</>
 				) : (
@@ -234,15 +268,22 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 									<br />
 									Импортируются фильмы и вотчлист, оценки и рецензии.
 								</p>
-								<DropZone
-									importing={importing}
-									dragOver={dragOver}
-									setDragOver={setDragOver}
-									onDrop={handleDrop}
-									onClick={() => fileInputRef.current?.click()}
-									hint="letterboxd-export.zip"
-									accept={acceptedExt}
-								/>
+								<div className="space-y-3">
+									<DropZone
+										importing={importing}
+										dragOver={dragOver}
+										setDragOver={setDragOver}
+										onDrop={handleDrop}
+										onClick={() => fileInputRef.current?.click()}
+										hint="letterboxd-export.zip"
+										accept={acceptedExt}
+									/>
+									<ImportSubmission
+										pendingFile={pendingFile}
+										importing={importing}
+										onStart={handleStartImport}
+									/>
+								</div>
 							</div>
 						) : (
 							<div>
@@ -283,15 +324,22 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 										</>
 									)}
 								</p>
-								<DropZone
-									importing={importing}
-									dragOver={dragOver}
-									setDragOver={setDragOver}
-									onDrop={handleDrop}
-									onClick={() => fileInputRef.current?.click()}
-									hint={imdbSection === 'ratings' ? 'ratings.csv' : 'watchlist.csv'}
-									accept={acceptedExt}
-								/>
+								<div className="space-y-3">
+									<DropZone
+										importing={importing}
+										dragOver={dragOver}
+										setDragOver={setDragOver}
+										onDrop={handleDrop}
+										onClick={() => fileInputRef.current?.click()}
+										hint={imdbSection === 'ratings' ? 'ratings.csv' : 'watchlist.csv'}
+										accept={acceptedExt}
+									/>
+									<ImportSubmission
+										pendingFile={pendingFile}
+										importing={importing}
+										onStart={handleStartImport}
+									/>
+								</div>
 							</div>
 						)}
 					</>
@@ -414,6 +462,38 @@ function DropZone({
 				</p>
 				{!importing && <p className="text-xs text-white/30 mt-0.5">{hint}</p>}
 			</div>
+		</div>
+	);
+}
+
+function ImportSubmission({
+	pendingFile,
+	importing,
+	onStart,
+}: {
+	pendingFile: File | null;
+	importing: boolean;
+	onStart: () => void;
+}) {
+	return (
+		<div className="mt-3 space-y-2">
+			<p className="text-xs text-white/40">
+				{pendingFile
+					? `Выбран файл: ${pendingFile.name}`
+					: 'Выберите файл и нажмите кнопку, чтобы начать импорт.'}
+			</p>
+			<button
+				type="button"
+				onClick={onStart}
+				disabled={!pendingFile || importing}
+				className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/20 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				{importing ? (
+					<div className="h-3 w-3 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+				) : (
+					'Импортировать'
+				)}
+			</button>
 		</div>
 	);
 }
