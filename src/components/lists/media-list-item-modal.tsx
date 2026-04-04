@@ -7,6 +7,7 @@ import type {
 	MediaListItem,
 	MediaType,
 	MediaStatus,
+	CreateCustomMediaListItem,
 	CreateMediaListItem,
 	UpdateMediaListItem,
 	SearchResult,
@@ -15,7 +16,10 @@ import type {
 interface Props {
 	isOpen: boolean;
 	onClose: () => void;
-	onSave: (data: CreateMediaListItem | UpdateMediaListItem) => Promise<void>;
+	onSave: (
+		data: CreateMediaListItem | CreateCustomMediaListItem | UpdateMediaListItem,
+		options?: { mode?: 'custom' | 'search' }
+	) => Promise<void>;
 	mediaType: MediaType;
 	item?: MediaListItem | null;
 }
@@ -31,12 +35,55 @@ const isAlbum = (t: MediaType) => t === 'album';
 const isGame = (t: MediaType) => t === 'game';
 const isMovie = (t: MediaType) => t === 'movie';
 const SEARCH_DEBOUNCE_MS = 300;
+type EntryMode = 'search' | 'custom';
+const CUSTOM_YEAR_MIN = 1800;
+const CUSTOM_YEAR_MAX = 2099;
+const FIELD_LABELS: Record<string, string> = {
+	media_type: 'Тип',
+	title: 'Название',
+	year: 'Год',
+	cover_url: 'Обложка',
+	status: 'Статус',
+	rating: 'Оценка',
+	comment: 'Комментарий',
+	genres: 'Жанры',
+	is_public: 'Публичность',
+	is_favorite: 'Избранное',
+	started_at: 'Дата начала',
+	completed_at: 'Дата завершения',
+	play_time_hours: 'Часов'
+};
+
+function formatValidationError(raw?: string | null) {
+	if (!raw) return null;
+	try {
+		const parsed = JSON.parse(raw);
+		if (Array.isArray(parsed) && parsed.length > 0) {
+			return parsed
+				.map((err) => {
+					const loc = Array.isArray(err.loc) ? err.loc : [];
+					const fieldKey = loc[loc.length - 1] ?? loc[1] ?? 'error';
+					const label = FIELD_LABELS[fieldKey] ?? fieldKey;
+					return `${label}: ${err.msg}`;
+				})
+				.join('. ');
+		}
+	} catch {
+		// ignore
+	}
+	return raw;
+}
 
 export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }: Props) {
 	const isEdit = !!item;
 
 	// Read-only metadata (from search result)
 	const [selectedResult, setSelectedResult] = useState<SearchResult | null>(null);
+	const [entryMode, setEntryMode] = useState<EntryMode>('search');
+	const [customTitle, setCustomTitle] = useState('');
+	const [customYear, setCustomYear] = useState('');
+	const [customCoverUrl, setCustomCoverUrl] = useState('');
+	const [customGenres, setCustomGenres] = useState('');
 
 	// Editable fields
 	const [status, setStatus] = useState<MediaStatus | ''>('');
@@ -76,6 +123,11 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 			} else {
 				// Add mode: reset all
 				setSelectedResult(null);
+				setEntryMode('search');
+				setCustomTitle('');
+				setCustomYear('');
+				setCustomCoverUrl('');
+				setCustomGenres('');
 				setStatus('');
 				setRating('');
 				setComment('');
@@ -134,6 +186,14 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 		};
 	}, [searchQuery, isEdit, mediaType]);
 
+	useEffect(() => {
+		if (!isEdit && entryMode === 'custom') {
+			setSelectedResult(null);
+			setSearchResults([]);
+			setSearchQuery('');
+		}
+	}, [entryMode, isEdit]);
+
 	if (!isOpen) return null;
 
 	const handleSelectSearchResult = (result: SearchResult) => {
@@ -145,17 +205,31 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (!isEdit && !selectedResult) {
-			setError('Выберите запись из поиска');
-			return;
-		}
-		if (!isEdit && !selectedResult?.external_id) {
-			setError('Не удалось определить идентификатор записи');
-			return;
-		}
-
 		const ratingNum = rating ? Number(rating) : null;
 		const playTimeNum = playTimeHours ? Number(playTimeHours) : null;
+
+		const submitCreate = async (
+			payload: CreateMediaListItem | CreateCustomMediaListItem,
+			options?: { mode?: 'custom' | 'search' }
+		) => {
+			try {
+				setSaving(true);
+				setError(null);
+				await onSave(payload, options);
+				onClose();
+			} catch (err) {
+				const e = err as Error & { status?: number };
+				console.error('[MediaListItemModal] Create error:', e, 'Status:', e.status);
+				if (e.status === 409) {
+					setError('Эта запись уже в вашем списке');
+				} else {
+					const formatted = formatValidationError(e.message) ?? e.message ?? 'Не удалось добавить';
+					setError(formatted);
+				}
+			} finally {
+				setSaving(false);
+			}
+		};
 
 		if (isEdit) {
 			// Update existing item
@@ -178,15 +252,28 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 			} catch (err) {
 				const e = err as Error & { status?: number };
 				console.error('[MediaListItemModal] Update error:', e);
-				setError(e.message || 'Не удалось сохранить');
+				const formatted = formatValidationError(e.message) ?? e.message ?? 'Не удалось сохранить';
+				setError(formatted);
 			} finally {
 				setSaving(false);
 			}
-		} else {
-			// Create new item from search result
+
+			return;
+		}
+
+		if (entryMode === 'search') {
+			if (!selectedResult) {
+				setError('Выберите запись из поиска');
+				return;
+			}
+			if (!selectedResult.external_id) {
+				setError('Не удалось определить идентификатор записи');
+				return;
+			}
+
 			const data: CreateMediaListItem = {
 				media_type: mediaType,
-				external_id: selectedResult!.external_id,
+				external_id: selectedResult.external_id,
 				...(!isAlbum(mediaType) && { status: (status as MediaStatus) || null }),
 				rating: ratingNum,
 				comment: comment.trim() || null,
@@ -197,27 +284,64 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 				...(isGame(mediaType) && { play_time_hours: playTimeNum }),
 			};
 
-			console.log('[MediaListItemModal] Submitting data:', data);
+			await submitCreate(data, { mode: 'search' });
+			return;
+		}
 
-			try {
-				setSaving(true);
-				setError(null);
-				await onSave(data);
-				onClose();
-			} catch (err) {
-				const e = err as Error & { status?: number };
-				console.error('[MediaListItemModal] Create error:', e, 'Status:', e.status);
-				if (e.status === 400) {
-					setError(`Ошибка валидации: ${e.message}`);
-				} else if (e.status === 409) {
-					setError('Эта запись уже в вашем списке');
-				} else {
-					setError(e.message || 'Не удалось добавить');
-				}
-			} finally {
-				setSaving(false);
+		const trimmedTitle = customTitle.trim();
+		if (!trimmedTitle) {
+			setError('Укажите название');
+			return;
+		}
+
+		const yearInput = customYear.trim();
+		const parsedYear = yearInput ? Number(yearInput) : undefined;
+		const yearValue =
+			parsedYear !== undefined && !Number.isNaN(parsedYear) ? parsedYear : undefined;
+		if (yearInput) {
+			if (!Number.isInteger(parsedYear ?? NaN)) {
+				setError('Год должен быть целым числом');
+				return;
+			}
+			if (
+				yearValue !== undefined &&
+				(yearValue < CUSTOM_YEAR_MIN || yearValue > CUSTOM_YEAR_MAX)
+			) {
+				setError(`Год должен быть от ${CUSTOM_YEAR_MIN} до ${CUSTOM_YEAR_MAX}`);
+				return;
 			}
 		}
+		const coverUrlValue = customCoverUrl.trim();
+		if (coverUrlValue) {
+			try {
+				new URL(coverUrlValue);
+			} catch {
+				setError('Ссылка на обложку некорректна');
+				return;
+			}
+		}
+		const genresList = customGenres
+			.split(',')
+			.map((g) => g.trim())
+			.filter(Boolean);
+
+		const data: CreateCustomMediaListItem = {
+			media_type: mediaType,
+			title: trimmedTitle,
+			...(yearValue !== undefined ? { year: yearValue } : {}),
+			...(coverUrlValue ? { cover_url: coverUrlValue } : {}),
+			...(!isAlbum(mediaType) && { status: (status as MediaStatus) || null }),
+			rating: ratingNum,
+			comment: comment.trim() || null,
+			is_public: isPublic,
+			is_favorite: isFavorite,
+			started_at: startedAt || null,
+			...(!isAlbum(mediaType) && { completed_at: completedAt || null }),
+			...(isGame(mediaType) && { play_time_hours: playTimeNum }),
+			...(genresList.length > 0 ? { genres: genresList } : {}),
+		};
+
+		await submitCreate(data, { mode: 'custom' });
 	};
 
 	return (
@@ -229,121 +353,196 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 					{isEdit ? 'Редактировать' : 'Добавить запись'}
 				</h2>
 
-				{/* Search section — only for add mode */}
+				{/* Search / custom section — only for add mode */}
 				{!isEdit && (
-					<div className="mb-6 pb-6 border-b border-white/10">
-						{!selectedResult ? (
-							<>
-								<label className="block text-sm font-medium text-white/70 mb-2">
-									🔍 Поиск в базах данных
-								</label>
-								<div className="relative">
-									<input
-										type="text"
-										value={searchQuery}
-										onChange={(e) => setSearchQuery(e.target.value)}
-										placeholder="Введите название..."
-										className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
-										autoFocus
-									/>
-									{searching && (
-										<div className="absolute right-3 top-2">
-											<div className="h-5 w-5 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
-										</div>
-									)}
-								</div>
+					<div className="mb-6 pb-6 border-b border-white/10 space-y-4">
+						<div className="flex gap-1 p-1 rounded-lg bg-black/20">
+							<button
+								type="button"
+								onClick={() => setEntryMode('search')}
+								className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+									entryMode === 'search'
+										? 'bg-primary/20 text-primary'
+										: 'text-white/50 hover:text-white'
+								}`}
+							>
+								Поиск в базе
+							</button>
+							<button
+								type="button"
+								onClick={() => setEntryMode('custom')}
+								className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+									entryMode === 'custom'
+										? 'bg-primary/20 text-primary'
+										: 'text-white/50 hover:text-white'
+								}`}
+							>
+								Своя запись
+							</button>
+						</div>
 
-								{/* Search results */}
-								{searchResults.length > 0 && (
-									<div className="mt-3 max-h-64 overflow-y-auto space-y-2">
-										{searchResults.map((result, i) => (
-											<button
-												key={i}
-												type="button"
-												onClick={() => handleSelectSearchResult(result)}
-												className="w-full text-left p-3 rounded-lg bg-black/30 hover:bg-black/50 border border-white/10 hover:border-white/20 transition-all flex gap-3 group"
-											>
-												{result.cover_url && (
-													<div
-														className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-8 w-8' : 'h-12 w-8'}`}
-													>
-														<Image
-															src={result.cover_url}
-															alt={result.title}
-															width={32}
-															height={isAlbum(mediaType) ? 32 : 48}
-															className="h-full w-full object-cover"
-															unoptimized
-														/>
-													</div>
-												)}
-												<div className="flex-1 min-w-0">
-													<p className="text-sm font-medium text-white group-hover:text-primary transition-colors">
-														{result.title}
-													</p>
-													{result.genres && result.genres.length > 0 && (
-														<p className="text-xs text-white/50">
-															{result.genres.slice(0, 2).join(', ')}
-														</p>
-													)}
-													<div className="flex gap-2 mt-1 text-xs text-white/40">
-														{result.year && <span>Год: {result.year}</span>}
-														{result.source_rating && <span>⭐ {result.source_rating}</span>}
-													</div>
-												</div>
-											</button>
-										))}
-									</div>
-								)}
-
-								{searchQuery && !searching && searchResults.length === 0 && (
-									<p className="mt-3 text-sm text-white/40">Ничего не найдено</p>
-								)}
-							</>
-						) : (
-							<div className="p-3 rounded-lg bg-black/30 border border-primary/30">
-								<div className="flex gap-3">
-									{selectedResult.cover_url && (
-										<div
-											className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-12 w-12' : 'h-16 w-12'}`}
-										>
-											<Image
-												src={selectedResult.cover_url}
-												alt={selectedResult.title}
-												width={48}
-												height={isAlbum(mediaType) ? 48 : 64}
-												className="h-full w-full object-cover"
-												unoptimized
-											/>
-										</div>
-									)}
-									<div className="flex-1 min-w-0">
-										<p className="font-medium text-white">{selectedResult.title}</p>
-										{selectedResult.genres && selectedResult.genres.length > 0 && (
-											<p className="text-xs text-white/50 mt-1">
-												{selectedResult.genres.join(', ')}
-											</p>
+						{entryMode === 'search' ? (
+							!selectedResult ? (
+								<>
+									<label className="block text-sm font-medium text-white/70 mb-2">
+										🔍 Поиск в базах данных
+									</label>
+									<div className="relative">
+										<input
+											type="text"
+											value={searchQuery}
+											onChange={(e) => setSearchQuery(e.target.value)}
+											placeholder="Введите название..."
+											className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+											autoFocus
+										/>
+										{searching && (
+											<div className="absolute right-3 top-2">
+												<div className="h-5 w-5 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+											</div>
 										)}
-										<div className="flex gap-2 mt-1 text-xs text-white/40">
-											{selectedResult.year && <span>{selectedResult.year}</span>}
-											{selectedResult.source_rating && (
-												<span>⭐ {selectedResult.source_rating}</span>
+									</div>
+
+									{/* Search results */}
+									{searchResults.length > 0 && (
+										<div className="mt-3 max-h-64 overflow-y-auto space-y-2">
+											{searchResults.map((result, i) => (
+												<button
+													key={i}
+													type="button"
+													onClick={() => handleSelectSearchResult(result)}
+													className="w-full text-left p-3 rounded-lg bg-black/30 hover:bg-black/50 border border-white/10 hover:border-white/20 transition-all flex gap-3 group"
+												>
+													{result.cover_url && (
+														<div
+															className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-8 w-8' : 'h-12 w-8'}`}
+														>
+															<Image
+																src={result.cover_url}
+																alt={result.title}
+																width={32}
+																height={isAlbum(mediaType) ? 32 : 48}
+																className="h-full w-full object-cover"
+																unoptimized
+															/>
+														</div>
+													)}
+													<div className="flex-1 min-w-0">
+														<p className="text-sm font-medium text-white group-hover:text-primary transition-colors">
+															{result.title}
+														</p>
+														{result.genres && result.genres.length > 0 && (
+															<p className="text-xs text-white/50">
+																{result.genres.slice(0, 2).join(', ')}
+															</p>
+														)}
+														<div className="flex gap-2 mt-1 text-xs text-white/40">
+															{result.year && <span>Год: {result.year}</span>}
+															{result.source_rating && <span>⭐ {result.source_rating}</span>}
+														</div>
+													</div>
+												</button>
+											))}
+										</div>
+									)}
+
+									{searchQuery && !searching && searchResults.length === 0 && (
+										<p className="mt-3 text-sm text-white/40">Ничего не найдено</p>
+									)}
+								</>
+							) : (
+								<div className="p-3 rounded-lg bg-black/30 border border-primary/30">
+									<div className="flex gap-3">
+										{selectedResult.cover_url && (
+											<div
+												className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-12 w-12' : 'h-16 w-12'}`}
+											>
+												<Image
+													src={selectedResult.cover_url}
+													alt={selectedResult.title}
+													width={48}
+													height={isAlbum(mediaType) ? 48 : 64}
+													className="h-full w-full object-cover"
+													unoptimized
+												/>
+											</div>
+										)}
+										<div className="flex-1 min-w-0">
+											<p className="font-medium text-white">{selectedResult.title}</p>
+											{selectedResult.genres && selectedResult.genres.length > 0 && (
+												<p className="text-xs text-white/50 mt-1">
+													{selectedResult.genres.join(', ')}
+												</p>
+											)}
+											<div className="flex gap-2 mt-1 text-xs text-white/40">
+												{selectedResult.year && <span>{selectedResult.year}</span>}
+												{selectedResult.source_rating && (
+													<span>⭐ {selectedResult.source_rating}</span>
+												)}
+											</div>
+											{selectedResult.description && (
+												<p className="text-xs text-white/60 mt-2 line-clamp-2">
+													{selectedResult.description}
+												</p>
 											)}
 										</div>
-										{selectedResult.description && (
-											<p className="text-xs text-white/60 mt-2 line-clamp-2">
-												{selectedResult.description}
-											</p>
-										)}
+									</div>
+									<button
+										type="button"
+										onClick={() => setSelectedResult(null)}
+										className="mt-2 text-xs text-primary hover:text-primary/80 transition-colors"
+									>
+										Выбрать другое...
+									</button>
+								</div>
+							)
+						) : (
+							<div className="grid gap-3">
+								<div>
+									<label className="block text-sm font-medium text-white/70 mb-1">Название</label>
+									<input
+										type="text"
+										value={customTitle}
+										onChange={(e) => setCustomTitle(e.target.value)}
+										placeholder="Мой любимый фильм"
+										className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+									/>
+								</div>
+								<div className="grid gap-3 sm:grid-cols-2">
+									<div>
+										<label className="block text-sm font-medium text-white/70 mb-1">Год</label>
+										<input
+											type="number"
+											min={1800}
+											max={2099}
+											value={customYear}
+											onChange={(e) => setCustomYear(e.target.value)}
+											placeholder="2023"
+											className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+										/>
+									</div>
+									<div>
+										<label className="block text-sm font-medium text-white/70 mb-1">Обложка (URL)</label>
+										<input
+											type="text"
+											value={customCoverUrl}
+											onChange={(e) => setCustomCoverUrl(e.target.value)}
+											placeholder="https://example.com/cover.jpg"
+											className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+										/>
 									</div>
 								</div>
-								<button
-									type="button"
-									onClick={() => setSelectedResult(null)}
-									className="mt-2 text-xs text-primary hover:text-primary/80 transition-colors"
-								>
-									Выбрать другое...
-								</button>
+								<div>
+									<label className="block text-sm font-medium text-white/70 mb-1">Жанры</label>
+									<input
+										type="text"
+										value={customGenres}
+										onChange={(e) => setCustomGenres(e.target.value)}
+										placeholder="Drama, Adventure"
+										className="w-full rounded-lg bg-black/20 border border-white/10 px-3 py-2 text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+									/>
+									<p className="text-xs text-white/40 mt-1">Разделяйте через запятую</p>
+								</div>
 							</div>
 						)}
 					</div>
@@ -529,7 +728,10 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 						</button>
 						<button
 							type="submit"
-							disabled={saving || (!isEdit && !selectedResult)}
+							disabled={
+								saving ||
+								(!isEdit && entryMode === 'search' && !selectedResult)
+							}
 							className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{saving ? 'Сохранение...' : isEdit ? 'Сохранить' : 'Добавить'}

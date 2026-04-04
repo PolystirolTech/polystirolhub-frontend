@@ -32,6 +32,22 @@ export interface SearchResult {
 	year?: number;
 }
 
+export interface CreateCustomMediaListItem {
+	media_type: MediaType;
+	title: string;
+	year?: number | null;
+	cover_url?: string | null;
+	status?: MediaStatus | null;
+	rating?: number | null;
+	comment?: string | null;
+	genres?: string[] | null;
+	is_public?: boolean;
+	is_favorite?: boolean;
+	started_at?: string | null;
+	completed_at?: string | null;
+	play_time_hours?: number | null;
+}
+
 export interface CreateMediaListItem {
 	media_type: MediaType;
 	external_id: string;

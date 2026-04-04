@@ -2,6 +2,7 @@ import { apiConfig } from '@/lib/api/config';
 import type {
 	MediaListItem,
 	MediaListStats,
+	CreateCustomMediaListItem,
 	CreateMediaListItem,
 	UpdateMediaListItem,
 	GetMediaListParams,
@@ -63,6 +64,13 @@ class MediaListService {
 
 	async createItem(data: CreateMediaListItem): Promise<MediaListItem> {
 		return request<MediaListItem>(BASE(), {
+			method: 'POST',
+			body: JSON.stringify(data),
+		});
+	}
+
+	async createCustomItem(data: CreateCustomMediaListItem): Promise<MediaListItem> {
+		return request<MediaListItem>(`${BASE()}/custom`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 		});

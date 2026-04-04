@@ -16,6 +16,7 @@ import type {
 	MediaStatus,
 	SortBy,
 	SortOrder,
+	CreateCustomMediaListItem,
 	CreateMediaListItem,
 	UpdateMediaListItem,
 } from '@/lib/lists/types';
@@ -263,13 +264,21 @@ export default function MyListsPage() {
 		);
 	};
 
-	const handleAdd = async (data: CreateMediaListItem | UpdateMediaListItem) => {
-		const created = await mediaListService.createItem(data as CreateMediaListItem);
+	const handleAdd = async (
+		data: CreateMediaListItem | CreateCustomMediaListItem,
+		options?: { mode?: 'custom' | 'search' }
+	) => {
+		const created =
+			options?.mode === 'custom'
+				? await mediaListService.createCustomItem(data as CreateCustomMediaListItem)
+				: await mediaListService.createItem(data as CreateMediaListItem);
 		setItems((prev) => [created, ...prev]);
 		loadStats(activeTab);
 	};
 
-	const handleEdit = async (data: CreateMediaListItem | UpdateMediaListItem) => {
+	const handleEdit = async (
+		data: CreateMediaListItem | CreateCustomMediaListItem | UpdateMediaListItem
+	) => {
 		if (!editItem) return;
 		const updated = await mediaListService.updateItem(editItem.id, data as UpdateMediaListItem);
 		setItems((prev) => prev.map((it) => (it.id === updated.id ? updated : it)));
@@ -591,13 +600,12 @@ export default function MyListsPage() {
 											)}
 										</div>
 										<p className="text-xs text-white/40">
-											{!isAlbum &&
-												!isMovie &&
-												item.started_at &&
-												new Date(item.started_at).toLocaleDateString('ru-RU')}
+											{!isAlbum && !isMovie && item.started_at && (
+												<span>{new Date(item.started_at).toLocaleDateString('ru-RU')}</span>
+											)}
 											{item.completed_at && !isAlbum && (
 												<span>
-													{isMovie ? '' : ' → '}
+													{item.started_at && !isMovie ? ' → ' : ''}
 													{new Date(item.completed_at).toLocaleDateString('ru-RU')}
 												</span>
 											)}
