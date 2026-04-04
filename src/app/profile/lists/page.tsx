@@ -8,6 +8,7 @@ import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/lib/auth';
 import { mediaListService } from '@/lib/lists/media-list-service';
 import { MediaListItemModal } from '@/components/lists/media-list-item-modal';
+import { ImportExportModal } from '@/components/lists/import-export-modal';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import type {
 	MediaListItem,
@@ -121,7 +122,7 @@ function CustomSelect<T extends string>({
 }
 
 export default function MyListsPage() {
-	const { isAuthenticated, isLoading: authLoading } = useAuth();
+	const { isAuthenticated, isLoading: authLoading, user } = useAuth();
 	const router = useRouter();
 
 	const [activeTab, setActiveTab] = useState<ListTab>('anime');
@@ -143,6 +144,7 @@ export default function MyListsPage() {
 	const [addModalOpen, setAddModalOpen] = useState(false);
 	const [editItem, setEditItem] = useState<MediaListItem | null>(null);
 	const [deleteItem, setDeleteItem] = useState<MediaListItem | null>(null);
+	const [importExportOpen, setImportExportOpen] = useState(false);
 	const [togglingId, setTogglingId] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -354,26 +356,41 @@ export default function MyListsPage() {
 								</span>
 							)}
 						</h2>
-						<button
-							onClick={() => setAddModalOpen(true)}
-							className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 text-primary border border-primary/30 text-sm font-medium transition-colors hover:bg-primary/30 cursor-pointer"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
+						<div className="flex items-center gap-2">
+							{activeTab === 'anime' && (
+								<button
+									onClick={() => setImportExportOpen(true)}
+									className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-white/60 border border-white/10 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white cursor-pointer"
+								>
+									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+										<polyline points="7 10 12 15 17 10"/>
+										<line x1="12" y1="15" x2="12" y2="3"/>
+									</svg>
+									Импорт / Экспорт
+								</button>
+							)}
+							<button
+								onClick={() => setAddModalOpen(true)}
+								className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 text-primary border border-primary/30 text-sm font-medium transition-colors hover:bg-primary/30 cursor-pointer"
 							>
-								<path d="M5 12h14" />
-								<path d="M12 5v14" />
-							</svg>
-							Добавить
-						</button>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path d="M5 12h14" />
+									<path d="M12 5v14" />
+								</svg>
+								Добавить
+							</button>
+						</div>
 					</div>
 
 					{/* Search + Sort + Filters */}
@@ -662,6 +679,14 @@ export default function MyListsPage() {
 				onSave={handleEdit}
 				mediaType={mediaType}
 				item={editItem}
+			/>
+
+			{/* Import/Export */}
+			<ImportExportModal
+				isOpen={importExportOpen}
+				onClose={() => setImportExportOpen(false)}
+				username={user?.username ?? ''}
+				onImported={() => loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly)}
 			/>
 
 			{/* Delete confirmation */}

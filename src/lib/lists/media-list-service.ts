@@ -97,6 +97,32 @@ class MediaListService {
 		}).toString();
 		return request<SearchResult[]>(`${BASE()}/search?${qs}`);
 	}
+
+	async exportAnime(): Promise<Blob> {
+		const response = await fetch(`${BASE()}/anime/export`, {
+			credentials: 'include',
+		});
+		if (!response.ok) {
+			const error = await response.json().catch(() => ({}));
+			throw new Error(error.detail || `Ошибка ${response.status}`);
+		}
+		return response.blob();
+	}
+
+	async importAnime(file: File): Promise<{ imported: number; skipped: number; errors: number }> {
+		const formData = new FormData();
+		formData.append('file', file);
+		const response = await fetch(`${BASE()}/anime/import`, {
+			method: 'POST',
+			credentials: 'include',
+			body: formData,
+		});
+		if (!response.ok) {
+			const error = await response.json().catch(() => ({}));
+			throw new Error(error.detail || `Ошибка ${response.status}`);
+		}
+		return response.json();
+	}
 }
 
 export const mediaListService = new MediaListService();
