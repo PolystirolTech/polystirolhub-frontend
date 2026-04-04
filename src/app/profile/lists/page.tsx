@@ -770,7 +770,8 @@ export default function MyListsPage() {
 					loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly, debouncedSearch);
 					// Обновляем счётчики всех вкладок — импорт мог затронуть разные типы медиа
 					for (const tab of TABS) {
-						mediaListService.getStats(TAB_TO_MEDIA_TYPE[tab.id])
+						mediaListService
+							.getStats(TAB_TO_MEDIA_TYPE[tab.id])
 							.then((s) => setTabCounts((prev) => ({ ...prev, [tab.id]: s.total })))
 							.catch(() => {});
 					}

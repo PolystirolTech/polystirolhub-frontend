@@ -50,18 +50,16 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 
 	useEffect(() => {
 		document.body.style.overflow = isOpen ? 'hidden' : '';
-		return () => { document.body.style.overflow = ''; };
+		return () => {
+			document.body.style.overflow = '';
+		};
 	}, [isOpen]);
 
 	if (!isOpen) return null;
 
 	const isAnime = mediaTab === 'anime';
 
-	const acceptedExt = isAnime
-		? '.xml'
-		: source === 'letterboxd'
-			? '.zip'
-			: '.csv';
+	const acceptedExt = isAnime ? '.xml' : source === 'letterboxd' ? '.zip' : '.csv';
 
 	const handleExport = async () => {
 		setExporting(true);
@@ -124,7 +122,10 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 
 	return (
 		<div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-			<div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={importing ? undefined : onClose} />
+			<div
+				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+				onClick={importing ? undefined : onClose}
+			/>
 
 			<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md relative w-full max-w-md p-6 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
 				{/* Header */}
@@ -135,8 +136,18 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 						disabled={importing}
 						className="h-7 w-7 flex items-center justify-center rounded-md text-white/40 hover:text-white hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
 					>
-						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-							<path d="M18 6 6 18" /><path d="m6 6 12 12" />
+						<svg
+							width="14"
+							height="14"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path d="M18 6 6 18" />
+							<path d="m6 6 12 12" />
 						</svg>
 					</button>
 				</div>
@@ -146,7 +157,9 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 						{/* Anime Export */}
 						<div className="mb-6 pb-6 border-b border-white/10">
 							<h3 className="text-sm font-semibold text-white/80 mb-1">Экспорт</h3>
-							<p className="text-xs text-white/40 mb-3">Скачать список в формате MAL/Shikimori XML</p>
+							<p className="text-xs text-white/40 mb-3">
+								Скачать список в формате MAL/Shikimori XML
+							</p>
 							<button
 								onClick={handleExport}
 								disabled={exporting}
@@ -155,7 +168,16 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 								{exporting ? (
 									<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
 								) : (
-									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+									<svg
+										width="14"
+										height="14"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
 										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 										<polyline points="7 10 12 15 17 10" />
 										<line x1="12" y1="15" x2="12" y2="3" />
@@ -190,11 +212,13 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 								<button
 									key={s}
 									type="button"
-									onClick={() => { setSource(s); setImportResult(null); setError(null); }}
+									onClick={() => {
+										setSource(s);
+										setImportResult(null);
+										setError(null);
+									}}
 									className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-										source === s
-											? 'bg-primary/20 text-primary'
-											: 'text-white/50 hover:text-white'
+										source === s ? 'bg-primary/20 text-primary' : 'text-white/50 hover:text-white'
 									}`}
 								>
 									{s === 'letterboxd' ? 'Letterboxd' : 'IMDb'}
@@ -205,7 +229,9 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 						{source === 'letterboxd' ? (
 							<div>
 								<p className="text-xs text-white/40 mb-4 leading-relaxed">
-									Settings → Data → <span className="text-white/60">Export Your Data</span> → скачает ZIP.<br />
+									Settings → Data → <span className="text-white/60">Export Your Data</span> →
+									скачает ZIP.
+									<br />
 									Импортируются фильмы и вотчлист, оценки и рецензии.
 								</p>
 								<DropZone
@@ -226,7 +252,11 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 										<button
 											key={sec}
 											type="button"
-											onClick={() => { setImdbSection(sec); setImportResult(null); setError(null); }}
+											onClick={() => {
+												setImdbSection(sec);
+												setImportResult(null);
+												setError(null);
+											}}
 											className={`px-3 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer border ${
 												imdbSection === sec
 													? 'bg-white/10 border-white/20 text-white'
@@ -240,9 +270,17 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 
 								<p className="text-xs text-white/40 mb-4 leading-relaxed">
 									{imdbSection === 'ratings' ? (
-										<>Your ratings → ••• → <span className="text-white/60">Export</span><br />Импортируются оценки и дата просмотра.</>
+										<>
+											Your ratings → ••• → <span className="text-white/60">Export</span>
+											<br />
+											Импортируются оценки и дата просмотра.
+										</>
 									) : (
-										<>Watchlist → ••• → <span className="text-white/60">Export</span><br />Импортируются фильмы и сериалы со статусом «Запланировано».</>
+										<>
+											Watchlist → ••• → <span className="text-white/60">Export</span>
+											<br />
+											Импортируются фильмы и сериалы со статусом «Запланировано».
+										</>
 									)}
 								</p>
 								<DropZone
@@ -289,7 +327,9 @@ export function ImportExportModal({ isOpen, onClose, username, mediaTab, onImpor
 						{importResult.errors.length > 0 && (
 							<div className="max-h-24 overflow-y-auto space-y-1">
 								{importResult.errors.map((e, i) => (
-									<p key={i} className="text-xs text-red-400/70">{e}</p>
+									<p key={i} className="text-xs text-red-400/70">
+										{e}
+									</p>
 								))}
 							</div>
 						)}
@@ -332,7 +372,12 @@ function DropZone({
 }) {
 	return (
 		<div
-			onDragOver={(e) => { if (!importing) { e.preventDefault(); setDragOver(true); } }}
+			onDragOver={(e) => {
+				if (!importing) {
+					e.preventDefault();
+					setDragOver(true);
+				}
+			}}
 			onDragLeave={() => setDragOver(false)}
 			onDrop={importing ? undefined : onDrop}
 			onClick={importing ? undefined : onClick}
@@ -347,7 +392,17 @@ function DropZone({
 			{importing ? (
 				<div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
 			) : (
-				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/30">
+				<svg
+					width="28"
+					height="28"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					className="text-white/30"
+				>
 					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 					<polyline points="17 8 12 3 7 8" />
 					<line x1="12" y1="3" x2="12" y2="15" />
