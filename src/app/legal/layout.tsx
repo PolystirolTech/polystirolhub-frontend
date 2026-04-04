@@ -1,5 +1,11 @@
+import { Metadata } from 'next';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
+
+export const metadata: Metadata = {
+	title: 'Правовая информация',
+	description: 'Политика конфиденциальности и условия использования PolystirolHub.',
+};
 
 export default function LegalLayout({
 	children,

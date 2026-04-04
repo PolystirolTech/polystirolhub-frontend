@@ -1,4 +1,11 @@
+import { Metadata } from 'next';
 import { Header } from '@/components/layout/header';
+
+export const metadata: Metadata = {
+	title: 'Главная',
+	description:
+		'PolystirolHub — центр технологий, игровых серверов и игрового сообщества Polystirol. Статистика, магазин и достижения.',
+};
 import { BannerWidget } from '@/components/bento/widgets/banner-widget';
 import { ProfileWidget } from '@/components/bento/widgets/profile-widget';
 import { NotificationsWidget } from '@/components/bento/widgets/notifications-widget';
