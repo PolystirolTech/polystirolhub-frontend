@@ -64,4 +64,10 @@ export interface GetMediaListParams {
 	order?: SortOrder;
 	limit?: number;
 	offset?: number;
+	q?: string;
+}
+
+export interface MediaListStats {
+	total: number;
+	by_status: Record<MediaStatus, number>;
 }

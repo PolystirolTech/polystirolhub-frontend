@@ -1,6 +1,7 @@
 import { apiConfig } from '@/lib/api/config';
 import type {
 	MediaListItem,
+	MediaListStats,
 	CreateMediaListItem,
 	UpdateMediaListItem,
 	GetMediaListParams,
@@ -43,9 +44,17 @@ class MediaListService {
 		if (params.order) query.set('order', params.order);
 		if (params.limit !== undefined) query.set('limit', String(params.limit));
 		if (params.offset !== undefined) query.set('offset', String(params.offset));
+		if (params.q) query.set('q', params.q);
 
 		const qs = query.toString();
 		return request<MediaListItem[]>(`${BASE()}${qs ? `?${qs}` : ''}`);
+	}
+
+	async getStats(mediaType?: MediaType): Promise<MediaListStats> {
+		const query = new URLSearchParams();
+		if (mediaType) query.set('media_type', mediaType);
+		const qs = query.toString();
+		return request<MediaListStats>(`${BASE()}/stats${qs ? `?${qs}` : ''}`);
 	}
 
 	async getItem(id: string): Promise<MediaListItem> {

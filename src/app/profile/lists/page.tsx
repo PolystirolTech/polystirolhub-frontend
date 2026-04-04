@@ -131,14 +131,16 @@ export default function MyListsPage() {
 	const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 	const [favoritesOnly, setFavoritesOnly] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
+	const [debouncedSearch, setDebouncedSearch] = useState('');
 	const [items, setItems] = useState<MediaListItem[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [offset, setOffset] = useState(0);
 	const [hasMore, setHasMore] = useState(false);
 
-	// Tab counts cache
+	// Tab counts + current tab stats
 	const [tabCounts, setTabCounts] = useState<Partial<Record<ListTab, number>>>({});
+	const [byStatus, setByStatus] = useState<Partial<Record<MediaStatus, number>>>({});
 
 	// Modals
 	const [addModalOpen, setAddModalOpen] = useState(false);
@@ -161,6 +163,7 @@ export default function MyListsPage() {
 			sort: SortBy,
 			order: SortOrder,
 			favorites: boolean,
+			search: string,
 		) => {
 			setLoading(true);
 			setError(null);
@@ -171,6 +174,7 @@ export default function MyListsPage() {
 					sort_by: sort,
 					order,
 					...(favorites && { is_favorite: true }),
+					...(search && { q: search }),
 					limit: PAGE_SIZE,
 					offset: currentOffset,
 				});
@@ -185,51 +189,63 @@ export default function MyListsPage() {
 		[]
 	);
 
-	// Reload tab counts (all statuses, no limit filter for accuracy)
-	const reloadTabCount = useCallback(async (tab: ListTab) => {
+	const loadStats = useCallback(async (tab: ListTab) => {
 		try {
-			const data = await mediaListService.getMyList({
-				media_type: TAB_TO_MEDIA_TYPE[tab],
-				limit: 200,
-			});
-			setTabCounts((prev) => ({ ...prev, [tab]: data.length }));
+			const stats = await mediaListService.getStats(TAB_TO_MEDIA_TYPE[tab]);
+			setByStatus(stats.by_status);
+			setTabCounts((prev) => ({ ...prev, [tab]: stats.total }));
 		} catch {
 			// silent
 		}
 	}, []);
 
-	// Initial load: fetch counts for all tabs
+	// Initial load: fetch stats (counts) for all tabs
 	useEffect(() => {
 		if (!isAuthenticated) return;
 		for (const tab of TABS) {
-			reloadTabCount(tab.id);
+			mediaListService.getStats(TAB_TO_MEDIA_TYPE[tab.id])
+				.then((s) => setTabCounts((prev) => ({ ...prev, [tab.id]: s.total })))
+				.catch(() => {});
 		}
-	}, [isAuthenticated, reloadTabCount]);
+	}, [isAuthenticated]);
 
-	// Reload list when tab, status, sort or favorites filter changes
+	// Debounce search query
+	useEffect(() => {
+		const timer = setTimeout(() => setDebouncedSearch(searchQuery), 400);
+		return () => clearTimeout(timer);
+	}, [searchQuery]);
+
+	// Reload list when filters change
 	useEffect(() => {
 		if (!isAuthenticated) return;
 		setOffset(0);
-		loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly);
-	}, [activeTab, statusFilter, sortBy, sortOrder, favoritesOnly, isAuthenticated, loadItems]);
+		loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly, debouncedSearch);
+	}, [activeTab, statusFilter, sortBy, sortOrder, favoritesOnly, debouncedSearch, isAuthenticated, loadItems]);
+
+	// Reload stats for current tab when tab or favorites changes
+	useEffect(() => {
+		if (!isAuthenticated) return;
+		loadStats(activeTab);
+	}, [activeTab, favoritesOnly, isAuthenticated, loadStats]);
 
 	const handleTabChange = (tab: ListTab) => {
 		setActiveTab(tab);
 		setStatusFilter('all');
 		setFavoritesOnly(false);
 		setSearchQuery('');
+		setDebouncedSearch('');
 	};
 
 	const handleLoadMore = () => {
 		const nextOffset = offset + PAGE_SIZE;
 		setOffset(nextOffset);
-		loadItems(activeTab, statusFilter, nextOffset, sortBy, sortOrder, favoritesOnly);
+		loadItems(activeTab, statusFilter, nextOffset, sortBy, sortOrder, favoritesOnly, debouncedSearch);
 	};
 
 	const handleAdd = async (data: CreateMediaListItem | UpdateMediaListItem) => {
 		const created = await mediaListService.createItem(data as CreateMediaListItem);
 		setItems((prev) => [created, ...prev]);
-		reloadTabCount(activeTab);
+		loadStats(activeTab);
 	};
 
 	const handleEdit = async (data: CreateMediaListItem | UpdateMediaListItem) => {
@@ -242,7 +258,7 @@ export default function MyListsPage() {
 		if (!deleteItem) return;
 		await mediaListService.deleteItem(deleteItem.id);
 		setItems((prev) => prev.filter((it) => it.id !== deleteItem.id));
-		reloadTabCount(activeTab);
+		loadStats(activeTab);
 	};
 
 	const handleToggleFavorite = async (item: MediaListItem) => {
@@ -257,7 +273,7 @@ export default function MyListsPage() {
 		}
 	};
 
-	const countByStatus = (status: MediaStatus) => items.filter((it) => it.status === status).length;
+	const countByStatus = (status: MediaStatus) => byStatus[status] ?? 0;
 
 	if (authLoading) {
 		return (
@@ -278,9 +294,7 @@ export default function MyListsPage() {
 	const mediaType = TAB_TO_MEDIA_TYPE[activeTab];
 	const isAlbum = mediaType === 'album';
 	const isMovie = mediaType === 'movie';
-	const displayedItems = searchQuery
-		? items.filter((it) => it.title.toLowerCase().includes(searchQuery.toLowerCase()))
-		: items;
+	const displayedItems = items;
 
 	return (
 		<div className="min-h-screen pb-20 pt-24">
@@ -686,7 +700,7 @@ export default function MyListsPage() {
 				isOpen={importExportOpen}
 				onClose={() => setImportExportOpen(false)}
 				username={user?.username ?? ''}
-				onImported={() => loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly)}
+				onImported={() => { loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly, debouncedSearch); loadStats(activeTab); }}
 			/>
 
 			{/* Delete confirmation */}
