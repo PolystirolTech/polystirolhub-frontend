@@ -27,8 +27,40 @@ const japaneseFont = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-	title: 'PolystirolHub',
-	description: 'The central hub for Polystirol technologies',
+	metadataBase: new URL('https://polystirol-hub.ru'),
+	title: {
+		default: 'PolystirolHub',
+		template: '%s | PolystirolHub',
+	},
+	description: 'The central hub for Polystirol technologies, game servers, and community stats.',
+	keywords: ['polystirol', 'gaming hub', 'servers', 'stats', 'badges', 'minecraft', 'goldsource'],
+	authors: [{ name: 'Polystirol Team' }],
+	openGraph: {
+		title: 'PolystirolHub',
+		description: 'The central hub for Polystirol technologies',
+		url: 'https://polystirol-hub.ru',
+		siteName: 'PolystirolHub',
+		locale: 'ru_RU',
+		type: 'website',
+		images: [
+			{
+				url: '/og-image.png',
+				width: 1200,
+				height: 630,
+				alt: 'PolystirolHub Preview',
+			},
+		],
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: 'PolystirolHub',
+		description: 'The central hub for Polystirol technologies',
+		images: ['/og-image.png'],
+	},
+	robots: {
+		index: true,
+		follow: true,
+	},
 };
 
 export default function RootLayout({

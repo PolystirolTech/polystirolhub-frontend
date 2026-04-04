@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-	title: 'Servers - PolystirolHub',
-	description: 'Game servers list',
+	title: 'Серверы',
+	description: 'Список игровых серверов сообщества Polystirol. Подключайтесь и играйте!',
 };
 
 export default function ServersLayout({

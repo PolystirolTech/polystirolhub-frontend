@@ -8,6 +8,7 @@ import { ServerCreateForm } from '@/components/admin/server-create-form';
 import { ServersListWidget } from '@/components/admin/servers-list-widget';
 import Link from 'next/link';
 import { Footer } from '@/components/layout/footer';
+import { SystemToolsWidget } from '@/components/admin/system-tools-widget';
 
 export default function AdminPage() {
 	const { user } = useAuth();
@@ -90,7 +91,12 @@ export default function AdminPage() {
 					{/* Левая колонка */}
 					<div className="flex flex-col gap-6 lg:col-span-4">
 						{/* Виджет управления админами (только для super admin) */}
-						{user.is_super_admin && <UserAdminWidget />}
+						{user.is_super_admin && (
+							<>
+								<UserAdminWidget />
+								<SystemToolsWidget />
+							</>
+						)}
 
 						{/* Управление типами игр */}
 						<GameTypesWidget />

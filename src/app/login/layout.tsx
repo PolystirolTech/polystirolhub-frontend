@@ -1,8 +1,9 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-	title: 'Login - PolystirolHub',
-	description: 'Login to PolystirolHub',
+	title: 'Вход',
+	description:
+		'Войдите в PolystirolHub через Twitch, Discord или Steam, чтобы получить доступ к своему профилю и статистике.',
 };
 
 export default function LoginLayout({

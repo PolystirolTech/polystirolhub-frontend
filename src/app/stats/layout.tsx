@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-	title: 'Statistics - PolystirolHub',
-	description: 'Player and server statistics',
+	title: 'Статистика',
+	description: 'Глобальная статистика игроков, рейтинг и экономика сообщества Polystirol.',
 };
 
 export default function StatsLayout({

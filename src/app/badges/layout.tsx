@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-	title: 'Badges - PolystirolHub',
-	description: 'Badges catalog',
+	title: 'Достижения',
+	description: 'Коллекция значков и достижений сообщества Polystirol.',
 };
 
 export default function BadgesLayout({
