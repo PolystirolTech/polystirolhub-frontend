@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { mediaListService } from '@/lib/lists/media-list-service';
+import { proxyImageUrl } from '@/lib/utils';
 import type {
 	MediaListItem,
 	MediaType,
@@ -415,7 +416,7 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 															className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-8 w-8' : 'h-12 w-8'}`}
 														>
 															<Image
-																src={result.cover_url}
+																src={proxyImageUrl(result.cover_url)!}
 																alt={result.title}
 																width={32}
 																height={isAlbum(mediaType) ? 32 : 48}
@@ -455,7 +456,7 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 												className={`shrink-0 rounded overflow-hidden ${isAlbum(mediaType) ? 'h-12 w-12' : 'h-16 w-12'}`}
 											>
 												<Image
-													src={selectedResult.cover_url}
+													src={proxyImageUrl(selectedResult.cover_url)!}
 													alt={selectedResult.title}
 													width={48}
 													height={isAlbum(mediaType) ? 48 : 64}

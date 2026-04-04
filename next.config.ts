@@ -21,6 +21,22 @@ const nextConfig: NextConfig = {
 				hostname: 'api.polystirolhub.net',
 				pathname: '/static/**',
 			},
+			{
+				protocol: 'https',
+				hostname: 'api.polystirolhub.net',
+				pathname: '/api/v1/proxy/image',
+			},
+			{
+				protocol: 'https',
+				hostname: 'api.dev.sluicee.ru',
+				pathname: '/api/v1/proxy/image',
+			},
+			{
+				protocol: 'http',
+				hostname: 'localhost',
+				port: '8000',
+				pathname: '/api/v1/proxy/image',
+			},
 		],
 	},
 };

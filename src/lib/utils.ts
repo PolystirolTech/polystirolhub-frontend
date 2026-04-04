@@ -9,6 +9,12 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
+export function proxyImageUrl(url: string | null | undefined): string | null {
+	if (!url) return null;
+	const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+	return `${base}/api/v1/proxy/image?url=${encodeURIComponent(url)}`;
+}
+
 export function maskEmail(email: string | null | undefined): string {
 	if (!email) return '';
 

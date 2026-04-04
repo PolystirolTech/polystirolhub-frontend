@@ -7,6 +7,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/lib/auth';
 import { mediaListService } from '@/lib/lists/media-list-service';
+import { proxyImageUrl } from '@/lib/utils';
 import { MediaListItemModal } from '@/components/lists/media-list-item-modal';
 import { ImportExportModal } from '@/components/lists/import-export-modal';
 import { ConfirmationModal } from '@/components/ui/confirmation-modal';
@@ -576,7 +577,7 @@ export default function MyListsPage() {
 									>
 										{item.cover_url ? (
 											<Image
-												src={item.cover_url}
+												src={proxyImageUrl(item.cover_url)!}
 												alt={item.title}
 												width={56}
 												height={isAlbum ? 56 : 80}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { mediaListService } from '@/lib/lists/media-list-service';
+import { proxyImageUrl } from '@/lib/utils';
 import type {
 	MediaListItem,
 	MediaListStats,
@@ -80,7 +81,7 @@ function MediaCard({ item }: { item: MediaListItem }) {
 			<div className={`relative w-full ${coverAspect} overflow-hidden bg-black/30`}>
 				{item.cover_url ? (
 					<Image
-						src={item.cover_url}
+						src={proxyImageUrl(item.cover_url)!}
 						alt={item.title}
 						fill
 						className="object-cover transition-transform duration-300 group-hover:scale-105"
