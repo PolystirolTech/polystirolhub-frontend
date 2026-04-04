@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
@@ -13,6 +13,8 @@ import type {
 	MediaListItem,
 	MediaType,
 	MediaStatus,
+	SortBy,
+	SortOrder,
 	CreateMediaListItem,
 	UpdateMediaListItem,
 } from '@/lib/lists/types';
@@ -51,12 +53,83 @@ const STATUS_COLORS: Record<MediaStatus, string> = {
 
 const PAGE_SIZE = 50;
 
+function CustomSelect<T extends string>({
+	value,
+	onChange,
+	options,
+}: {
+	value: T;
+	onChange: (v: T) => void;
+	options: { value: T; label: string }[];
+}) {
+	const [open, setOpen] = useState(false);
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handler = (e: MouseEvent) => {
+			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+		};
+		document.addEventListener('mousedown', handler);
+		return () => document.removeEventListener('mousedown', handler);
+	}, []);
+
+	const selected = options.find((o) => o.value === value);
+
+	return (
+		<div ref={ref} className="relative">
+			<button
+				type="button"
+				onClick={() => setOpen((p) => !p)}
+				className="flex items-center gap-2 rounded-lg bg-black/20 border border-white/10 hover:border-white/20 px-3 py-1.5 text-sm text-white transition-colors cursor-pointer min-w-44"
+			>
+				<span className="flex-1 text-left">{selected?.label}</span>
+				<svg
+					width="12"
+					height="12"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2.5"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					className={`shrink-0 text-white/40 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+				>
+					<path d="m6 9 6 6 6-6" />
+				</svg>
+			</button>
+
+			{open && (
+				<div className="absolute top-full left-0 mt-1 z-50 min-w-full glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+					{options.map((opt) => (
+						<button
+							key={opt.value}
+							type="button"
+							onClick={() => { onChange(opt.value); setOpen(false); }}
+							className={`w-full text-left px-3 py-2 text-sm transition-colors cursor-pointer ${
+								opt.value === value
+									? 'bg-primary/20 text-primary'
+									: 'text-white/80 hover:bg-white/10 hover:text-white'
+							}`}
+						>
+							{opt.label}
+						</button>
+					))}
+				</div>
+			)}
+		</div>
+	);
+}
+
 export default function MyListsPage() {
 	const { isAuthenticated, isLoading: authLoading } = useAuth();
 	const router = useRouter();
 
 	const [activeTab, setActiveTab] = useState<ListTab>('anime');
 	const [statusFilter, setStatusFilter] = useState<MediaStatus | 'all'>('all');
+	const [sortBy, setSortBy] = useState<SortBy>('created_at');
+	const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+	const [favoritesOnly, setFavoritesOnly] = useState(false);
+	const [searchQuery, setSearchQuery] = useState('');
 	const [items, setItems] = useState<MediaListItem[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -79,13 +152,23 @@ export default function MyListsPage() {
 	}, [isAuthenticated, authLoading, router]);
 
 	const loadItems = useCallback(
-		async (tab: ListTab, status: MediaStatus | 'all', currentOffset: number) => {
+		async (
+			tab: ListTab,
+			status: MediaStatus | 'all',
+			currentOffset: number,
+			sort: SortBy,
+			order: SortOrder,
+			favorites: boolean,
+		) => {
 			setLoading(true);
 			setError(null);
 			try {
 				const data = await mediaListService.getMyList({
 					media_type: TAB_TO_MEDIA_TYPE[tab],
 					...(status !== 'all' && { status }),
+					sort_by: sort,
+					order,
+					...(favorites && { is_favorite: true }),
 					limit: PAGE_SIZE,
 					offset: currentOffset,
 				});
@@ -121,22 +204,24 @@ export default function MyListsPage() {
 		}
 	}, [isAuthenticated, reloadTabCount]);
 
-	// Reload list when tab or status filter changes
+	// Reload list when tab, status, sort or favorites filter changes
 	useEffect(() => {
 		if (!isAuthenticated) return;
 		setOffset(0);
-		loadItems(activeTab, statusFilter, 0);
-	}, [activeTab, statusFilter, isAuthenticated, loadItems]);
+		loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly);
+	}, [activeTab, statusFilter, sortBy, sortOrder, favoritesOnly, isAuthenticated, loadItems]);
 
 	const handleTabChange = (tab: ListTab) => {
 		setActiveTab(tab);
 		setStatusFilter('all');
+		setFavoritesOnly(false);
+		setSearchQuery('');
 	};
 
 	const handleLoadMore = () => {
 		const nextOffset = offset + PAGE_SIZE;
 		setOffset(nextOffset);
-		loadItems(activeTab, statusFilter, nextOffset);
+		loadItems(activeTab, statusFilter, nextOffset, sortBy, sortOrder, favoritesOnly);
 	};
 
 	const handleAdd = async (data: CreateMediaListItem | UpdateMediaListItem) => {
@@ -191,8 +276,9 @@ export default function MyListsPage() {
 	const mediaType = TAB_TO_MEDIA_TYPE[activeTab];
 	const isAlbum = mediaType === 'album';
 	const isMovie = mediaType === 'movie';
-	const displayedItems =
-		statusFilter === 'all' ? items : items.filter((it) => it.status === statusFilter);
+	const displayedItems = searchQuery
+		? items.filter((it) => it.title.toLowerCase().includes(searchQuery.toLowerCase()))
+		: items;
 
 	return (
 		<div className="min-h-screen pb-20 pt-24">
@@ -259,7 +345,7 @@ export default function MyListsPage() {
 
 				{/* List */}
 				<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6">
-					<div className="flex items-center justify-between mb-6">
+					<div className="flex items-center justify-between mb-4">
 						<h2 className="text-lg font-semibold text-white">
 							{TABS.find((t) => t.id === activeTab)?.label}
 							{statusFilter !== 'all' && (
@@ -287,6 +373,69 @@ export default function MyListsPage() {
 								<path d="M12 5v14" />
 							</svg>
 							Добавить
+						</button>
+					</div>
+
+					{/* Search + Sort + Filters */}
+					<div className="flex flex-wrap gap-2 mb-5">
+						{/* Search */}
+						<div className="relative flex-1 min-w-40">
+							<svg className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+								<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+							</svg>
+							<input
+								type="text"
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								placeholder="Поиск по названию..."
+								className="w-full rounded-lg bg-black/20 border border-white/10 pl-8 pr-3 py-1.5 text-sm text-white placeholder:text-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+							/>
+						</div>
+
+						{/* Sort by */}
+						<CustomSelect
+							value={sortBy}
+							onChange={setSortBy}
+							options={[
+								{ value: 'created_at', label: 'По дате добавления' },
+								{ value: 'updated_at', label: 'По дате изменения' },
+								{ value: 'rating', label: 'По оценке' },
+								{ value: 'title', label: 'По названию' },
+								...(!isAlbum && !isMovie ? [{ value: 'completed_at' as SortBy, label: 'По дате завершения' }] : []),
+								...(isMovie ? [{ value: 'completed_at' as SortBy, label: 'По дате просмотра' }] : []),
+							]}
+						/>
+
+						{/* Sort order */}
+						<button
+							type="button"
+							onClick={() => setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+							className="px-3 py-1.5 rounded-lg bg-black/20 border border-white/10 text-sm text-white/70 hover:text-white hover:border-white/20 transition-colors cursor-pointer"
+							title={sortOrder === 'asc' ? 'По возрастанию' : 'По убыванию'}
+						>
+							{sortOrder === 'asc' ? (
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+									<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
+								</svg>
+							) : (
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+									<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>
+								</svg>
+							)}
+						</button>
+
+						{/* Favorites only */}
+						<button
+							type="button"
+							onClick={() => setFavoritesOnly((prev) => !prev)}
+							className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${
+								favoritesOnly
+									? 'bg-yellow-500/20 border-yellow-500/30 text-yellow-400'
+									: 'bg-black/20 border-white/10 text-white/60 hover:text-white hover:border-white/20'
+							}`}
+						>
+							<span className="text-xs">★</span>
+							Избранные
 						</button>
 					</div>
 
