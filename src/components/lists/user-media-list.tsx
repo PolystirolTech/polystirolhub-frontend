@@ -75,21 +75,25 @@ function StarRating({ rating }: { rating: number }) {
 function MediaCard({ item }: { item: MediaListItem }) {
 	const isAlbum = item.media_type === 'album';
 	const coverAspect = isAlbum ? 'aspect-square' : 'aspect-[2/3]';
+	const titleRef = useRef<HTMLParagraphElement>(null);
+	const [isTitleTruncated, setIsTitleTruncated] = useState(false);
 	const commentRef = useRef<HTMLParagraphElement>(null);
-	const [isTruncated, setIsTruncated] = useState(false);
+	const [isCommentTruncated, setIsCommentTruncated] = useState(false);
 
 	useEffect(() => {
 		const checkTruncation = () => {
+			if (titleRef.current) {
+				setIsTitleTruncated(titleRef.current.scrollHeight > titleRef.current.clientHeight);
+			}
 			if (commentRef.current) {
-				const { scrollHeight, clientHeight } = commentRef.current;
-				setIsTruncated(scrollHeight > clientHeight);
+				setIsCommentTruncated(commentRef.current.scrollHeight > commentRef.current.clientHeight);
 			}
 		};
 
 		checkTruncation();
 		window.addEventListener('resize', checkTruncation);
 		return () => window.removeEventListener('resize', checkTruncation);
-	}, [item.comment]);
+	}, [item.title, item.comment]);
 
 	return (
 		<div className="group flex flex-col rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 relative hover:z-50">
@@ -126,9 +130,22 @@ function MediaCard({ item }: { item: MediaListItem }) {
 			</div>
 
 			<div className="flex flex-col gap-1 p-3 flex-1">
-				<p className="text-sm font-medium text-white leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-					{item.title}
-				</p>
+				<div className="relative group/title">
+					<p
+						ref={titleRef}
+						className="text-sm font-medium text-white leading-tight line-clamp-2 group-hover/title:text-primary transition-colors cursor-default"
+					>
+						{item.title}
+					</p>
+					{isTitleTruncated && (
+						<div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-[60] w-max max-w-[200px] opacity-0 scale-95 group-hover/title:opacity-100 group-hover/title:scale-100 transition-all duration-200 ease-out glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/15 px-3 py-2 text-xs text-white/90 shadow-2xl text-center">
+							{item.title}
+							{/* Tooltip Arrow */}
+							<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-8 border-transparent border-t-white/15" />
+							<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1.5px] border-[7px] border-transparent border-t-[var(--color-secondary)]" />
+						</div>
+					)}
+				</div>
 				{item.year && <p className="text-xs text-white/40">{item.year}</p>}
 				{item.rating != null && item.rating > 0 && <StarRating rating={item.rating} />}
 				{item.genres && item.genres.length > 0 && (
@@ -150,7 +167,7 @@ function MediaCard({ item }: { item: MediaListItem }) {
 						>
 							{item.comment}
 						</p>
-						{isTruncated && (
+						{isCommentTruncated && (
 							<div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-[60] w-64 opacity-0 scale-95 group-hover/comment:opacity-100 group-hover/comment:scale-100 transition-all duration-200 ease-out glass-card bg-[var(--color-secondary)]/95 backdrop-blur-md border border-white/15 px-3 py-2.5 text-xs text-white/90 shadow-2xl leading-relaxed text-center">
 								{item.comment}
 								{/* Tooltip Arrow */}
@@ -176,6 +193,7 @@ export function UserMediaList({ username }: Props) {
 	const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 	const [searchQuery, setSearchQuery] = useState('');
 	const [debouncedQuery, setDebouncedQuery] = useState('');
+	const [showFavorites, setShowFavorites] = useState(false);
 
 	// Items state
 	const [items, setItems] = useState<MediaListItem[]>([]);
@@ -232,6 +250,7 @@ export function UserMediaList({ username }: Props) {
 					sort_by: sortBy,
 					order: sortOrder,
 					...(debouncedQuery.trim() ? { q: debouncedQuery.trim() } : {}),
+					...(showFavorites ? { is_favorite: true } : {}),
 					limit: PAGE_SIZE,
 					offset: 0,
 				});
@@ -252,7 +271,16 @@ export function UserMediaList({ username }: Props) {
 		return () => {
 			cancelled = true;
 		};
-	}, [username, activeTab, statusFilter, sortBy, sortOrder, debouncedQuery, tabStats]);
+	}, [
+		username,
+		activeTab,
+		statusFilter,
+		showFavorites,
+		sortBy,
+		sortOrder,
+		debouncedQuery,
+		tabStats,
+	]);
 
 	async function loadMore() {
 		const nextOffset = offset + PAGE_SIZE;
@@ -264,6 +292,7 @@ export function UserMediaList({ username }: Props) {
 				sort_by: sortBy,
 				order: sortOrder,
 				...(debouncedQuery.trim() ? { q: debouncedQuery.trim() } : {}),
+				...(showFavorites ? { is_favorite: true } : {}),
 				limit: PAGE_SIZE,
 				offset: nextOffset,
 			});
@@ -390,7 +419,21 @@ export function UserMediaList({ username }: Props) {
 					</div>
 
 					{/* Status filters */}
-					<div className="flex flex-wrap gap-2">
+					<div className="flex flex-wrap items-center gap-2">
+						<button
+							onClick={() => setShowFavorites(!showFavorites)}
+							className={`px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 ${
+								showFavorites
+									? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-inset ring-yellow-500/30'
+									: 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80'
+							}`}
+						>
+							<span className="text-sm">★</span>
+							Избранное
+						</button>
+
+						<div className="w-px h-4 bg-white/10 mx-1" />
+
 						<button
 							onClick={() => setStatusFilter('all')}
 							className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
