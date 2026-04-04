@@ -105,7 +105,10 @@ function CustomSelect<T extends string>({
 						<button
 							key={opt.value}
 							type="button"
-							onClick={() => { onChange(opt.value); setOpen(false); }}
+							onClick={() => {
+								onChange(opt.value);
+								setOpen(false);
+							}}
 							className={`w-full text-left px-3 py-2 text-sm transition-colors cursor-pointer ${
 								opt.value === value
 									? 'bg-primary/20 text-primary'
@@ -163,7 +166,7 @@ export default function MyListsPage() {
 			sort: SortBy,
 			order: SortOrder,
 			favorites: boolean,
-			search: string,
+			search: string
 		) => {
 			setLoading(true);
 			setError(null);
@@ -203,7 +206,8 @@ export default function MyListsPage() {
 	useEffect(() => {
 		if (!isAuthenticated) return;
 		for (const tab of TABS) {
-			mediaListService.getStats(TAB_TO_MEDIA_TYPE[tab.id])
+			mediaListService
+				.getStats(TAB_TO_MEDIA_TYPE[tab.id])
 				.then((s) => setTabCounts((prev) => ({ ...prev, [tab.id]: s.total })))
 				.catch(() => {});
 		}
@@ -220,7 +224,16 @@ export default function MyListsPage() {
 		if (!isAuthenticated) return;
 		setOffset(0);
 		loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly, debouncedSearch);
-	}, [activeTab, statusFilter, sortBy, sortOrder, favoritesOnly, debouncedSearch, isAuthenticated, loadItems]);
+	}, [
+		activeTab,
+		statusFilter,
+		sortBy,
+		sortOrder,
+		favoritesOnly,
+		debouncedSearch,
+		isAuthenticated,
+		loadItems,
+	]);
 
 	// Reload stats for current tab when tab or favorites changes
 	useEffect(() => {
@@ -239,7 +252,15 @@ export default function MyListsPage() {
 	const handleLoadMore = () => {
 		const nextOffset = offset + PAGE_SIZE;
 		setOffset(nextOffset);
-		loadItems(activeTab, statusFilter, nextOffset, sortBy, sortOrder, favoritesOnly, debouncedSearch);
+		loadItems(
+			activeTab,
+			statusFilter,
+			nextOffset,
+			sortBy,
+			sortOrder,
+			favoritesOnly,
+			debouncedSearch
+		);
 	};
 
 	const handleAdd = async (data: CreateMediaListItem | UpdateMediaListItem) => {
@@ -376,10 +397,19 @@ export default function MyListsPage() {
 									onClick={() => setImportExportOpen(true)}
 									className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-white/60 border border-white/10 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white cursor-pointer"
 								>
-									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-										<polyline points="7 10 12 15 17 10"/>
-										<line x1="12" y1="15" x2="12" y2="3"/>
+									<svg
+										width="14"
+										height="14"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+										<polyline points="7 10 12 15 17 10" />
+										<line x1="12" y1="15" x2="12" y2="3" />
 									</svg>
 									Импорт / Экспорт
 								</button>
@@ -411,8 +441,19 @@ export default function MyListsPage() {
 					<div className="flex flex-wrap gap-2 mb-5">
 						{/* Search */}
 						<div className="relative flex-1 min-w-40">
-							<svg className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-								<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+							<svg
+								className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+								width="13"
+								height="13"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<circle cx="11" cy="11" r="8" />
+								<path d="m21 21-4.35-4.35" />
 							</svg>
 							<input
 								type="text"
@@ -432,8 +473,12 @@ export default function MyListsPage() {
 								{ value: 'updated_at', label: 'По дате изменения' },
 								{ value: 'rating', label: 'По оценке' },
 								{ value: 'title', label: 'По названию' },
-								...(!isAlbum && !isMovie ? [{ value: 'completed_at' as SortBy, label: 'По дате завершения' }] : []),
-								...(isMovie ? [{ value: 'completed_at' as SortBy, label: 'По дате просмотра' }] : []),
+								...(!isAlbum && !isMovie
+									? [{ value: 'completed_at' as SortBy, label: 'По дате завершения' }]
+									: []),
+								...(isMovie
+									? [{ value: 'completed_at' as SortBy, label: 'По дате просмотра' }]
+									: []),
 							]}
 						/>
 
@@ -445,12 +490,32 @@ export default function MyListsPage() {
 							title={sortOrder === 'asc' ? 'По возрастанию' : 'По убыванию'}
 						>
 							{sortOrder === 'asc' ? (
-								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-									<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path d="M12 19V5" />
+									<path d="m5 12 7-7 7 7" />
 								</svg>
 							) : (
-								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-									<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path d="M12 5v14" />
+									<path d="m19 12-7 7-7-7" />
 								</svg>
 							)}
 						</button>
@@ -700,7 +765,10 @@ export default function MyListsPage() {
 				isOpen={importExportOpen}
 				onClose={() => setImportExportOpen(false)}
 				username={user?.username ?? ''}
-				onImported={() => { loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly, debouncedSearch); loadStats(activeTab); }}
+				onImported={() => {
+					loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly, debouncedSearch);
+					loadStats(activeTab);
+				}}
 			/>
 
 			{/* Delete confirmation */}

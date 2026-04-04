@@ -37,7 +37,9 @@ export function ImportExportModal({ isOpen, onClose, username, onImported }: Pro
 
 	useEffect(() => {
 		document.body.style.overflow = isOpen ? 'hidden' : '';
-		return () => { document.body.style.overflow = ''; };
+		return () => {
+			document.body.style.overflow = '';
+		};
 	}, [isOpen]);
 
 	if (!isOpen) return null;
@@ -103,8 +105,18 @@ export function ImportExportModal({ isOpen, onClose, username, onImported }: Pro
 						onClick={onClose}
 						className="h-7 w-7 flex items-center justify-center rounded-md text-white/40 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
 					>
-						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-							<path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+						<svg
+							width="14"
+							height="14"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path d="M18 6 6 18" />
+							<path d="m6 6 12 12" />
 						</svg>
 					</button>
 				</div>
@@ -112,9 +124,7 @@ export function ImportExportModal({ isOpen, onClose, username, onImported }: Pro
 				{/* Export */}
 				<div className="mb-6 pb-6 border-b border-white/10">
 					<h3 className="text-sm font-semibold text-white/80 mb-1">Экспорт</h3>
-					<p className="text-xs text-white/40 mb-3">
-						Скачать список в формате MAL/Shikimori XML
-					</p>
+					<p className="text-xs text-white/40 mb-3">Скачать список в формате MAL/Shikimori XML</p>
 					<button
 						onClick={handleExport}
 						disabled={exporting}
@@ -123,10 +133,19 @@ export function ImportExportModal({ isOpen, onClose, username, onImported }: Pro
 						{exporting ? (
 							<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
 						) : (
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-								<polyline points="7 10 12 15 17 10"/>
-								<line x1="12" y1="15" x2="12" y2="3"/>
+							<svg
+								width="14"
+								height="14"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+								<polyline points="7 10 12 15 17 10" />
+								<line x1="12" y1="15" x2="12" y2="3" />
 							</svg>
 						)}
 						{exporting ? 'Подготовка...' : 'Скачать XML'}
@@ -142,7 +161,10 @@ export function ImportExportModal({ isOpen, onClose, username, onImported }: Pro
 
 					{!importResult ? (
 						<div
-							onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+							onDragOver={(e) => {
+								e.preventDefault();
+								setDragOver(true);
+							}}
 							onDragLeave={() => setDragOver(false)}
 							onDrop={handleDrop}
 							onClick={() => fileInputRef.current?.click()}
@@ -162,19 +184,27 @@ export function ImportExportModal({ isOpen, onClose, username, onImported }: Pro
 							{importing ? (
 								<div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
 							) : (
-								<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/30">
-									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-									<polyline points="17 8 12 3 7 8"/>
-									<line x1="12" y1="3" x2="12" y2="15"/>
+								<svg
+									width="28"
+									height="28"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="1.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									className="text-white/30"
+								>
+									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+									<polyline points="17 8 12 3 7 8" />
+									<line x1="12" y1="3" x2="12" y2="15" />
 								</svg>
 							)}
 							<div className="text-center">
 								<p className="text-sm text-white/60">
 									{importing ? 'Импортирую...' : 'Перетащите XML или нажмите'}
 								</p>
-								{!importing && (
-									<p className="text-xs text-white/30 mt-0.5">animelist.xml</p>
-								)}
+								{!importing && <p className="text-xs text-white/30 mt-0.5">animelist.xml</p>}
 							</div>
 						</div>
 					) : (
