@@ -21,16 +21,14 @@ export function ListsPreview() {
 		async function load() {
 			try {
 				const results = await Promise.allSettled(
-					ITEMS.map((item) =>
-						mediaListService.getMyList({ media_type: item.mediaType, limit: 200 })
-					)
+					ITEMS.map((item) => mediaListService.getStats(item.mediaType))
 				);
 				const next: Partial<Record<MediaType, number>> = {};
 				results.forEach((result, i) => {
 					if (result.status === 'fulfilled') {
-						next[ITEMS[i].mediaType] = result.value.length;
+						next[ITEMS[i].mediaType] = result.value.total;
 					} else {
-						console.warn(`Failed to load ${ITEMS[i].mediaType}:`, result.reason);
+						console.warn(`Failed to load stats for ${ITEMS[i].mediaType}:`, result.reason);
 						next[ITEMS[i].mediaType] = 0;
 					}
 				});
