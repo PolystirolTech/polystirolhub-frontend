@@ -384,6 +384,7 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 								<>
 									<label className="block text-sm font-medium text-white/70 mb-2">
 										🔍 Поиск в базах данных
+										<span className="text-red-400 ml-1">*</span>
 									</label>
 									<div className="relative">
 										<input
@@ -497,7 +498,10 @@ export function MediaListItemModal({ isOpen, onClose, onSave, mediaType, item }:
 						) : (
 							<div className="grid gap-3">
 								<div>
-									<label className="block text-sm font-medium text-white/70 mb-1">Название</label>
+									<label className="block text-sm font-medium text-white/70 mb-1">
+										Название
+										<span className="text-red-400 ml-1">*</span>
+									</label>
 									<input
 										type="text"
 										value={customTitle}
