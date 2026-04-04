@@ -18,6 +18,10 @@ export interface MediaListItem {
 	started_at: string | null;
 	completed_at: string | null;
 	play_time_hours: number | null;
+	description?: string | null;
+	genres?: string[] | null;
+	source_rating?: number | null;
+	year?: number | null;
 	created_at: string;
 	updated_at: string;
 }

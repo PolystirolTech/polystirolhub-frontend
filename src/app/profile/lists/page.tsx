@@ -265,7 +265,7 @@ export default function MyListsPage() {
 	};
 
 	const handleAdd = async (
-		data: CreateMediaListItem | CreateCustomMediaListItem,
+		data: CreateMediaListItem | CreateCustomMediaListItem | UpdateMediaListItem,
 		options?: { mode?: 'custom' | 'search' }
 	) => {
 		const created =

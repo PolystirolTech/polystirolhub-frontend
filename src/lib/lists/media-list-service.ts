@@ -91,6 +91,15 @@ class MediaListService {
 		return request<MediaListItem>(`${BASE()}/${id}/favorite`, { method: 'POST' });
 	}
 
+	async getPublicStats(username: string, mediaType?: MediaType): Promise<MediaListStats> {
+		const query = new URLSearchParams();
+		if (mediaType) query.set('media_type', mediaType);
+		const qs = query.toString();
+		return request<MediaListStats>(
+			`${BASE()}/users/${encodeURIComponent(username)}/stats${qs ? `?${qs}` : ''}`
+		);
+	}
+
 	async getPublicList(username: string, params: GetMediaListParams = {}): Promise<MediaListItem[]> {
 		const query = new URLSearchParams();
 		if (params.media_type) query.set('media_type', params.media_type);
@@ -100,6 +109,7 @@ class MediaListService {
 		if (params.order) query.set('order', params.order);
 		if (params.limit !== undefined) query.set('limit', String(params.limit));
 		if (params.offset !== undefined) query.set('offset', String(params.offset));
+		if (params.q) query.set('q', params.q);
 
 		const qs = query.toString();
 		return request<MediaListItem[]>(

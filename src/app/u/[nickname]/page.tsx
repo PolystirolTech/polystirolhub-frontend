@@ -18,6 +18,9 @@ import { GoldSourcePlayerProfileCard } from '@/components/stats/goldsource/golds
 // Assuming it exists similar to Minecraft
 // import { GoldSourcePlayerProfileFromJSON } from '@/lib/api/generated/models/GoldSourcePlayerProfile';
 import { useBackground } from '@/lib/background/background-context';
+import { UserMediaList } from '@/components/lists/user-media-list';
+
+type ProfileTab = 'stats' | 'media';
 
 interface ServerWithType extends GameServerPublic {
 	serverType: 'minecraft' | 'goldsource';
@@ -34,6 +37,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 	const [servers, setServers] = useState<ServerWithType[]>([]);
 	const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
 	const [loadingServers, setLoadingServers] = useState(true);
+	const [profileTab, setProfileTab] = useState<ProfileTab>('stats');
 
 	const { setOverrideBackground } = useBackground();
 
@@ -266,113 +270,122 @@ export default function PublicProfilePage({ params }: { params: Promise<{ nickna
 					</div>
 				)}
 
-				{/* Stats Section */}
-				<div>
-					<h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-						<span role="img" aria-label="chart">
-							📊
-						</span>
-						Статистика
-					</h2>
+				{/* Tab switcher */}
+				<div className="flex gap-1 p-1 rounded-lg bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 mb-6">
+					{(
+						[
+							{ key: 'stats', label: 'Статистика', icon: '📊' },
+							{ key: 'media', label: 'Медиа списки', icon: '📋' },
+						] as const
+					).map(({ key, label, icon }) => (
+						<button
+							key={key}
+							onClick={() => setProfileTab(key)}
+							className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+								profileTab === key ? 'bg-primary/20 text-primary' : 'text-white/50 hover:text-white'
+							}`}
+						>
+							<span>{icon}</span>
+							{label}
+						</button>
+					))}
+				</div>
 
-					{loadingServers ? (
-						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 flex justify-center">
-							<div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-						</div>
-					) : servers.length === 0 ? (
-						<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 text-center text-white/60">
-							Нет доступных серверов
-						</div>
-					) : (
-						<>
-							{/* Server Tabs */}
-							<div className="mb-6">
-								<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
-									<div className="flex flex-wrap items-center gap-3">
-										<span className="text-sm font-medium text-white/80">Сервер:</span>
-										{servers.map((server) => {
-											const serverId = String(server.id);
-											return (
-												<button
-													key={serverId}
-													onClick={() => setSelectedServerId(serverId)}
-													className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-														selectedServerId === serverId
-															? 'bg-primary text-white'
-															: 'bg-white/10 text-white/70 hover:bg-white/20'
-													}`}
-												>
-													{server.gameTypeName} - {server.serverName}
-												</button>
-											);
-										})}
+				{/* Stats Tab */}
+				{profileTab === 'stats' && (
+					<div>
+						{loadingServers ? (
+							<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 flex justify-center">
+								<div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+							</div>
+						) : servers.length === 0 ? (
+							<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 text-center text-white/60">
+								Нет доступных серверов
+							</div>
+						) : (
+							<>
+								{/* Server Tabs */}
+								<div className="mb-6">
+									<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-4">
+										<div className="flex flex-wrap items-center gap-3">
+											<span className="text-sm font-medium text-white/80">Сервер:</span>
+											{servers.map((server) => {
+												const serverId = String(server.id);
+												return (
+													<button
+														key={serverId}
+														onClick={() => setSelectedServerId(serverId)}
+														className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+															selectedServerId === serverId
+																? 'bg-primary text-white'
+																: 'bg-white/10 text-white/70 hover:bg-white/20'
+														}`}
+													>
+														{server.gameTypeName} - {server.serverName}
+													</button>
+												);
+											})}
+										</div>
 									</div>
 								</div>
-							</div>
 
-							{/* Selected Server Stats */}
-							{selectedServer && (
-								<div>
-									{selectedServer.serverType === 'minecraft'
-										? (() => {
-												// Find relevant stats
-												// Try to find stats where servers_played includes this server name or ID
-												// Or just take the first one if available
-												const stats = minecraft_stats.find(
-													(s) =>
-														s.servers_played?.includes(selectedServer.serverName) ||
-														s.servers_played?.includes(String(selectedServer.id))
-												);
-
-												if (!stats) {
-													return (
-														<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 text-center text-white/60">
-															Пользователь не играл на этом сервере
-														</div>
+								{/* Selected Server Stats */}
+								{selectedServer && (
+									<div>
+										{selectedServer.serverType === 'minecraft'
+											? (() => {
+													const stats = minecraft_stats.find(
+														(s) =>
+															s.servers_played?.includes(selectedServer.serverName) ||
+															s.servers_played?.includes(String(selectedServer.id))
 													);
-												}
 
-												// Convert to component format
-												// const profileData = MinecraftPlayerProfileFromJSON(stats);
+													if (!stats) {
+														return (
+															<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 text-center text-white/60">
+																Пользователь не играл на этом сервере
+															</div>
+														);
+													}
 
-												return (
-													<MinecraftPlayerProfileCard
-														playerUuid={String(stats.uuid)}
-														serverId={selectedServer.id}
-														// initialProfile={profileData} // Don't use aggregated stats for specific server
-													/>
-												);
-											})()
-										: (() => {
-												const stats = goldsource_stats.find(
-													(s) =>
-														s.servers_played?.includes(selectedServer.serverName) ||
-														s.servers_played?.includes(String(selectedServer.id))
-												);
-
-												if (!stats) {
 													return (
-														<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 text-center text-white/60">
-															Пользователь не играл на этом сервере
-														</div>
+														<MinecraftPlayerProfileCard
+															playerUuid={String(stats.uuid)}
+															serverId={selectedServer.id}
+														/>
 													);
-												}
+												})()
+											: (() => {
+													const stats = goldsource_stats.find(
+														(s) =>
+															s.servers_played?.includes(selectedServer.serverName) ||
+															s.servers_played?.includes(String(selectedServer.id))
+													);
 
-												// const profileData = GoldSourcePlayerProfileFromJSON(stats);
+													if (!stats) {
+														return (
+															<div className="glass-card bg-[var(--color-secondary)]/65 backdrop-blur-md border border-white/10 p-6 text-center text-white/60">
+																Пользователь не играл на этом сервере
+															</div>
+														);
+													}
 
-												return (
-													<GoldSourcePlayerProfileCard
-														steamId={stats.steam_id}
-														serverId={selectedServer.id}
-														// initialProfile={profileData} // Don't use aggregated stats for specific server
-													/>
-												);
-											})()}
-								</div>
-							)}
-						</>
-					)}
-				</div>
+													return (
+														<GoldSourcePlayerProfileCard
+															steamId={stats.steam_id}
+															serverId={selectedServer.id}
+														/>
+													);
+												})()}
+									</div>
+								)}
+							</>
+						)}
+					</div>
+				)}
+
+				{/* Media Tab */}
+				{profileTab === 'media' && <UserMediaList username={header.username} />}
 			</main>
 			<Footer />
 		</div>
