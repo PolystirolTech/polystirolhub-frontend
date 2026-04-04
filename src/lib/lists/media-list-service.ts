@@ -117,6 +117,21 @@ class MediaListService {
 		);
 	}
 
+	async uploadCover(file: File): Promise<{ url: string }> {
+		const formData = new FormData();
+		formData.append('file', file);
+		const response = await fetch(`${BASE()}/covers/upload`, {
+			method: 'POST',
+			credentials: 'include',
+			body: formData,
+		});
+		if (!response.ok) {
+			const error = await response.json().catch(() => ({}));
+			throw new Error(error.detail || `Ошибка ${response.status}`);
+		}
+		return response.json();
+	}
+
 	async search(query: string, type: MediaType): Promise<SearchResult[]> {
 		const qs = new URLSearchParams({
 			q: query,

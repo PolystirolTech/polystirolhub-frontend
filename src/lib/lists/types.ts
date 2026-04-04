@@ -7,6 +7,7 @@ export interface MediaListItem {
 	id: string;
 	user_id: string;
 	media_type: MediaType;
+	is_custom: boolean;
 	title: string;
 	cover_url: string | null;
 	external_id: string | null;
@@ -41,6 +42,7 @@ export interface CreateCustomMediaListItem {
 	title: string;
 	year?: number | null;
 	cover_url?: string | null;
+	description?: string | null;
 	status?: MediaStatus | null;
 	rating?: number | null;
 	comment?: string | null;
@@ -66,6 +68,9 @@ export interface CreateMediaListItem {
 }
 
 export interface UpdateMediaListItem {
+	title?: string;
+	cover_url?: string | null;
+	description?: string | null;
 	status?: MediaStatus | null;
 	rating?: number | null;
 	comment?: string | null;
