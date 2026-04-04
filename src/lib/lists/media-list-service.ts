@@ -118,10 +118,26 @@ class MediaListService {
 		return response.blob();
 	}
 
-	async importAnime(file: File): Promise<{ imported: number; skipped: number; errors: number }> {
+	async importAnime(file: File): Promise<ImportResult> {
+		return this._importMultipart(`${BASE()}/anime/import`, file);
+	}
+
+	async importLetterboxd(file: File): Promise<ImportResult> {
+		return this._importMultipart(`${BASE()}/import/letterboxd`, file);
+	}
+
+	async importImdbRatings(file: File): Promise<ImportResult> {
+		return this._importMultipart(`${BASE()}/import/imdb/ratings`, file);
+	}
+
+	async importImdbWatchlist(file: File): Promise<ImportResult> {
+		return this._importMultipart(`${BASE()}/import/imdb/watchlist`, file);
+	}
+
+	private async _importMultipart(url: string, file: File): Promise<ImportResult> {
 		const formData = new FormData();
 		formData.append('file', file);
-		const response = await fetch(`${BASE()}/anime/import`, {
+		const response = await fetch(url, {
 			method: 'POST',
 			credentials: 'include',
 			body: formData,
@@ -133,5 +149,7 @@ class MediaListService {
 		return response.json();
 	}
 }
+
+export type ImportResult = { imported: number; skipped: number; errors: string[] };
 
 export const mediaListService = new MediaListService();

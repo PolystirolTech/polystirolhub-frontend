@@ -392,7 +392,7 @@ export default function MyListsPage() {
 							)}
 						</h2>
 						<div className="flex items-center gap-2">
-							{activeTab === 'anime' && (
+							{(activeTab === 'anime' || activeTab === 'movies' || activeTab === 'series') && (
 								<button
 									onClick={() => setImportExportOpen(true)}
 									className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-white/60 border border-white/10 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white cursor-pointer"
@@ -411,7 +411,7 @@ export default function MyListsPage() {
 										<polyline points="7 10 12 15 17 10" />
 										<line x1="12" y1="15" x2="12" y2="3" />
 									</svg>
-									Импорт / Экспорт
+									{activeTab === 'anime' ? 'Импорт / Экспорт' : 'Импорт'}
 								</button>
 							)}
 							<button
@@ -765,8 +765,15 @@ export default function MyListsPage() {
 				isOpen={importExportOpen}
 				onClose={() => setImportExportOpen(false)}
 				username={user?.username ?? ''}
+				mediaTab={activeTab as 'anime' | 'movies' | 'series'}
 				onImported={() => {
 					loadItems(activeTab, statusFilter, 0, sortBy, sortOrder, favoritesOnly, debouncedSearch);
+					// Обновляем счётчики всех вкладок — импорт мог затронуть разные типы медиа
+					for (const tab of TABS) {
+						mediaListService.getStats(TAB_TO_MEDIA_TYPE[tab.id])
+							.then((s) => setTabCounts((prev) => ({ ...prev, [tab.id]: s.total })))
+							.catch(() => {});
+					}
 					loadStats(activeTab);
 				}}
 			/>
