@@ -169,10 +169,10 @@ docs(readme): add deployment instructions
 
 ## Environments
 
-| Environment | Branch                              | URL                        | Публикует образ (GHCR) |
-| ----------- | ------------------------------------ | -------------------------- | ------------------------ |
-| Production  | `main`                                | https://polystirolhub.net | ✅                        |
-| Development | `dev`, `feat/*`, `fix/*`, `style/*`  | -                           | ❌                        |
+| Environment | Branch                              | URL                       | Публикует образ (GHCR) |
+| ----------- | ----------------------------------- | ------------------------- | ---------------------- |
+| Production  | `main`                              | https://polystirolhub.net | ✅                     |
+| Development | `dev`, `feat/*`, `fix/*`, `style/*` | -                         | ❌                     |
 
 ## Variables Configuration
 
