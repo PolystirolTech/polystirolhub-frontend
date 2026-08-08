@@ -1,0 +1,26 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.polystirolhub.net}
+        NEXT_PUBLIC_API_BASE_PATH: ${NEXT_PUBLIC_API_BASE_PATH:-/api/v1}
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-PolystirolHub}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://polystirolhub.net}
+        NEXT_PUBLIC_DEBUG: ${NEXT_PUBLIC_DEBUG:-false}
+        NEXT_PUBLIC_MAINTENANCE_MODE: ${NEXT_PUBLIC_MAINTENANCE_MODE:-false}
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL_INTERNAL=${API_URL_INTERNAL:-http://backend:8000}
+    networks:
+      - polystirolhub-network
+
+networks:
+  polystirolhub-network:
+    external: true
