@@ -10,14 +10,14 @@
 - Всегда стабильна и готова к деплою
 - Защищена от прямых коммитов
 - Изменения только через PR из `dev`
-- CI/CD автоматически деплоит на production
+- Каждый push публикует новый прод-образ в GHCR (см. "Релиз" ниже)
 
 ### `dev`
 
 - **Development** ветка
 - Интеграционная ветка для разработки
 - Изменения из feature-веток мержатся сюда
-- CI/CD автоматически деплоит на staging
+- Только CI-проверки, без публикации образа
 - Периодически мержится в `main`
 
 ## Feature ветки
@@ -96,19 +96,27 @@ git commit -m "fix: critical bug"
 2. ✅ TypeScript type checking
 3. ✅ Prettier форматирование
 4. ✅ Build проверка
-5. ✅ Docker build (кэширование)
+5. ✅ Docker build (кэширование, без push)
 
-### На PR в dev
+### На PR в dev / main
 
 1. ✅ Все проверки из feature веток
 2. ✅ Build artifacts сохраняются
-3. После merge: автоматический деплой на staging
+3. Для `main` — обязательный code review
 
-### На PR в main
+### Релиз (push в main)
 
-1. ✅ Все проверки
-2. ✅ Обязательный code review
-3. После merge: автоматический деплой на production
+`.github/workflows/docker-publish.yml` собирает образ и публикует его в
+`ghcr.io/polystiroltech/polystirolhub-frontend:latest` (+ тег по короткому SHA).
+`NEXT_PUBLIC_*` переменные для прод-сборки берутся из GitHub Actions
+Variables репозитория (Settings → Secrets and variables → Actions → Variables),
+с фолбэком на прод-значения по умолчанию, если переменная не задана.
+
+Дальше раскладку и обновление на сервере делает Ansible-роль `services` в
+репозитории `polytech`: она подтягивает образ (`docker compose pull`) и
+раз в 10 минут проверяет через cron-скрипт `frontend-auto-update.sh`,
+не появился ли новый `latest`, перезапуская контейнер при обновлении —
+без ручного деплоя.
 
 ## Branch Protection Rules
 
@@ -161,22 +169,22 @@ docs(readme): add deployment instructions
 
 ## Environments
 
-| Environment | Branch                       | URL                           | Auto Deploy |
-| ----------- | ---------------------------- | ----------------------------- | ----------- |
-| Production  | `main`                       | https://polystirolhub.com     | ✅          |
-| Staging     | `dev`                        | https://dev.polystirolhub.com | ✅          |
-| Feature     | `feat/*`, `fix/*`, `style/*` | -                             | ❌          |
+| Environment | Branch                              | URL                        | Публикует образ (GHCR) |
+| ----------- | ------------------------------------ | -------------------------- | ------------------------ |
+| Production  | `main`                                | https://polystirolhub.net | ✅                        |
+| Development | `dev`, `feat/*`, `fix/*`, `style/*`  | -                           | ❌                        |
 
-## Secrets Configuration
+## Variables Configuration
 
-Необходимо настроить в GitHub Secrets:
+Настраиваются в GitHub Actions Variables (не Secrets — значения не чувствительные),
+используются `docker-publish.yml` при сборке прод-образа:
 
-### Production (main)
+- `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_API_BASE_PATH`
+- `NEXT_PUBLIC_APP_NAME`
+- `NEXT_PUBLIC_APP_URL`
+- `NEXT_PUBLIC_DEBUG`
+- `NEXT_PUBLIC_MAINTENANCE_MODE`
 
-- `PROD_API_URL` - Production API URL
-- `PROD_DEPLOY_KEY` - SSH ключ для деплоя (если используется)
-
-### Staging (dev)
-
-- `DEV_API_URL` - Staging API URL
-- `DEV_DEPLOY_KEY` - SSH ключ для деплоя (если используется)
+Секреты для доступа к серверу (SSH-ключи и т.п.) больше не нужны — сервер
+сам подтягивает опубликованный образ через Ansible + cron.
